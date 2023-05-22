@@ -33,8 +33,7 @@ const registerPatient = async (req, res) => {
             const newPatient = await Patient.create({
                 name: name,
                 email: email,
-                password: hashPassword,
-                verifyToken: token
+                password: hashPassword
             })
 
             const mailOptions = {
@@ -52,8 +51,8 @@ const registerPatient = async (req, res) => {
             })
         }
     } catch (err) {
-        res.status(502).json({
-           errorInfo: err
+        res.status(500).json({
+            errorInfo: `Internal server error`
        })
     }
     
@@ -66,7 +65,7 @@ const emailVerifcationPatient = async (req, res) => {
         const email = decodeInfo.email;
         const patient = await Patient.find({ email: email });
         if (patient[0].isVerified) {
-            return res.status(400).json({
+            return res.status(409).json({
                 message: 'Email is alredy verified'
             })
         } else {
@@ -94,6 +93,13 @@ const loginPatient  = async (req, res) => {
         const patient = await Patient.findOne({ email: email });
         if (patient) {
 
+
+            if (!patient.isVerified) {
+                return res.status(401).json({
+                    errorInfo: 'Email is not verified'
+                }) 
+            }
+
             let isCorrectPassword = await bcrypt.compare(password, patient.password);
             if (isCorrectPassword) {
 
@@ -112,12 +118,6 @@ const loginPatient  = async (req, res) => {
             
                 patient.password = undefined;
             
-                // return res.status(201).json({
-                //    message: 'Login Success' ,
-                //    user: user[0]
-                // })
-
-                // working with cookies
                 const options = {
                     expires: new Date(
                         Date.now() + 3 * 24 * 60 * 60 * 1000
@@ -145,7 +145,9 @@ const loginPatient  = async (req, res) => {
         }
 
     } catch (err) {
-        
+        res.status(500).json({
+            message: 'Internal Server error'
+        })
     }
 
 }
@@ -188,7 +190,7 @@ const resetPasswordPatient = async (req, res) => {
             })
         }
     } catch (err) {
-        res.status(502).json({
+        res.status(500).json({
             errorInfo: 'Internal Server error'
         })
     }

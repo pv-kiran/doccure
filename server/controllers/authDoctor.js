@@ -55,8 +55,8 @@ const registerDoctor = async (req, res) => {
 
         }
     } catch (err) {
-        res.status(502).json({
-            errorInfo : err
+        res.status(500).json({
+            errorInfo: 'Internal server error'
         })
     }
 }
@@ -104,6 +104,13 @@ const loginDoctor = async (req, res) => {
         const doctor = await Doctor.findOne({ email: email });
         if (doctor) {
 
+
+            if (!doctor.isVerified) {
+                return res.status(401).json({
+                    errorInfo: 'Email is not verified'
+                })
+            }
+
             let isCorrectPassword = await bcrypt.compare(password, doctor.password);
             if (isCorrectPassword) {
 
@@ -149,8 +156,8 @@ const loginDoctor = async (req, res) => {
         }
 
     } catch (err) {
-        res.status(502).json({
-            errorInfo :'Something went wrong'
+        res.status(500).json({
+            errorInfo :'Internal server error'
         })
     }
 
@@ -194,7 +201,7 @@ const resetPasswordDoctor = async (req, res) => {
             })
         }
     } catch (err) {
-        res.status(502).json({
+        res.status(500).json({
             errorInfo: 'Internal Server error'
         })
     }
