@@ -19,7 +19,7 @@ const registerDoctor = async (req, res) => {
         }
         if (doctor) {
 
-            return res.status(400).json({ errorInfo: "user already exist with this email" });
+            return res.status(409).json({ errorInfo: "user already exist with this email" });
 
         } else {
 
@@ -37,17 +37,23 @@ const registerDoctor = async (req, res) => {
             const newDoctor = await Doctor.create({
                 name: name,
                 email: email,
-                password: hashPassword
+                password: hashPassword ,
+                verifyToken: token
             })
 
             const mailOptions = {
                 from: 'admin@gmail.com',
                 to: `${email}`,
                 subject: 'Email Verification',
-                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email http://localhost:3000/api/auth/doctor/verify/${token}`
+                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email http://localhost:3000/doctor/verify/${token}
+                Link will expire in 5 minutes`
             };
 
+
             await transporter.sendMail(mailOptions);
+
+            newDoctor.password = undefined;
+            newDoctor.verifyToken = undefined;
 
             return res.status(201).json({
                 user: newDoctor
@@ -68,26 +74,32 @@ const verifyDoctorEmail = async (req, res) => {
         let decodeInfo = jwt.verify(token, process.env.SECRET_KEY)
         const email = decodeInfo.email;
         const doctor = await Doctor.find({ email: email });
-        if (doctor[0].verifyToken === token) {
 
-             if (doctor[0].isVerified) {
-                return res.status(400).json({
-                message: 'Email is alredy verified'
-                })
-            } else {
+        if (doctor[0].isVerified) {
+            console.log('hello');
+            return res.status(409).json({
+              message: 'Email is alredy verified'
+            })
+        } else {
+
+
+            if (doctor[0].verifyToken === token) {
+
                 doctor[0].isVerified = true;
                 doctor[0].verifyToken = undefined;
                 await doctor[0].save();
                 return res.status(200).json({
                 message: 'Email is succesfully verified'
                 })
-            }
             
-        } else {
-            return res.status(400).json({
-                errorInfo: 'Token expired or wrong token'
-            })
+            } else {
+                return res.status(400).json({
+                    errorInfo: 'Token expired or wrong token'
+                })
+            }
+
         }
+
        
     } catch (err) {
         res.status(400).json({
@@ -138,7 +150,7 @@ const loginDoctor = async (req, res) => {
 
             return res.status(200).cookie('token' , token , options).json({
                 success: true ,
-                doctor: doctor
+                user: doctor
             });
 
 
@@ -151,7 +163,7 @@ const loginDoctor = async (req, res) => {
             
         } else {
             return res.status(404).json({
-                errorInfo: `User doesn't exist`
+                errorInfo: `We didn't recoganize this email`
             })
         }
 
@@ -185,7 +197,7 @@ const resetPasswordDoctor = async (req, res) => {
                 from: 'admin@gmail.com',
                 to: `${email}`,
                 subject: 'Password reset',
-                text: `Hi! Please follow the given link to change your password http://localhost:3000/patient/password/reset/${token}`
+                text: `Hi! Please follow the given link to change your password http://localhost:3000/doctor/reset/password/${token}`
             };
 
             await transporter.sendMail(mailOptions);     
@@ -209,8 +221,8 @@ const resetPasswordDoctor = async (req, res) => {
 }
 
 const newPasswordDoctor = async (req, res) => {
-    const { password, confirmPasssword , passwordToken} = req.body;
-    if (password === confirmPasssword) {
+    const { password, confirmPassword , passwordToken} = req.body;
+    if (password === confirmPassword) {
         
         try {
         

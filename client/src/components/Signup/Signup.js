@@ -7,16 +7,27 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import registerLogo from '../../assets/login-banner.png';
-import './Register.css';
+import './Signup.css';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerDoctor, registerDoctorReset } from '../../app/features/doctor/doctorSlice';
+import { registerPatient, registerPatientReset } from '../../app/features/patient/patientSlice';
+import { Link, useNavigate } from 'react-router-dom';
+
+import CircularProgress from '@mui/material/CircularProgress';
+import FormHelperText from "@mui/material/FormHelperText"
+
+
+
 
 const ColorButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#0AE4B3',
   fontsize: '2rem',
   marginTop: '-3rem',
   borderRadius: '5px',
-  padding: '.8rem' ,
+  padding: '.8rem',
+  position:'relative' ,
   color:'white' ,
   letterSpacing: '2px' ,
   '&:hover': {
@@ -25,7 +36,13 @@ const ColorButton = styled(Button)(({ theme }) => ({
 }));
 
 
-function RegisterForm() {
+function Signup() {
+
+
+   
+
+
+
 
     const [isDoctor, setIsDoctor] = useState(true);
 
@@ -58,6 +75,47 @@ function RegisterForm() {
         const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
         return re.test(email);
     };
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+
+    let doctorRegisterState = useSelector((state) => {
+        return state.doctor;
+    })
+
+    let patientRegiterState = useSelector((state) => {
+        return state.patient;
+    })
+
+    // console.log(doctorRegisterState.loading)
+    // console.log(patientRegiterState.loading)
+
+
+   
+    useEffect(() => {
+        if (doctorRegisterState.success) {
+            dispatch(registerDoctorReset());
+            navigate('/email/notification')
+        }
+    }, [doctorRegisterState.success]);
+
+     useEffect(() => {
+        if (patientRegiterState.success) {
+            dispatch(registerPatientReset());
+            navigate('/email/notification')
+        }
+     }, [patientRegiterState.success]);
+    
+    useEffect(() => {
+        if (patientRegiterState.error || doctorRegisterState.error) {
+        const timer = setTimeout(() => {
+            dispatch(registerDoctorReset())
+            dispatch(registerPatientReset())
+        }, 3000);
+        return () => clearTimeout(timer);
+        }
+    }, [patientRegiterState.error , doctorRegisterState.error]);
 
 
     const handleSubmit = (e) => {
@@ -94,6 +152,11 @@ function RegisterForm() {
         if (isValid) {
             console.log(user);
             console.log('Valid');
+            if (isDoctor) {
+               dispatch(registerDoctor(user));   
+            } else {
+                dispatch(registerPatient(user));
+            }
         }
     }
 
@@ -180,7 +243,7 @@ function RegisterForm() {
                         </Typography>
                     </Box>
                     <TextField
-                        id="outlined-basic"
+                        // id="outlined-basic"
                         label="Name"
                         variant="outlined"
                         sx={{
@@ -193,7 +256,7 @@ function RegisterForm() {
                         helperText = {formErrors.name}
                     />
                     <TextField
-                        id="outlined-basic"
+                        // id="outlined-basic"
                         label="Email"
                         variant="outlined"
                         sx={{
@@ -206,7 +269,7 @@ function RegisterForm() {
                         helperText = {formErrors.email}
                     />
                     <TextField
-                        id="outlined-basic"
+                        // id="outlined-basic"
                         label="Password"
                         variant="outlined"
                         sx={{
@@ -227,15 +290,57 @@ function RegisterForm() {
                     >
                         <Typography
                             sx={{
-                                fontSize: {lg: '1rem' , md: '.8rem' , sm: '.8rem'}
+                                fontSize: { lg: '1rem', md: '.8rem', sm: '.8rem' },
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: '#2CE1FE' ,
+                                '&:hover': {
+                                   color: '#0AE4B3',
+                                },
                             }}
+                            component={Link} 
+                            to={'/signin'}
                         >
                                 Alreay have an account ?
                         </Typography>
                     </Box>
-                    <ColorButton type='submit'>
-                      Sign Up
+                    <ColorButton type='submit' disabled = {doctorRegisterState.loading || patientRegiterState.loading}>
+                        Sign Up
+                        {
+                           ( doctorRegisterState.loading || patientRegiterState.loading ) && <CircularProgress
+                                size={28}
+                                sx={{
+                                color: '#fff',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px',
+                            }}
+                            />
+                        }
+                        
                     </ColorButton>
+                   
+                        
+                        {
+                        (doctorRegisterState.error || patientRegiterState.error) && <FormHelperText
+                                error
+                                sx={{
+                                    marginTop: '-3rem',
+                                    textAlign: 'center',
+                                    position: 'absolute',
+                                    bottom: '2rem' ,
+                                    width: '23rem' ,
+                                    fontSize: '.9rem',
+                                    textTransform: 'capitalize',
+                                }}
+                                > {
+                                doctorRegisterState.error ||  patientRegiterState.error
+                            } </FormHelperText>
+                        }
+
+                    
                 </Box> 
             </Grid>
             
@@ -245,4 +350,4 @@ function RegisterForm() {
   )
 }
 
-export default RegisterForm
+export default Signup

@@ -12,6 +12,11 @@ app.use(express.json());
 // mongodb connection
 let { connectDB } = require('./db/connection');
 
+// cors
+const cors = require('cors');
+app.use(cors({credentials: true , origin: 'http://localhost:3000'}));
+
+
 const PORT = process.env.PORT || 4000;
 
 

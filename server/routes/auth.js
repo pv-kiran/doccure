@@ -13,7 +13,7 @@ const { registerPatient, emailVerifcationPatient, loginPatient, resetPasswordPat
 router.post('/doctor/register', registerDoctor);
 router.put('/doctor/verify/:token', verifyDoctorEmail);
 router.post('/doctor/login', loginDoctor);
-router.post('/doctor/password/reset', resetPasswordDoctor);
+router.put('/doctor/password/reset', resetPasswordDoctor);
 router.put('/doctor/password/new', newPasswordDoctor);
 router.get('/doctor/logout', logoutDoctor);
 
@@ -22,7 +22,7 @@ router.get('/doctor/logout', logoutDoctor);
 router.post('/patient/register', registerPatient);
 router.put('/patient/verify/:token', emailVerifcationPatient );
 router.post('/patient/login', loginPatient);
-router.post('/patient/password/reset', resetPasswordPatient);
+router.put('/patient/password/reset', resetPasswordPatient);
 router.put('/patient/password/new', newPasswordPatient);
 router.get('/patient/logout', logoutPatient);
 

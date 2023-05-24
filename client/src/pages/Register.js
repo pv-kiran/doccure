@@ -1,9 +1,9 @@
 import React from 'react'
-import RegisterForm from '../components/RegisterComponent/RegisterForm'
+import Signup from '../components/Signup/Signup';
 
 function Register() {
   return (
-    <RegisterForm></RegisterForm>
+    <Signup></Signup>
   )
 }
 

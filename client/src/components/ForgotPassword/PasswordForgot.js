@@ -1,5 +1,5 @@
 import React from 'react'
-import './ForgotPassword.css';
+import './PasswordForgot.css';
 
 
 import { styled } from '@mui/material/styles';
@@ -8,10 +8,14 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import FormHelperText from "@mui/material/FormHelperText"
+
+
+import { Checkbox, FormControlLabel } from '@mui/material';
 import registerLogo from '../../assets/login-banner.png';
-
-
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
+import instance from '../../api/axiosInstance';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ColorButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#0AE4B3',
@@ -27,15 +31,37 @@ const ColorButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-function ForgotPasswordForm() {
 
-    const [isDoctor, setIsDoctor] = useState(true);
 
-    const [user, setUser] = useState({  email: '' });
+function PasswordForgot() {
 
-    const [formErrors, setFormErrors] = useState({ email: "" });
+    const navigate = useNavigate();
+
     
+
+    const [user, setUser] = useState({ email: '' });
+    const [formErrors, setFormErrors] = useState({ email: "" });
     let newErrors = { email: "" };
+
+    
+    const [checked, setChecked] = useState(false);
+
+    const [error, setError] = useState('');
+
+
+    const handleCheckBoxChange = () => {
+        setChecked(!checked);
+    };
+
+
+    useEffect(() => {
+        if (error) {
+        const timer = setTimeout(() => {
+            setError('')
+        }, 3000);
+        return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -68,10 +94,24 @@ function ForgotPasswordForm() {
         }
 
         setFormErrors(newErrors); 
+        
+        async function forgotPassword(userType) {
+           try {
+               
+              await instance.put(`auth/${userType}/password/reset`, user);
+              navigate('/email/notification')
+               
+           } catch (err) {
+               setError(err.response.data.errorInfo);
+           }
+        }
 
         if (isValid) {
-            console.log(user);
-            console.log('Valid');
+            if (checked) {
+                forgotPassword('doctor');
+            } else {
+                forgotPassword('patient');
+            }
         }
     }
 
@@ -112,7 +152,8 @@ function ForgotPasswordForm() {
                     sx={{
                         display:"flex" ,
                         flexDirection:"column" ,
-                        gap:"75px" ,
+                        gap: "75px",
+                        position: 'relative',
                         border: "1px lightgray solid" ,
                         borderRadius :  "5px" ,
                         padding: "3rem",
@@ -124,7 +165,7 @@ function ForgotPasswordForm() {
                             display: "flex",
                             flexDirection: 'column' ,
                             justifyContent: "space-between",
-                            marginBottom: '-2.5rem'
+                            marginBottom: '-5rem'
                         }}
                     >
                         <Typography
@@ -145,13 +186,28 @@ function ForgotPasswordForm() {
                             Enter your email to get a password reset link
                         </Typography>
                     </Box>
+                    <FormControlLabel
+                        control={<Checkbox
+                                    sx={{ marginTop: '1px' }} 
+                                    checked = { checked }
+                                    onChange={handleCheckBoxChange}
+                                />}
+                        label="Are you a doctor?"
+                        sx={{
+                            '& .MuiFormControlLabel-label': {
+                                fontWeight: 'lighter',
+                                fontSize: '.8rem'
+                            },
+                        }}
+                    />
                     <TextField
                         id="outlined-basic"
                         label="Email"
                         variant="outlined"
                         sx={{
                             width: "100%",
-                            height: '.6rem'
+                            height: '.6rem',
+                            marginTop: "-2rem"
                         }} 
                         name="email"
                         onChange={(e) => handleChange(e)}
@@ -161,6 +217,23 @@ function ForgotPasswordForm() {
                     <ColorButton type='submit'>
                       Reset Password
                     </ColorButton>
+                    {
+                        error && <FormHelperText
+                                error
+                                sx={{
+                                    marginTop: '-3rem',
+                                    textAlign: 'center',
+                                    position: 'absolute',
+                                    bottom: '2rem' ,
+                                    width: '23rem' ,
+                                    fontSize: '.9rem',
+                                    textTransform: 'capitalize',
+                                }}
+                                > {
+                                  error
+                                  }
+                                </FormHelperText>
+                        }
                 </Box> 
             </Grid>
             
@@ -168,4 +241,4 @@ function ForgotPasswordForm() {
     )
 }
 
-export default ForgotPasswordForm
+export default PasswordForgot

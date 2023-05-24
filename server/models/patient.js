@@ -23,6 +23,10 @@ const patientSchema = new mongoose.Schema({
   },
   forgotPasswordToken: {
     type: String
+  },
+  role: {
+    type: String,
+    default: 'patient'
   }
 });
 

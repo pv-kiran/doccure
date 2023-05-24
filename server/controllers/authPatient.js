@@ -33,17 +33,23 @@ const registerPatient = async (req, res) => {
             const newPatient = await Patient.create({
                 name: name,
                 email: email,
-                password: hashPassword
+                password: hashPassword,
+                verifyToken: token
             })
 
             const mailOptions = {
                 from: 'admin@gmail.com',
                 to: `${email}`,
                 subject: 'Email Verification',
-                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email http://localhost:3000/api/auth/patient/verify/${token}`
+                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email http://localhost:3000/patient/verify/${token}
+                Link will expire in 5 minutes`
             };
 
+
             await transporter.sendMail(mailOptions);
+
+            newPatient.password = undefined;
+            newPatient.verifyToken = undefined;
 
             return res.status(201).json({
                 user: newPatient,
@@ -65,17 +71,29 @@ const emailVerifcationPatient = async (req, res) => {
         const email = decodeInfo.email;
         const patient = await Patient.find({ email: email });
         if (patient[0].isVerified) {
+            console.log('Hello');
             return res.status(409).json({
                 message: 'Email is alredy verified'
             })
         } else {
+            if (patient[0].verifyToken === token) {
+
             patient[0].isVerified = true;
             patient[0].verifyToken = undefined;
             await patient[0].save();
             return res.status(200).json({
                 message: 'Email is succesfully verified'
             })
+            
+            } else {
+                return res.status(400).json({
+                    errorInfo: 'Token expired or wrong token'
+                })
+            }
         }
+
+        
+        
         
     } catch (err) {
         res.status(400).json({
@@ -140,7 +158,7 @@ const loginPatient  = async (req, res) => {
             
         } else {
             return res.status(404).json({
-                errorInfo: `User doesn't exist`
+                errorInfo: `We didn't recoganize this email`
             })
         }
 
@@ -154,6 +172,7 @@ const loginPatient  = async (req, res) => {
 
 const resetPasswordPatient = async (req, res) => {
     const { email } = req.body;
+    console.log(email);
     try {
         const patient = await Patient.findOne({ email: email });
         if (patient) {
@@ -174,7 +193,7 @@ const resetPasswordPatient = async (req, res) => {
                 from: 'admin@gmail.com',
                 to: `${email}`,
                 subject: 'Password reset',
-                text: `Hi! Please follow the given link to change your password http://localhost:3000/patient/password/reset/${token}`
+                text: `Hi! Please follow the given link to change your password http://localhost:3000/patient/reset/password/${token}`
             };
 
             await transporter.sendMail(mailOptions);
@@ -198,8 +217,10 @@ const resetPasswordPatient = async (req, res) => {
 }
 
 const newPasswordPatient = async (req, res) => {
-    const { password, confirmPasssword, passwordToken } = req.body;
-    if (password === confirmPasssword) {
+    const { password, confirmPassword, passwordToken } = req.body;
+    console.log(req.body);
+    console.log(password);
+    if (password === confirmPassword) {
         
         try {
         

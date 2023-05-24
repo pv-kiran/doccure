@@ -1,9 +1,10 @@
-import React from 'react'
-import ResetPasswordForm from '../components/ResetPasswordComponent/ResetPasswordForm'
+import React from 'react';
+import PasswordReset from '../components/ResetPassword/PasswordReset';
+
 
 function ResetPassword() {
   return (
-    <ResetPasswordForm></ResetPasswordForm>
+      <PasswordReset></PasswordReset>
   )
 }
 

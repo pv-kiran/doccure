@@ -7,9 +7,20 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import registerLogo from '../../assets/login-banner.png';
-import './Login.css';
+import './Signin.css';
 
-import { useState } from 'react';
+// import { Link } from '@mui/material';
+
+import { useState , useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logginDoctorReset, loginDoctor } from '../../app/features/doctor/doctorSlice';
+import { logginPatientReset, loginPatient } from '../../app/features/patient/patientSlice';
+import { setAuth } from '../../app/features/auth/authSlice';
+
+import CircularProgress from '@mui/material/CircularProgress';
+import FormHelperText from "@mui/material/FormHelperText"
+
 
 const ColorButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#0AE4B3',
@@ -25,7 +36,10 @@ const ColorButton = styled(Button)(({ theme }) => ({
 }));
 
 
-function LoginForm() {
+
+
+
+function Signin() {
 
     const [isDoctor, setIsDoctor] = useState(true);
 
@@ -51,6 +65,7 @@ function LoginForm() {
             }
         })
     }
+    
 
     const validateEmail = (email) => {
         // Regular expression to check for valid email format
@@ -58,6 +73,52 @@ function LoginForm() {
         return re.test(email);
     };
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    let doctorLoginState = useSelector((state) => {
+        return state.doctor;
+    })
+
+    let patientLoginState = useSelector((state) => {
+        return state.patient;
+    })
+
+    // console.log(patientLoginState)
+    // console.log(doctorLoginState)
+
+    useEffect(() => {
+        if(patientLoginState.success) {
+            // console.log(patientLoginState.user.user)
+            localStorage.setItem('user' , JSON.stringify(patientLoginState.user.user))
+            dispatch(setAuth());
+            dispatch(logginPatientReset());
+            navigate('/')
+        }
+    }, [patientLoginState.success])
+    
+
+    useEffect(() => {
+        if(doctorLoginState.success) {
+            // console.log(doctorLoginState.user.user)
+            localStorage.setItem('user' , JSON.stringify(doctorLoginState.user.user))
+            dispatch(setAuth());
+            dispatch(logginDoctorReset());
+            navigate('/')
+        }
+    }, [doctorLoginState.success])
+    
+     useEffect(() => {
+        if (doctorLoginState.error || patientLoginState.error) {
+            const timer = setTimeout(() => {
+                dispatch(logginDoctorReset())
+                dispatch(logginPatientReset())
+            }, 3000);
+             return () => clearTimeout(timer);
+        }
+    }, [doctorLoginState.error , patientLoginState.error]);
+
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -81,8 +142,13 @@ function LoginForm() {
         setFormErrors(newErrors); 
 
         if (isValid) {
-            console.log(user);
-            console.log('Valid');
+            // console.log(user);
+            // console.log('Valid');
+            if (isDoctor) {
+                dispatch(loginDoctor(user))
+            } else {
+                dispatch(loginPatient(user))
+            }
         }
     }
 
@@ -131,7 +197,8 @@ function LoginForm() {
                         border: "1px lightgray solid" ,
                         borderRadius :  "5px" ,
                         padding: "3rem",
-                        width: { lg: '100%', md: '100%', sm: '20rem' } 
+                        width: { lg: '100%', md: '100%', sm: '20rem' },
+                        position: 'relative'
                     }}
                 >
                     <Box
@@ -203,14 +270,37 @@ function LoginForm() {
                     >
                         <Typography
                             sx={{
-                                fontSize: {lg: '1rem' , md: '.8rem' , sm: '.8rem'}
+                                fontSize: { lg: '1rem', md: '.8rem', sm: '.8rem' } ,
+                                color: '#2CE1FE' ,
+                                '&:hover': {
+                                   color: '#0AE4B3',
+                                },
+                                textDecoration: 'none'
                             }}
+                            component={Link}
+                            to={'/forgot/password'}
                         >
                                 Forgot password ?
                         </Typography>
                     </Box>
-                    <ColorButton type='submit'>
-                      Sign Up
+                    <ColorButton
+                        type='submit'
+                        disabled = {doctorLoginState.loading || patientLoginState.loading}
+                    >
+                        Sign In
+                        {
+                           ( doctorLoginState.loading || patientLoginState.loading ) && <CircularProgress
+                                size={28}
+                                sx={{
+                                color: '#fff',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px',
+                            }}
+                            />
+                        }
                     </ColorButton>
                     <Box
                         sx={{
@@ -221,12 +311,36 @@ function LoginForm() {
                     >
                         <Typography
                             sx={{
-                                fontSize: {lg: '1rem' , md: '.8rem' , sm: '.8rem'}
+                                fontSize: { lg: '1rem', md: '.8rem', sm: '.8rem' },
+                                color: '#2CE1FE' ,
+                                '&:hover': {
+                                   color: '#0AE4B3',
+                                },
+                                textDecoration: 'none'
                             }}
+                            component={Link} 
+                            to={'/signup'}
                         >
                                 Don't have an account ? Register
                         </Typography>
                     </Box>
+                    {
+                        (doctorLoginState.error || patientLoginState.error) && <FormHelperText
+                                error
+                                sx={{
+                                    marginTop: '-5rem',
+                                    textAlign: 'center',
+                                    position: 'absolute',
+                                    bottom: '4.5rem' ,
+                                    width: '23rem' ,
+                                    fontSize: '.9rem',
+                                    // textTransform: 'capitalize',
+                                }}
+                                > {
+                                doctorLoginState.error ||  patientLoginState.error
+                            }
+                        </FormHelperText>
+                    }
                 </Box> 
             </Grid>
             
@@ -236,4 +350,4 @@ function LoginForm() {
   )
 }
 
-export default LoginForm
+export default Signin
