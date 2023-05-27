@@ -1,19 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import instance from './../../../api/axiosInstance';
-
-
+import axios from 'axios';
 
 
 const initialState = {
   loading: false,
   success: false ,
   user: {} ,
-  editSuccess: false ,
   error: ''
 }
 
 
-export const registerPatient = createAsyncThunk('doctor/registerPatient', async (patient, { rejectWithValue }) => {
+export const registerPatient = createAsyncThunk('patient/registerPatient', async (patient, { rejectWithValue }) => {
   
   try {
       const response = await instance.post("/auth/patient/register", patient);
@@ -25,17 +23,52 @@ export const registerPatient = createAsyncThunk('doctor/registerPatient', async 
 
 })
 
-export const loginPatient = createAsyncThunk('doctor/loginPatient', async (patient, { rejectWithValue }) => {
+export const loginPatient = createAsyncThunk('patient/loginPatient', async (patient, { rejectWithValue }) => {
   
   try {
-      const response = await instance.post("/auth/patient/login", patient);
-        return response.data;
+      // const response = await instance.post("/auth/patient/login", patient);
+      //   return response.data;
+    const response = await axios.post('http://localhost:4000/api/auth/patient/login', patient );
+
+    return response.data;
         
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
 
 })
+
+export const updatePatient = createAsyncThunk('patient/updatePatient', async (form, { rejectWithValue }) => {
+  
+  try {
+    let response = await instance.put('/patient/profile/update', form, {
+                headers: {
+                     'Content-Type': 'multipart/form-data'
+                 },
+                // withCredentials: true
+    })
+    
+    // console.log(response.data);
+    return response.data;
+        
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+
+})
+
+export const logoutPatient = createAsyncThunk('patient/logoutPatient', async (patient , {rejectWithValue}) => {
+  // console.log(user);
+  try {
+    let response = await instance.get('/auth/patient/logout');
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+
 
 
 
@@ -54,7 +87,12 @@ const patientSlice = createSlice({
          state.success = false;
          state.user = {};
          state.error = '';
-     } 
+     },
+     updatePatientReset : (state) => {
+         state.loading = false;
+         state.success = false;
+         state.error = '';
+     }
    } ,
   extraReducers: builder => {
 
@@ -94,9 +132,42 @@ const patientSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+    
+        builder.addCase(updatePatient.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(updatePatient.fulfilled, (state , action) => {
+            state.loading = false;
+            state.success = true ;
+            state.error = '';
+            state.user = action.payload.user
+            console.log(action);
+        })
+      
+        builder.addCase(updatePatient.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
+    
+        builder.addCase(logoutPatient.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(logoutPatient.fulfilled, (state , action) => {
+            state.loading = false;
+            state.success = true ;
+            state.error = '';
+            state.user =  {}
+        })
+      
+        builder.addCase(logoutPatient.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
 
   }
 })
 
 export default patientSlice.reducer
-export const { registerPatientReset , logginPatientReset  } = patientSlice.actions;
+export const { registerPatientReset , logginPatientReset , updatePatientReset  } = patientSlice.actions;

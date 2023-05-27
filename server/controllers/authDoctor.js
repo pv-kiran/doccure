@@ -67,7 +67,6 @@ const registerDoctor = async (req, res) => {
     }
 }
 
-
 const verifyDoctorEmail = async (req, res) => {
     const { token } = req.params;
     try {
@@ -128,7 +127,7 @@ const loginDoctor = async (req, res) => {
 
                 const token = jwt.sign(
                 
-                    { patient_id: doctor._id, email: email },
+                    { userId: doctor._id, email: email },
                     
                     process.env.SECRET_KEY,
                     
@@ -139,7 +138,8 @@ const loginDoctor = async (req, res) => {
                 );
 
             
-            doctor.password = undefined;
+                doctor.password = undefined;
+                doctor.token = token;
             
             const options = {
                 expires: new Date(
@@ -271,16 +271,14 @@ const newPasswordDoctor = async (req, res) => {
 }
 
 const logoutDoctor = (req,res) => {
-    res.cookie('token' , null , {
+    res.status(200).cookie('token' , null , {
         expires: new Date(Date.now()) ,
         httpOnly: true
-    })
-    res.status(200).json({
+    }).json({
         success: true ,
         message : 'Logout Success'
     })
 }
-
 
 module.exports = {
     registerDoctor,

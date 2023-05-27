@@ -34,6 +34,37 @@ export const loginDoctor = createAsyncThunk('doctor/loginDoctor', async (doctor 
     }   
 })
 
+export const updateDoctor = createAsyncThunk('patient/updateDoctor', async (form, { rejectWithValue }) => {
+  
+  try {
+    let response = await instance.put('/doctor/profile/update', form, {
+                headers: {
+                     'Content-Type': 'multipart/form-data'
+                 },
+                // withCredentials: true
+    })
+    
+    // console.log(response.data);
+    return response.data;
+        
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+
+})
+
+export const logoutDoctor = createAsyncThunk('patient/logoutDoctor', async (patient , {rejectWithValue}) => {
+  // console.log(user);
+  try {
+    let response = await instance.get('/auth/doctor/logout');
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+
 
 const doctorSlice = createSlice({
   name: 'doctor',
@@ -49,7 +80,12 @@ const doctorSlice = createSlice({
          state.success = false;
          state.user = {};
          state.error = '';
-     } 
+    } ,
+    updateDoctorReset : (state) => {
+         state.loading = false;
+         state.success = false;
+         state.error = '';
+     }
    } ,
   extraReducers: builder => {
         builder.addCase(registerDoctor.pending, state => {
@@ -82,11 +118,45 @@ const doctorSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+    
+        builder.addCase(updateDoctor.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(updateDoctor.fulfilled, (state , action) => {
+            state.loading = false;
+            state.success = true ;
+            state.error = '';
+            state.user = action.payload.user
+            console.log(action);
+        })
+      
+        builder.addCase(updateDoctor.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
+    
+    
+        builder.addCase(logoutDoctor.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(logoutDoctor.fulfilled, (state , action) => {
+            state.loading = false;
+            state.success = true ;
+            state.error = '';
+            state.user =  {}
+        })
+      
+        builder.addCase(logoutDoctor.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
   }
 })
 
 export default doctorSlice.reducer
-export const { registerDoctorReset, logginDoctorReset } = doctorSlice.actions;
+export const { registerDoctorReset, logginDoctorReset , updateDoctorReset } = doctorSlice.actions;
 
 
 
@@ -99,6 +169,3 @@ export const { registerDoctorReset, logginDoctorReset } = doctorSlice.actions;
 
 
 
- // return await instance.post('/auth/doctor/register', doctor)
-    //     .then(response => response.data)
-    //     // .catch(err => console.log(err));

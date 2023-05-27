@@ -4,12 +4,13 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 function PublicRoutes() {
     const authState = useSelector((state) => {
-    return state.auth.authState;
-   })
-   console.log(authState);
+    return state.auth?.authState;
+    })
+  console.log(authState);
+  console.log('logedin check');
    return (
      !authState ? <Outlet/> : <Navigate to='/'/>
    )
 }
 
-export default PublicRoutes
+export default PublicRoutes 

@@ -6,12 +6,11 @@ import emailVerifyLogo from '../../assets/emailverifyLogo.png'
 function EmailNotification() {
     return (
       
-        <>
-            
+    
 
-            <div className="container">
+            <div className="notification-container">
                 <div className="notification-icon">
-                    <img src={emailVerifyLogo} alt="Notification Icon">
+                    <img src={emailVerifyLogo} alt="notification Icon">
                     </img>
                 </div>
 
@@ -25,7 +24,6 @@ function EmailNotification() {
             </div>
 
             
-        </>
 
     
     )

@@ -57,6 +57,7 @@ const registerPatient = async (req, res) => {
             })
         }
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             errorInfo: `Internal server error`
        })
@@ -123,7 +124,10 @@ const loginPatient  = async (req, res) => {
 
                 const token = jwt.sign(
                 
-                    { patient_id: patient._id, email: email },
+                    {
+                        userId: patient._id,
+                        email: email
+                    },
                     
                     process.env.SECRET_KEY,
                     
@@ -133,6 +137,8 @@ const loginPatient  = async (req, res) => {
 
                 );
 
+                console.log(token);
+
             
                 patient.password = undefined;
             
@@ -140,14 +146,15 @@ const loginPatient  = async (req, res) => {
                     expires: new Date(
                         Date.now() + 3 * 24 * 60 * 60 * 1000
                     ),
-                    httpOnly: true
-                }
+                    httpOnly: true,
+                };
+
+                patient.token = token;
 
                 return res.status(200).cookie('token', token, options).json({
                     success: true,
                     user: patient
                 });
-
 
                 
             } else {
@@ -269,11 +276,10 @@ const newPasswordPatient = async (req, res) => {
 }
 
 const logoutPatient = (req, res) => {
-    res.cookie('token', null, {
+    res.status(200).cookie('token', null, {
         expires: new Date(Date.now()),
         httpOnly: true
-    })
-    res.status(200).json({
+    }).json({
         success: true,
         message: 'Logout Success'
     })

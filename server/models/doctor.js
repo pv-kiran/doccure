@@ -17,9 +17,37 @@ const doctorSchema = new mongoose.Schema({
   verifyToken: {
     type: String,
   },
+  profilePicture: {
+        public_id: {
+          type: String
+        } , 
+        secure_url: {
+          type: String
+        }
+  } ,
   isVerified: {
     type: Boolean ,
     default: false
+  },
+  address: {
+      houseName: {
+        type: String 
+      },
+      city: {
+        type: String
+      },
+      state: {
+        type: String
+      }
+  },
+  gender: {
+      type: String
+  },
+  phone: {
+      type: String,
+  } ,
+  fullName: {
+      type: String, 
   },
   forgotPasswordToken: {
     type: String
@@ -27,7 +55,11 @@ const doctorSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'doctor'
+  } ,
+  token: {
+    type:  String
   }
+  
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

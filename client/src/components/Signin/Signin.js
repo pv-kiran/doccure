@@ -12,7 +12,8 @@ import './Signin.css';
 // import { Link } from '@mui/material';
 
 import { useState , useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate , Link } from 'react-router-dom';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { logginDoctorReset, loginDoctor } from '../../app/features/doctor/doctorSlice';
 import { logginPatientReset, loginPatient } from '../../app/features/patient/patientSlice';
@@ -20,6 +21,8 @@ import { setAuth } from '../../app/features/auth/authSlice';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import FormHelperText from "@mui/material/FormHelperText"
+
+
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -84,29 +87,54 @@ function Signin() {
         return state.patient;
     })
 
-    // console.log(patientLoginState)
-    // console.log(doctorLoginState)
+    const authState = useSelector((state) => {
+        return state.auth;
+    })
+
+    console.log(authState);
+
 
     useEffect(() => {
-        if(patientLoginState.success) {
-            // console.log(patientLoginState.user.user)
+        if (patientLoginState.success) {
+            navigate('/patient/onboarding')
+            console.log('patient');
+            console.log(patientLoginState.user.user)
             localStorage.setItem('user' , JSON.stringify(patientLoginState.user.user))
             dispatch(setAuth());
             dispatch(logginPatientReset());
-            navigate('/')
+            // console.log('/patient/onboarding')
+            // navigate('/patient/onboarding')
         }
     }, [patientLoginState.success])
+
+    if (patientLoginState.success) {
+        if (!patientLoginState.user.fullName) {
+          navigate("/patient/onboarding");     
+        } else {
+            navigate('/');
+        }
+     }
     
 
     useEffect(() => {
-        if(doctorLoginState.success) {
-            // console.log(doctorLoginState.user.user)
+        if (doctorLoginState.success) {
+            console.log('doctor');
+            console.log(doctorLoginState.user.user);
             localStorage.setItem('user' , JSON.stringify(doctorLoginState.user.user))
             dispatch(setAuth());
             dispatch(logginDoctorReset());
-            navigate('/')
+            // console.log('/doctor/onboarding')
+            // navigate("/doctor/onboarding"); 
         }
     }, [doctorLoginState.success])
+
+    if (doctorLoginState.success ) {
+       if (!doctorLoginState.user.fullName) {
+          navigate("/doctor/onboarding");     
+        } else {
+            navigate('/');
+        }
+    } 
     
      useEffect(() => {
         if (doctorLoginState.error || patientLoginState.error) {
@@ -116,7 +144,9 @@ function Signin() {
             }, 3000);
              return () => clearTimeout(timer);
         }
-    }, [doctorLoginState.error , patientLoginState.error]);
+     }, [doctorLoginState.error, patientLoginState.error]);
+    
+     
 
     
 

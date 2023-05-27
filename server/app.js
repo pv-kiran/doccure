@@ -14,7 +14,19 @@ let { connectDB } = require('./db/connection');
 
 // cors
 const cors = require('cors');
-app.use(cors({credentials: true , origin: 'http://localhost:3000'}));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+
+// parsing the cookies
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
+// handling files
+const fileupload = require('express-fileupload');
+app.use(fileupload({ useTempFiles: true, tempFileDir: '/temp/' }));
+
+
+
 
 
 const PORT = process.env.PORT || 4000;
@@ -25,8 +37,13 @@ app.get('/', (req, res) => {
 })
 
 const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+const patientRoutes = require('./routes/patient');
+const doctorRoutes = require('./routes/doctor');
 
+
+app.use('/api/auth', authRoutes);
+app.use('/api/patient', patientRoutes);
+app.use('/api/doctor', doctorRoutes);
 
 
 

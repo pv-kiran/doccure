@@ -1,12 +1,8 @@
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-}
+} */
 
 header {
     text-align: center;
@@ -14,10 +10,13 @@ header {
     background-color: #f2f2f2;
 }
 
-.container {
+.notification-container {
     max-width: 500px;
-    margin: 50px auto;
+    margin: 2.5rem auto;
     text-align: center;
+    padding: 1.65rem 2rem;
+    box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, .25);
+    border-radius: .5rem;
 }
 
 .notification-icon img {
