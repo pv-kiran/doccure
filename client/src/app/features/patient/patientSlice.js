@@ -85,7 +85,6 @@ const patientSlice = createSlice({
      logginPatientReset : (state) => {
          state.loading = false;
          state.success = false;
-         state.user = {};
          state.error = '';
      },
      updatePatientReset : (state) => {

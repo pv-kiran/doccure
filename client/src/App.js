@@ -6,18 +6,35 @@ import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import EmailVerification from './pages/EmailVerify';
-import PublicRoutes from './utils/PublicRoutes';
 import EmailNotify from './pages/EmailNotify';
-import PatientProtectedRoutes from './utils/PatientProtectedRoutes';
-import DoctorProtectedRoutes from './utils/DoctorProtectedRoutes';
 import DashboardPatient from './pages/DashboardPatient';
 import Onboarding from './pages/Onboarding';
 import DashboardDoctor from './pages/DashboardDoctor';
+import LoginAdmin from './pages/LoginAdmin';
 
 
+// public routes
+import PublicRoutes from './utils/PublicRoutes';
+
+
+// protected routes
+import PatientProtectedRoutes from './utils/PatientProtectedRoutes';
+import DoctorProtectedRoutes from './utils/DoctorProtectedRoutes';
+import AdminProtectedRoutes from './utils/AdminProtectedRoutes';
+
+
+import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react';
+import DashboardAdmin from './pages/DashboardAdmin';
 
 
 function App() {
+
+  const location = useLocation()
+  useEffect(() => {
+    console.log(`${location.pathname} ... testing`);
+  } , [location.pathname])
+
   return (
     <>
       <Routes>
@@ -31,6 +48,7 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/forgot/password" element={<ForgotPassword />} />
             <Route path="/:userType/reset/password/:token" element={<ResetPassword />} />
+            <Route path='/admin/signin' element={<LoginAdmin></LoginAdmin>}></Route>
         </Route>
 
         <Route element={<PatientProtectedRoutes></PatientProtectedRoutes>}>
@@ -41,7 +59,10 @@ function App() {
         <Route element={<DoctorProtectedRoutes></DoctorProtectedRoutes>}>
           <Route path="/doctor/onboarding" element={<Onboarding role='doctor' />} />
           <Route path="/doctor/dashboard" element={ <DashboardDoctor />} />
-          
+        </Route>
+
+        <Route element = {<AdminProtectedRoutes></AdminProtectedRoutes>}>
+            <Route path='/admin/dashboard' element={<DashboardAdmin></DashboardAdmin>} />
         </Route>
 
         {/* <Route element={<ProtectedRoutes></ProtectedRoutes>}>

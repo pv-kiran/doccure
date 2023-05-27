@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import registerLogo from '../../assets/login-banner.png';
-import './Signin.css';
+import './SigninAdmin.css';
 
 // import { Link } from '@mui/material';
 
@@ -15,12 +15,16 @@ import { useState , useEffect } from 'react';
 import { useNavigate , Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { logginDoctorReset, loginDoctor } from '../../app/features/doctor/doctorSlice';
-import { logginPatientReset, loginPatient } from '../../app/features/patient/patientSlice';
-import { setAuth } from '../../app/features/auth/authSlice';
+
+
 
 import CircularProgress from '@mui/material/CircularProgress';
-import FormHelperText from "@mui/material/FormHelperText"
+import FormHelperText from "@mui/material/FormHelperText";
+
+
+import { adminLoginStateReset, loginAdmin } from '../../app/features/admin/adminSlice';
+import { setAuth } from '../../app/features/auth/authSlice';
+
 
 
 
@@ -42,9 +46,36 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 
 
-function Signin() {
+function SigninAdmin() {
 
-    const [isDoctor, setIsDoctor] = useState(true);
+    const loginAdminState = useSelector((state) => {
+        return state.admin
+    })
+
+    console.log(loginAdminState.success);
+
+    useEffect(() => {
+        if (loginAdminState.success) {
+           console.log(loginAdminState.user.user)
+            localStorage.setItem('user', JSON.stringify(loginAdminState.user.user))
+            navigate('/admin/dashboard');
+            dispatch(setAuth());
+            dispatch(adminLoginStateReset());
+        }
+
+    }, [loginAdminState.success])
+    
+    useEffect(() => {
+        if (loginAdminState.error) {
+            const timer = setTimeout(() => {
+                dispatch(adminLoginStateReset())
+            }, 3000)
+            return () => {
+                clearTimeout(timer);
+            }
+        }
+
+    } , [loginAdminState.error])
 
     const [user, setUser] = useState({ email: '', password: '' });
 
@@ -54,6 +85,7 @@ function Signin() {
     });
 
     let newErrors = { email: "", password: ""};
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,77 +111,6 @@ function Signin() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    let doctorLoginState = useSelector((state) => {
-        return state.doctor;
-    })
-
-    let patientLoginState = useSelector((state) => {
-        return state.patient;
-    })
-
-    const authState = useSelector((state) => {
-        return state.auth;
-    })
-
-    console.log(authState);
-
-
-    useEffect(() => {
-        if (patientLoginState.success) {
-            console.log(patientLoginState.user.user)
-            localStorage.setItem('user' , JSON.stringify(patientLoginState.user.user))
-            dispatch(setAuth());
-            dispatch(logginPatientReset());
-            console.log("/patient/onboarding");
-            navigate("/email");
-        }
-    }, [patientLoginState.success])
-
-    // if (patientLoginState.success) {
-    //     if (!patientLoginState.user.fullName) {
-    //       navigate("/patient/onboarding");     
-    //     } else {
-    //         navigate('/');
-    //     }
-    //  }
-    
-
-    useEffect(() => {
-        if (doctorLoginState.success) {
-            console.log('doctor');
-            console.log(doctorLoginState.user.user);
-            localStorage.setItem('user' , JSON.stringify(doctorLoginState.user.user))
-            dispatch(setAuth());
-            dispatch(logginDoctorReset());    
-            console.log("/doctor/onboarding")
-            navigate("/doctor/onboarding");    
-        }
-    }, [doctorLoginState.success])
-
-    // if (doctorLoginState.success ) {
-    //    if (!doctorLoginState.user.fullName) {
-    //       navigate("/doctor/onboarding");     
-    //     } else {
-    //         navigate('/');
-    //     }
-    // } 
-    
-     useEffect(() => {
-        if (doctorLoginState.error || patientLoginState.error) {
-            const timer = setTimeout(() => {
-                dispatch(logginDoctorReset())
-                dispatch(logginPatientReset())
-            }, 3000);
-             return () => clearTimeout(timer);
-        }
-     }, [doctorLoginState.error, patientLoginState.error]);
-    
-     
-
-    console.log(patientLoginState);
-    console.log(doctorLoginState);
-    
-
     const handleSubmit = (e) => {
         e.preventDefault();
         let isValid = true;
@@ -172,13 +133,7 @@ function Signin() {
         setFormErrors(newErrors); 
 
         if (isValid) {
-            // console.log(user);
-            // console.log('Valid');
-            if (isDoctor) {
-                dispatch(loginDoctor(user))
-            } else {
-                dispatch(loginPatient(user))
-            }
+            dispatch(loginAdmin(user));
         }
     }
 
@@ -245,24 +200,7 @@ function Signin() {
                               fontSize: { lg: '1.3rem' ,  md: '1rem' , sm: '.9rem'}
                             }}
                         >
-                            {
-                                isDoctor ? 'Doctor Login' : 'Patient Login'
-                            }
-                        </Typography>
-                        <Typography
-                            sx={{
-                                fontSize: { lg: '1rem', md: '1rem', sm: '.7rem' },
-                                color: '#2CE1FE',
-                                paddingTop: { lg: '.6rem', md: '.5rem', sm: '.2rem' },
-                                cursor: 'pointer'
-                            }}
-                            onClick = { () => setIsDoctor(!isDoctor)}
-                        >
-                            {
-                                
-                                isDoctor ? 'Not a doctor ?' : 'Are you a doctor ?'
-                                
-                            }
+                            Admin Login
                         </Typography>
                     </Box>
                     <TextField
@@ -315,10 +253,10 @@ function Signin() {
                     </Box>
                     <ColorButton
                         type='submit'
-                        disabled = {doctorLoginState.loading || patientLoginState.loading}
+                        // disabled = {doctorLoginState.loading || patientLoginState.loading}
                     >
-                        Sign In
-                        {
+                        Admin Login
+                        {/* {
                            ( doctorLoginState.loading || patientLoginState.loading ) && <CircularProgress
                                 size={28}
                                 sx={{
@@ -330,7 +268,7 @@ function Signin() {
                                 marginLeft: '-12px',
                             }}
                             />
-                        }
+                        } */}
                     </ColorButton>
                     <Box
                         sx={{
@@ -339,35 +277,21 @@ function Signin() {
                             justifyContent: "center"
                         }}
                     >
-                        <Typography
-                            sx={{
-                                fontSize: { lg: '1rem', md: '.8rem', sm: '.8rem' },
-                                color: '#2CE1FE' ,
-                                '&:hover': {
-                                   color: '#0AE4B3',
-                                },
-                                textDecoration: 'none'
-                            }}
-                            component={Link} 
-                            to={'/signup'}
-                        >
-                                Don't have an account ? Register
-                        </Typography>
                     </Box>
                     {
-                        (doctorLoginState.error || patientLoginState.error) && <FormHelperText
+                        loginAdminState.error && <FormHelperText
                                 error
                                 sx={{
                                     marginTop: '-5rem',
                                     textAlign: 'center',
                                     position: 'absolute',
-                                    bottom: '4.5rem' ,
+                                    bottom: '2.5rem' ,
                                     width: '23rem' ,
                                     fontSize: '.9rem',
                                     // textTransform: 'capitalize',
                                 }}
                                 > {
-                                doctorLoginState.error ||  patientLoginState.error
+                                loginAdminState.error 
                             }
                         </FormHelperText>
                     }
@@ -380,4 +304,4 @@ function Signin() {
   )
 }
 
-export default Signin
+export default SigninAdmin

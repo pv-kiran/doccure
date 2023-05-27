@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import doctorReducer from './features/doctor/doctorSlice';
 import patientReducer from './features/patient/patientSlice';
 import authReducer from './features/auth/authSlice';
+import adminReducer from './features/admin/adminSlice';
 
 
 const store = configureStore({
@@ -10,7 +11,8 @@ const store = configureStore({
     // Add your reducers here
     doctor: doctorReducer,
     patient: patientReducer,
-    auth: authReducer
+    auth: authReducer,
+    admin: adminReducer
   },
 });
 

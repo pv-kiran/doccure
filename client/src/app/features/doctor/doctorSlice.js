@@ -78,7 +78,6 @@ const doctorSlice = createSlice({
      logginDoctorReset : (state) => {
          state.loading = false;
          state.success = false;
-         state.user = {};
          state.error = '';
     } ,
     updateDoctorReset : (state) => {
