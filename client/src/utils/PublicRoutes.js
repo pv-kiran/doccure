@@ -15,14 +15,14 @@ function PublicRoutes() {
 
   if (authState?.role === 'doctor') {
     if (authState.fullName) {
-      redirect = '/doctor/dashboard';
+      redirect = '/';
     } else {
       redirect = '/doctor/onboarding'
     }
   } 
   else if (authState?.role === 'patient') {
      if (authState?.fullName) {
-      redirect = '/patient/dashboard'
+      redirect = '/'
      } else {
       redirect = '/patient/onboarding'
      }

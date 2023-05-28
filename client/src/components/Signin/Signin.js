@@ -101,7 +101,7 @@ function Signin() {
             dispatch(setAuth());
             dispatch(logginPatientReset());
             console.log("/patient/onboarding");
-            navigate("/email");
+            navigate("/patient/onboarding");
         }
     }, [patientLoginState.success])
 

@@ -1,43 +1,83 @@
-import React from 'react'
-import './PatientDashboard.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { clearAuth } from '../../app/features/auth/authSlice';
-import { logoutPatient } from '../../app/features/patient/patientSlice';
-import { useNavigate } from 'react-router-dom';
+import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+
+
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+
+import Navbar from '../Navbar/Navbar';
+import { useState } from 'react';
+import DashboardDrawer, { DrawerHeader } from '../DashboardDrawer/DashboardDrawer';
+import DashboardContent from '../DashboardContent/DashboardContent';
 
 
 
 
 function PatientDashboard() {
-  
-    let user = useSelector((state) => {
-        return state.auth?.authState
-    })
+  const theme = useTheme();
+  const [open, setOpen] = useState(true);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const handleDrawerOpen = () => {
+    setOpen((prev) => {
+      return !prev
+    });
+  };
 
-
-    const handleClick = () => {
-
-        localStorage.removeItem('user');
-        dispatch(clearAuth());
-        dispatch(logoutPatient());
-        navigate('/');
-
-    }
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
     
-    return (
-        <div className="container">
-            <h1>Welcome , { user?.name }</h1>
-            <button
-                className="logout-btn"
-                onClick={() => {handleClick()}}
-            >
-                Logout
-            </button>
-        </div>
-    )
+    const navigationLinks = [
+    {
+      navItem: 'Doctors',
+      navLink: '/patient/dashboard'
+    },
+    {
+      navItem: 'Appointments',
+      navLink: '/patient/appointments'
+    },
+    {
+      navItem: 'Notifications',
+      navLink: '/patient/notifications'
+    },
+    {
+      navItem: 'Messages',
+      navLink: '/patient/messages'
+    }
+  ]
+    
+
+
+
+  const appBarProps = {
+    page: 'patient',
+    color: '#fff',
+    // open ,
+    bgColor: '#424e82',
+    handleDrawerOpen,
+    setOpen,
+  }
+
+  const drawerProps = {
+    open,
+    theme,
+    handleDrawerClose,
+    setOpen,
+    navigationLinks
+    
+  }
+
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <Navbar {...appBarProps}></Navbar>
+      <DashboardDrawer { ...drawerProps }></DashboardDrawer>
+      <DashboardContent></DashboardContent>
+    </Box>
+  );
 }
+
 
 export default PatientDashboard
