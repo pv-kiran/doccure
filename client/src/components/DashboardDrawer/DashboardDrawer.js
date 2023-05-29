@@ -71,7 +71,10 @@ function DashboardDrawer(props) {
   const { open, handleDrawerClose, theme, navigationLinks } = props;
 
   return (
-     <Drawer variant="permanent" open={open}>
+    <Drawer
+      variant="permanent"
+      open={open}
+    >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -82,7 +85,7 @@ function DashboardDrawer(props) {
           marginTop: '1rem'
         }}>
           {navigationLinks.map((text, index) => (
-            <ListItem key={text.navItam}
+            <ListItem key={text.navItem}
               disablePadding
               sx={{ display: 'block' }}
               component={Link}

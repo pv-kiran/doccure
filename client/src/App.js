@@ -8,7 +8,6 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import EmailVerification from './pages/EmailVerify';
 import EmailNotify from './pages/EmailNotify';
-import DashboardPatient from './pages/DashboardPatient';
 import Onboarding from './pages/Onboarding';
 // import DashboardDoctor from './pages/DashboardDoctor';
 import LoginAdmin from './pages/LoginAdmin';

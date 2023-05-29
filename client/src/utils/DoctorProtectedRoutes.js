@@ -7,9 +7,6 @@ function DoctorProtectedRoutes() {
     return state.auth?.authState;
   })
 
-  console.log('Doctor check');
-
-  console.log(authState?.role);
 
   return (
      authState?.role === 'doctor' ? <Outlet/> : <Navigate to='/'/>

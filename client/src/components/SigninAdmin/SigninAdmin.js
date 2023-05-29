@@ -52,11 +52,9 @@ function SigninAdmin() {
         return state.admin
     })
 
-    console.log(loginAdminState.success);
 
     useEffect(() => {
         if (loginAdminState.success) {
-           console.log(loginAdminState.user.user)
             localStorage.setItem('user', JSON.stringify(loginAdminState.user.user))
             navigate('/admin/dashboard');
             dispatch(setAuth());

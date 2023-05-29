@@ -49,6 +49,10 @@ const patientSchema = new mongoose.Schema({
       type: Boolean ,
       default: false
     },
+    isAdminVerified: {
+      type: Boolean,
+      default: false
+    } ,
     forgotPasswordToken: {
       type: String
     },

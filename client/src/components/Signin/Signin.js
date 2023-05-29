@@ -91,16 +91,13 @@ function Signin() {
         return state.auth;
     })
 
-    console.log(authState);
 
 
     useEffect(() => {
         if (patientLoginState.success) {
-            console.log(patientLoginState.user.user)
             localStorage.setItem('user' , JSON.stringify(patientLoginState.user.user))
             dispatch(setAuth());
             dispatch(logginPatientReset());
-            console.log("/patient/onboarding");
             navigate("/patient/onboarding");
         }
     }, [patientLoginState.success])
@@ -116,12 +113,9 @@ function Signin() {
 
     useEffect(() => {
         if (doctorLoginState.success) {
-            console.log('doctor');
-            console.log(doctorLoginState.user.user);
             localStorage.setItem('user' , JSON.stringify(doctorLoginState.user.user))
             dispatch(setAuth());
             dispatch(logginDoctorReset());    
-            console.log("/doctor/onboarding")
             navigate("/doctor/onboarding");    
         }
     }, [doctorLoginState.success])
@@ -146,8 +140,7 @@ function Signin() {
     
      
 
-    console.log(patientLoginState);
-    console.log(doctorLoginState);
+    
     
 
     const handleSubmit = (e) => {
@@ -172,8 +165,6 @@ function Signin() {
         setFormErrors(newErrors); 
 
         if (isValid) {
-            // console.log(user);
-            // console.log('Valid');
             if (isDoctor) {
                 dispatch(loginDoctor(user))
             } else {

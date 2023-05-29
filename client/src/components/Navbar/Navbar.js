@@ -57,7 +57,7 @@ function Navbar(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(bgColor);
+  
 
   // patient logout logic
   let patientLogoutStatus = useSelector((state) => {
@@ -86,7 +86,6 @@ function Navbar(props) {
 
     if (doctorLogoutStatus.success) {
             localStorage.removeItem('user');
-            console.log('helo');
             dispatch(clearAuth());
             dispatch(logginDoctorReset());
             navigate('/');
@@ -104,7 +103,6 @@ function Navbar(props) {
 
     if (adminLogoutStatus.success) {
             localStorage.removeItem('user');
-            console.log('helo');
             dispatch(clearAuth());
             dispatch(adminLoginStateReset());
             navigate('/');
@@ -158,7 +156,6 @@ function Navbar(props) {
 
   let profilePic = authState?.profilePicture ? authState?.profilePicture.secure_url : '/static/images/avatar/2.jpg';
   
-  console.log(profilePic);
 
   // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setAuth(event.target.checked);

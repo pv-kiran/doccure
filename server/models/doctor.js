@@ -29,6 +29,10 @@ const doctorSchema = new mongoose.Schema({
     type: Boolean ,
     default: false
   },
+  isAdminVerified: {
+    type: Boolean,
+    default: false
+  } ,
   address: {
       houseName: {
         type: String 

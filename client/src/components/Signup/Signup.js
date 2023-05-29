@@ -88,8 +88,7 @@ function Signup() {
         return state.patient;
     })
 
-    // console.log(doctorRegisterState.loading)
-    // console.log(patientRegiterState.loading)
+    
 
 
    
@@ -150,8 +149,6 @@ function Signup() {
         setFormErrors(newErrors); 
 
         if (isValid) {
-            console.log(user);
-            console.log('Valid');
             if (isDoctor) {
                dispatch(registerDoctor(user));   
             } else {

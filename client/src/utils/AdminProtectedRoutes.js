@@ -8,9 +8,6 @@ function AdminProtectedRoutes() {
     return state.auth?.authState;
   })
 
-  console.log('Admin check');
-
-  console.log(authState?.role);
 
   return (
      authState?.role === 'admin' ? <Outlet/> : <Navigate to='/admin/signin'/>

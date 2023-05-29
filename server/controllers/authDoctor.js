@@ -4,10 +4,6 @@ const Doctor = require('../models/doctor');
 const transporter = require('../utils/emailHelper');
 
 
-
-
-
-
 const registerDoctor = async (req, res) => {
     const { name, email, password } = req.body;
     try {
@@ -114,6 +110,8 @@ const loginDoctor = async (req, res) => {
 
         const doctor = await Doctor.findOne({ email: email });
         if (doctor) {
+
+            console.log(doctor);
 
 
             if (!doctor.isVerified) {

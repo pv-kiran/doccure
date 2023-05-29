@@ -7,9 +7,6 @@ function PublicRoutes() {
     return state.auth?.authState;
   })
 
-
-  console.log(authState);
-  console.log('logedin check');
   let redirect;
 
 

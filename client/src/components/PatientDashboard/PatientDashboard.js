@@ -4,11 +4,10 @@ import Box from '@mui/material/Box';
 
 
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
 
 import Navbar from '../Navbar/Navbar';
 import { useState } from 'react';
-import DashboardDrawer, { DrawerHeader } from '../DashboardDrawer/DashboardDrawer';
+import DashboardDrawer from '../DashboardDrawer/DashboardDrawer';
 import DashboardContent from '../DashboardContent/DashboardContent';
 
 

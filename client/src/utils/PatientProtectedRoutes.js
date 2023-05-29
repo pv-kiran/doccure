@@ -7,7 +7,6 @@ function PatientProtectedRoutes() {
     return state.auth?.authState;
   })
   
-  console.log('Patient check');
   
    return (
      authState?.role === 'patient' ? <Outlet/> : <Navigate to='/'/>

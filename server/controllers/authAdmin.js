@@ -17,7 +17,7 @@ const adminLogin = async (req, res) => {
             let isCorrectPassword = await bcrypt.compare(password, admin.password);
             if (isCorrectPassword) {
 
-                const token = jwt.sign(
+                const token =  await jwt.sign(
                 
                     { userId: admin._id, email: email },
                     
@@ -32,6 +32,8 @@ const adminLogin = async (req, res) => {
             
                 admin.password = undefined;
                 admin.token = token;
+
+                console.log(admin);
             
             const options = {
                 expires: new Date(

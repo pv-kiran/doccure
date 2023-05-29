@@ -61,7 +61,6 @@ export const logoutPatient = createAsyncThunk('patient/logoutPatient', async (pa
   // console.log(user);
   try {
     let response = await instance.get('/auth/patient/logout');
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -141,7 +140,6 @@ const patientSlice = createSlice({
             state.success = true ;
             state.error = '';
             state.user = action.payload.user
-            console.log(action);
         })
       
         builder.addCase(updatePatient.rejected, (state, action) => {

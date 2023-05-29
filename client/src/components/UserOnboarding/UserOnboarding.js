@@ -67,9 +67,6 @@ function UserOnboarding({ role }) {
          return state.auth.authState;
     })
 
-    console.log(authState);
-
-    console.log(role)
 
     useEffect(() => {
         if (authState.fullName) {
@@ -84,8 +81,6 @@ function UserOnboarding({ role }) {
 
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;
-        console.log(user)
-        console.log(user.token)
         instance.defaults.headers.common = {
             Authorization : `Bearer ${user.token}`
         }
@@ -160,7 +155,6 @@ function UserOnboarding({ role }) {
   
 
     const handleChange = (e) => {
-        console.log(e.target.files[0]);
         setProfilePic(e.target.files[0]);
         setFile(URL.createObjectURL(e.target.files[0]));
     }
@@ -195,10 +189,8 @@ function UserOnboarding({ role }) {
     useEffect(() => {
 
         if (patientUpdateState.success) {
-            console.log('patient');
             navigate('/patient/dashboard');
             dispatch(updatePatientReset());
-            
         }
 
     }, [patientUpdateState.success])

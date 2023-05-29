@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import instance from './../../../api/axiosInstance';
 
-
-
 const initialState = {
   loading: false,
   success: false ,
@@ -57,7 +55,6 @@ export const logoutDoctor = createAsyncThunk('patient/logoutDoctor', async (pati
   // console.log(user);
   try {
     let response = await instance.get('/auth/doctor/logout');
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -127,7 +124,6 @@ const doctorSlice = createSlice({
             state.success = true ;
             state.error = '';
             state.user = action.payload.user
-            console.log(action);
         })
       
         builder.addCase(updateDoctor.rejected, (state, action) => {
