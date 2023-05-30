@@ -24,6 +24,11 @@ import { visuallyHidden } from '@mui/utils';
 import Button from '@mui/material/Button';
 
 
+
+import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+
 import './DataTable.css'
 import { useState } from 'react';
 import ConfirmModal from '../Modal/Modal';
@@ -141,7 +146,7 @@ EnhancedTableToolbar.propTypes = {
 function DataTable(props) {
 
 
-  const { headCells, rows , heading } = props;
+  const { headCells, rows , heading , statusToggler } = props;
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -221,6 +226,8 @@ function DataTable(props) {
   );
 
 
+  const [id, setId] = useState(null);
+
   const [open, setOpen] = useState(false); // state for modal open/close
 
   const handleOpen = () => {
@@ -233,8 +240,11 @@ function DataTable(props) {
 
   const handleConfirm = (checked) => {
     // do something with the checked value
-    console.log(checked);
+    // console.log(checked);
+    statusToggler(id);
     setOpen(false); // close the modal
+    setId(null);
+
   };
   
 
@@ -310,10 +320,11 @@ function DataTable(props) {
                             <FormControlLabel
                                 control={
                                 <Switch
-                                    // checked={state.checkedA}
-                                   checked = {row.isAdminVerified}
-                                    onChange={handleOpen}
-                                    name="checkedA"
+                                  checked={row.isAdminVerified}
+                                    onChange={() => {
+                                      setId(row._id)
+                                      handleOpen();
+                                    }}
                                 />
                                 }
                             />

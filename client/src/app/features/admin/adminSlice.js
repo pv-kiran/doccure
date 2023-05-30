@@ -58,6 +58,28 @@ export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', asyn
     }
 })
 
+export const approveDoctor = createAsyncThunk('admin/approveDoctor', async ( doctorId, {rejectWithValue}) => {
+  // console.log(user);
+  try {
+    let response = await instance.put(`admin/doctor/status/${doctorId}`);
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+
+export const approvePatient = createAsyncThunk('admin/approvePatient', async ( patientId, {rejectWithValue}) => {
+  // console.log(user);
+  try {
+    let response = await instance.put(`admin/patient/status/${patientId}`);
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
 
 
 
@@ -134,7 +156,40 @@ const adminSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+        builder.addCase(approveDoctor.pending, state => {
+          state.loading = true;
+          state.actionSuccess = false
+        })
+      
+        builder.addCase(approveDoctor.fulfilled, (state , action) => {
+            state.loading = false;
+            state.actionSuccess = true;
+            state.user = action.payload
+            state.error = '';
+        })
+      
+        builder.addCase(approveDoctor.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
+        builder.addCase(approvePatient.pending, state => {
+          state.loading = true;
+          state.actionSuccess = false
+        })
+      
+        builder.addCase(approvePatient.fulfilled, (state , action) => {
+            state.loading = false;
+            state.actionSuccess = true;
+            state.user = action.payload
+            state.error = '';
+        })
+      
+        builder.addCase(approvePatient.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
   }
+  
 })
 
 

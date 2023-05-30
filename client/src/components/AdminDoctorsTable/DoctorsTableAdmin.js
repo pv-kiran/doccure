@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import Datatable from '../DataTable/Datatable';
-import { adminGetAllDoctors } from '../../app/features/admin/adminSlice';
+import { adminGetAllDoctors, approveDoctor } from '../../app/features/admin/adminSlice';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
+
+
 
 
 function AdminDoctorsTable() {
@@ -13,7 +15,7 @@ function AdminDoctorsTable() {
     return state.admin;
   });
 
-  // console.log(adminState);
+  console.log(adminState);
 
   const dispatch = useDispatch();
 
@@ -22,13 +24,21 @@ function AdminDoctorsTable() {
         instance.defaults.headers.common = {
             Authorization : `Bearer ${user.token}`
     }
-    console.log(user);
   }, [])
 
   useEffect(() => {
     console.log('Hi ,,, Testing')
     dispatch(adminGetAllDoctors());
-  }, [])
+  }, [adminState.actionSuccess])
+
+
+  // approving or rejection of doctors
+  const statusToggler = (doctorId) => {
+    dispatch(approveDoctor(doctorId))
+  }
+
+
+
   
   const rows = adminState?.user?.doctors ? adminState?.user.doctors : [];
   const headCells = [
@@ -61,13 +71,14 @@ function AdminDoctorsTable() {
   const adminProps = {
     rows,
     headCells,
-    heading: 'Doctors List'
+    heading: 'Doctors List',
+    statusToggler
   }
   
   return (
     <>
       {
-      rows.length > 0 && <Datatable {...adminProps}></Datatable> 
+         rows.length > 0 && <Datatable {...adminProps}></Datatable> 
       }
    </>
   );

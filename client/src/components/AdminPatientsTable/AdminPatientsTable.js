@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Datatable from '../DataTable/Datatable';
-import { adminGetAllPatients } from '../../app/features/admin/adminSlice';
+import { adminGetAllPatients, approvePatient } from '../../app/features/admin/adminSlice';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,7 +28,12 @@ function AdminPatientsTable() {
   useEffect(() => {
     console.log('Hi ,,, Testing')
     dispatch(adminGetAllPatients());
-  }, [])
+  }, [adminState.actionSuccess])
+
+
+  const statusToggler = (doctorId) => {
+    dispatch(approvePatient(doctorId))
+  }
   
   const rows = adminState?.user?.patients ? adminState?.user.patients : [];
   const headCells = [
@@ -63,7 +68,8 @@ function AdminPatientsTable() {
   const adminProps = {
     rows,
     headCells,
-    heading: 'Patients List'
+    heading: 'Patients List',
+    statusToggler
   }
   
   return (

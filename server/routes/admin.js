@@ -28,10 +28,11 @@ router.get('/get/doctors',isLoggedIn , isAdmin , async (req, res) => {
         })
     }
 })
-router.put('/doctor/status/:id', isLoggedIn , isAdmin, async (req, res) => {
+router.put('/doctor/status/:id', isLoggedIn, isAdmin, async (req, res) => {
+    const { id } = req.params;
     try {
-
-        const doctor = await Doctor.findOne();
+         
+        const doctor = await Doctor.findOne({_id : id});
         if (doctor) {
             doctor.isAdminVerified = !doctor.isAdminVerified;
             await doctor.save();
@@ -73,10 +74,14 @@ router.get('/get/patients',isLoggedIn , isAdmin , async (req, res) => {
         })
     }
 })
-router.put('/patient/status/:id', isAdmin, async (req, res) => {
+
+router.put('/patient/status/:id', isLoggedIn ,isAdmin, async (req, res) => {
+
+    const { id } = req.params;
+
     try {
 
-        const patient = await Patient.findOne();
+        const patient = await Patient.findOne({_id : id});
         if (patient) {
             patient.isAdminVerified = !patient.isAdminVerified;
             await patient.save();
