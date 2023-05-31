@@ -6,8 +6,7 @@ import instance from './../../../api/axiosInstance';
 const initialState = {
   loading: false,
   success: false,
-  actionSuccess: true ,
-  user: {} ,
+  user: [] ,
   error: ''
 }
 
@@ -58,10 +57,12 @@ export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', asyn
     }
 })
 
-export const approveDoctor = createAsyncThunk('admin/approveDoctor', async ( doctorId, {rejectWithValue}) => {
+
+
+export const adminGetSpecialities = createAsyncThunk('admin/getSpecialities', async ( speciality, {rejectWithValue}) => {
   // console.log(user);
   try {
-    let response = await instance.put(`admin/doctor/status/${doctorId}`);
+    let response = await instance.get(`admin/get/specialities`);
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -69,17 +70,6 @@ export const approveDoctor = createAsyncThunk('admin/approveDoctor', async ( doc
     }
 })
 
-
-export const approvePatient = createAsyncThunk('admin/approvePatient', async ( patientId, {rejectWithValue}) => {
-  // console.log(user);
-  try {
-    let response = await instance.put(`admin/patient/status/${patientId}`);
-    console.log(response.data);
-    return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-})
 
 
 
@@ -87,11 +77,40 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-     adminLoginStateReset : (state) => {
+    adminLoginStateReset : (state) => {
          state.loading = false;
          state.success = false;
          state.error = '';
-    } 
+    }  ,
+    addSpecialaity: (state, action) => {
+      console.log(action.payload);
+       state.user.specialities = [...state.user.specialities, action.payload];
+    }, 
+    updateSpeciality: (state, action) => {
+      console.log(state);
+        state.user.specialities = state.user.specialities.map((obj) => {
+           if (obj._id === action.payload._id) {
+                return action.payload; 
+           }
+           return obj;
+       })
+    },
+    updateDoctors: (state, action) => {
+        state.user.doctors = state.user.doctors.map((obj) => {
+           if (obj._id === action.payload._id) {
+                return action.payload; 
+           }
+           return obj;
+       })
+    },
+    updatePatients: (state, action) => {
+        state.user.patients = state.user.patients.map((obj) => {
+           if (obj._id === action.payload._id) {
+                return action.payload; 
+           }
+           return obj;
+       })
+    },
   },
   
   extraReducers: builder => {
@@ -135,6 +154,7 @@ const adminSlice = createSlice({
             state.actionSuccess = true;
             state.user = action.payload
             state.error = '';
+            console.log(action.payload);
         })
       
         builder.addCase(adminGetAllDoctors.rejected, (state, action) => {
@@ -156,35 +176,19 @@ const adminSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
-        builder.addCase(approveDoctor.pending, state => {
+        builder.addCase(adminGetSpecialities.pending, state => {
           state.loading = true;
           state.actionSuccess = false
         })
       
-        builder.addCase(approveDoctor.fulfilled, (state , action) => {
+        builder.addCase(adminGetSpecialities.fulfilled, (state , action) => {
             state.loading = false;
             state.actionSuccess = true;
             state.user = action.payload
             state.error = '';
         })
       
-        builder.addCase(approveDoctor.rejected, (state, action) => {
-            state.loading = false
-            state.error = action.payload.errorInfo;
-        })
-        builder.addCase(approvePatient.pending, state => {
-          state.loading = true;
-          state.actionSuccess = false
-        })
-      
-        builder.addCase(approvePatient.fulfilled, (state , action) => {
-            state.loading = false;
-            state.actionSuccess = true;
-            state.user = action.payload
-            state.error = '';
-        })
-      
-        builder.addCase(approvePatient.rejected, (state, action) => {
+        builder.addCase(adminGetSpecialities.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload.errorInfo;
         })
@@ -195,4 +199,4 @@ const adminSlice = createSlice({
 
 
 export default adminSlice.reducer
-export const { adminLoginStateReset } = adminSlice.actions;
+export const { adminLoginStateReset , addSpecialaity , updateSpeciality , updateDoctors , updatePatients} = adminSlice.actions;

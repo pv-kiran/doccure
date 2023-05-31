@@ -14,24 +14,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 // import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+
 import { visuallyHidden } from '@mui/utils';
+
+
+// for add specialities
 import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+
+// for speaciality model
 
 
-
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 import './DataTable.css'
 import { useState } from 'react';
 import ConfirmModal from '../Modal/Modal';
+import SpecialityModal from '../SpecialityModal/SpecialityModal';
 
 
 
@@ -113,13 +117,16 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected , heading } = props;
+  const { numSelected , heading , handleSpecialityModalOpen , tableContent } = props;
 
   return (
     <Toolbar
       sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        pl: { sm: 2 , lg: 0 , md: 0 },
+        pr: { xs: 1, sm: 1 , lg: 0 , md: 0 },
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
@@ -127,14 +134,30 @@ function EnhancedTableToolbar(props) {
       }}
     >
         <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
+          // sx={{
+          //   flex: '1 1 100%' ,
+          // }}
+          variant="h5"
           id="tableTitle"
           component="div"
         >
           {heading}
-        </Typography>
+      </Typography>
 
+      {
+        tableContent === 'speciality' && <Button
+        variant="outlined"
+        startIcon={<AddIcon />}
+        size='small'
+        onClick={handleSpecialityModalOpen}
+      >
+
+          Add New
+       </Button>
+
+      }
+      
+      
     </Toolbar>
   );
 }
@@ -146,8 +169,8 @@ EnhancedTableToolbar.propTypes = {
 function DataTable(props) {
 
 
-  const { headCells, rows , heading , statusToggler } = props;
-
+  const { headCells, rows, heading, statusToggler, tableContent } = props;
+  
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -222,9 +245,13 @@ function DataTable(props) {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage , rows]
   );
 
+  // const visibleRows = rows;
+
+
+  // confirmation related modal logic related methods and states
 
   const [id, setId] = useState(null);
 
@@ -235,21 +262,40 @@ function DataTable(props) {
   };
 
   const handleClose = () => {
-    setOpen(false); // close the modal
+    setOpen(false);
+    setId(null) // close the modal
+  };
+
+  const [checked, setChecked] = useState(false);
+
+  const handleConfirmChange = (event) => {
+    setChecked(event.target.checked);
   };
 
   const handleConfirm = (checked) => {
     // do something with the checked value
     // console.log(checked);
-    statusToggler(id);
-    setOpen(false); // close the modal
-    setId(null);
-
+    if (checked) {
+      statusToggler(id);
+      setOpen(false); // close the modal
+      setId(null);
+      setChecked(false)
+    } else {
+       setOpen(false); // close the modal
+       setId(null);
+    }
   };
   
 
 
 
+  // add specialities modal related states and logic
+
+  const [specialityModelOpen, setspecialityModelOpen] = useState(false);
+
+  const handleSpecialityModalOpen = () => setspecialityModelOpen(true);
+
+  const [editId, setEditId] = useState(null);
 
 
   
@@ -264,7 +310,11 @@ function DataTable(props) {
               padding: '2rem',
               mb: 2
           }}>
-        <EnhancedTableToolbar heading = {heading}  numSelected={selected.length} />
+        <EnhancedTableToolbar
+          handleSpecialityModalOpen = {handleSpecialityModalOpen}
+          heading={heading}
+          tableContent = {tableContent}
+          numSelected={selected.length} />
         <TableContainer>
           <Table
             // sx={{ minWidth: 750 }}
@@ -280,68 +330,164 @@ function DataTable(props) {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
+            {
+              tableContent === 'user' && <TableBody>
+                  {visibleRows.map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.name}
-                    sx={{
-                      cursor: 'pointer',
-                      height: '2rem'
-                    }}
-                  >
-                    
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.name}
-                    </TableCell>
-                    <TableCell 
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none">{row.email}</TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none">
-                      {row.phone}
-                    </TableCell>
-                    <TableCell align="right" padding='none'>
-                            <FormControlLabel
-                                control={
-                                <Switch
-                                  checked={row.isAdminVerified}
-                                    onChange={() => {
-                                      setId(row._id)
-                                      handleOpen();
-                                    }}
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.name}
+                        sx={{
+                          cursor: 'pointer',
+                          height: '2rem'
+                        }}
+                      >
+                        
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell 
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">{row.email}</TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {row.phone}
+                        </TableCell>
+                        <TableCell align="right" padding='none'>
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                      checked={row.isAdminVerified}
+                                        onChange={() => {
+                                          setId(row._id)
+                                          handleOpen();
+                                        }}
+                                    />
+                                    }
                                 />
-                                }
-                            />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+               </TableBody>
+            }
+            {
+              tableContent === 'speciality' &&  <TableBody>
+                  {visibleRows.map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.name}
+                        sx={{
+                          cursor: 'pointer',
+                          height: '2rem'
+                        }}
+                      >
+                        
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell 
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {row.fees}
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {
+                            row.isAdminVerified ? <Typography sx={{
+                              color: '#32a850',
+                              
+                            }}>Active</Typography> : <Typography sx={{
+                              color: '#ad1f1a'
+                            }}>Inactive</Typography>
+                          }
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          padding='none'
+                        >
+                          <BorderColorIcon sx={{
+                            color: '#5d86c9',
+                            marginRight: '1rem' ,
+                          }} 
+                          onClick={() => {
+                            handleSpecialityModalOpen()
+                            setEditId(row._id)
+                          }}
+                       
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          padding='none'
+                        >
+                          
+                            <FormControlLabel
+                                    control={
+                                    <Switch
+                                      checked={row.isAdminVerified}
+                                      onChange={() => {
+                                        setId(row._id)
+                                        handleOpen();
+                                      }}
+                                    />
+                                    }
+                          />
+                        </TableCell>
+
+
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+               </TableBody>
+            }
           </Table>
         </TableContainer>
         <TablePagination
@@ -354,12 +500,29 @@ function DataTable(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={<Switch checked={dense}
         onChange={handleChangeDense} />}
         label="Dense padding"
+      /> */}
+
+
+     
+      {/* Modal - Speciality add / edit / delete  */}
+      <SpecialityModal
+        specialityModelOpen={specialityModelOpen} 
+        id={editId}
+        setEditId = {setEditId}
+        setspecialityModelOpen = {setspecialityModelOpen}
       />
-      <ConfirmModal open={open} onClose={handleClose} onConfirm={handleConfirm} />
+        
+      {/* Confirmation - Blocking and Unblocking */}
+      <ConfirmModal
+        open={open}
+        checked={checked}
+        handleConfirmChange={handleConfirmChange}
+        onClose={handleClose} onConfirm={handleConfirm} 
+      />
     </Box>
   );
 }

@@ -5,19 +5,15 @@ import './Modal.css'
 
 
 
-const ConfirmModal = ({ open, onClose, onConfirm }) => {
-  const [checked, setChecked] = useState(false);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
+const ConfirmModal = ({ open, onClose, onConfirm ,checked , handleConfirmChange }) => {
+  
 
   return (
-        <Modal open={open} onClose={onClose} centered={true}> 
+        <Modal open={open} onClose={onClose} centered= "true"> 
             <div className="modal-container">
             <h2>Confirm Action</h2>
               <p>
-                  This will toggle the user's access to the app and notifications.
+                 Are you sure you want to do this? 
               </p>
               <FormControlLabel
                 sx={{
@@ -28,12 +24,12 @@ const ConfirmModal = ({ open, onClose, onConfirm }) => {
                 control={
                 <Checkbox
                 checked={checked}
-                onChange={handleChange}
+                onChange={handleConfirmChange}
                 name="notify"
                 color="primary"
                 />
                 }
-            label="Are you sure to continue ?"
+            label="I agree"
             />
             <div className="actions"> 
                   <Button

@@ -44,7 +44,7 @@ export const updatePatient = createAsyncThunk('patient/updatePatient', async (fo
     let response = await instance.put('/patient/profile/update', form, {
                 headers: {
                      'Content-Type': 'multipart/form-data'
-                 },
+                },
                 // withCredentials: true
     })
     

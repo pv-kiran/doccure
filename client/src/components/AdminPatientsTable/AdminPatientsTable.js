@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
 import Datatable from '../DataTable/Datatable';
-import { adminGetAllPatients, approvePatient } from '../../app/features/admin/adminSlice';
+import { adminGetAllPatients, updatePatients } from '../../app/features/admin/adminSlice';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
 
 
 function AdminPatientsTable() {
 
-  // console.log(getAllDoctors);
 
   const adminState = useSelector((state) => {
     return state.admin;
   });
 
-  console.log(adminState);
 
   const dispatch = useDispatch();
 
@@ -22,17 +20,21 @@ function AdminPatientsTable() {
         instance.defaults.headers.common = {
             Authorization : `Bearer ${user.token}`
     }
-    // console.log(user);
   }, [])
 
   useEffect(() => {
-    console.log('Hi ,,, Testing')
-    dispatch(adminGetAllPatients());
-  }, [adminState.actionSuccess])
+       dispatch(adminGetAllPatients()); 
+  }, [])
 
 
-  const statusToggler = (doctorId) => {
-    dispatch(approvePatient(doctorId))
+  const statusToggler = async (patientId) => {
+    try {
+      let {data} = await instance.put(`admin/patient/status/${patientId}`);
+      console.log(data.patient);
+      dispatch(updatePatients(data.patient))
+    } catch (error) {
+      
+    }
   }
   
   const rows = adminState?.user?.patients ? adminState?.user.patients : [];
@@ -65,7 +67,10 @@ function AdminPatientsTable() {
 
   console.log(rows);
 
+  const tableContent = 'user'
+
   const adminProps = {
+    tableContent,
     rows,
     headCells,
     heading: 'Patients List',
