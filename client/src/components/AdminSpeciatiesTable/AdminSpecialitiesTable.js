@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataTable from '../DataTable/Datatable';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import {  adminGetSpecialities, updateSpeciality} from '../../app/features/admin
 
 
 function AdminSpecialitiesTable() {
+
 
   const adminState = useSelector((state) => {
     return state.admin;
@@ -34,7 +35,7 @@ function AdminSpecialitiesTable() {
 
   const statusToggler = async (id) => {
     try {
-    let {data} = await instance.put(`admin/speciality/status/${id}`);
+      let { data } = await instance.put(`admin/speciality/status/${id}`);
       dispatch(updateSpeciality(data.specialities)) 
     } catch (error) {
       console.log(error)

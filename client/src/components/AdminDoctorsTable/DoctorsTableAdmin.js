@@ -61,10 +61,16 @@ function AdminDoctorsTable() {
     label: 'Email',
   },
   {
-    id: 'phone',
+    id: 'sepeciality',
     numeric: false,
     disablePadding: true,
-    label: 'Mobile'
+    label: 'Speciality'
+  },
+  {
+    id: 'cerificate',
+    numeric: false,
+    disablePadding: false,
+    label: 'Certificate',
   },
   {
     id: 'Action',
@@ -75,13 +81,15 @@ function AdminDoctorsTable() {
   ];
 
   const tableContent = 'user'
+  const userRole = 'doctor'
 
   const adminProps = {
     tableContent ,
     rows,
     headCells,
     heading: 'Doctors List',
-    statusToggler
+    statusToggler,
+    userRole
   }
   
   return (

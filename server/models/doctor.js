@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const slotSchema = new mongoose.Schema({
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
+  status: { type: String, default: false }
+});
+
 const doctorSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,6 +23,10 @@ const doctorSchema = new mongoose.Schema({
   verifyToken: {
     type: String,
   },
+  speciality: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Speciality'
+  } ,
   profilePicture: {
         public_id: {
           type: String
@@ -24,7 +34,20 @@ const doctorSchema = new mongoose.Schema({
         secure_url: {
           type: String
         }
-  } ,
+  },
+  certificate: {
+        public_id: {
+          type: String
+        } , 
+        secure_url: {
+          type: String
+        }
+  },
+  services: [
+    {
+       type: String
+    }
+  ] ,
   isVerified: {
     type: Boolean ,
     default: false
@@ -62,8 +85,26 @@ const doctorSchema = new mongoose.Schema({
   } ,
   token: {
     type:  String
-  }
-  
+  } ,
+  availableSlots: [
+    {
+      date: Date,
+      slots: [
+        {
+          startTime: {
+            type: Date
+          },
+          endTime: {
+            type: Date
+          },
+          status: {
+            type: Boolean,
+            default: false
+          }
+        }
+      ]
+    }
+  ]
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

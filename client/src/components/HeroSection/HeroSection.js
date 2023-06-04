@@ -11,8 +11,6 @@ import Button  from '@mui/material/Button';
 
 
 import './HeroSection.css';
-import banner from '../../assets/banner.png';
-import bannertwo from '../../assets/banner@2x.png'
 import bannerThree from '../../assets/banner@3x.png';
 
 

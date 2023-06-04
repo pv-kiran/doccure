@@ -1,4 +1,5 @@
 
+const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
 const { cloudinary } = require('../utils/cloudinaryHelper');
 
@@ -39,6 +40,28 @@ const updatePatientProfile = async (req, res) => {
     }
 }
 
+const getAllDoctors = async (req, res) => {
+    try {
+        const doctors = await Doctor.find({isAdminVerified: true}).populate('speciality');
+        if (doctors.length > 0) {
+            res.status(200).json({
+                success: true,
+                doctors: doctors
+            })
+        } else {
+            res.status(404).json({
+               errorInfo: 'No Doctors are found'
+            })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            errorInfo: 'Internal Server Error'
+        })
+    }
+}
+
 module.exports = {
-    updatePatientProfile
+    updatePatientProfile,
+    getAllDoctors
 }

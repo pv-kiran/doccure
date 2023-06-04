@@ -1,0 +1,41 @@
+.myDatePicker {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    color: gray;
+}
+
+.myDatePicker:focus {
+  outline: none;
+}
+
+.dateText {
+    font-size: 15px; 
+    color: #333; 
+}
+
+.dateIcon {
+    font-size: 24px; 
+    color: #333; 
+}
+
+
+
+.sidebar .MuiListItemText-primary {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.sidebar .MuiListItemText-primary {
+    color: #113333;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');

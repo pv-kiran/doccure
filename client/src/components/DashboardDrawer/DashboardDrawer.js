@@ -7,13 +7,16 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+// import  Toolbar  from '@mui/material/Toolbar';
+
 
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+
+
+import './DashboardDrawer.css'
 
 
 export const DrawerHeader = styled('div')(({ theme }) => ({
@@ -80,16 +83,22 @@ function DashboardDrawer(props) {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
-        {/* <Toolbar/> */}
+        {/* <Toolbar/>
+        <Toolbar/> */}
+
         <List sx={{
           marginTop: '1rem'
         }}>
           {navigationLinks.map((text, index) => (
             <ListItem key={text.navItem}
-              disablePadding
-              sx={{ display: 'block' }}
-              component={Link}
-              to = {text.navLink}
+              disablePadding 
+              sx={{ display: 'block', color: '#579ab5' , 
+                  '&.active-link': {
+                    backgroundColor: '#eaf6ff',
+                  }
+              }}
+              component={NavLink}
+              to={text.navLink}
             >
               <ListItemButton
                 sx={{
@@ -105,7 +114,8 @@ function DashboardDrawer(props) {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  { text.icon}
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                 </ListItemIcon>
                 <ListItemText primary={text.navItem} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>

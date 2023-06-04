@@ -10,8 +10,12 @@ import { useState } from 'react';
 import DashboardDrawer from '../DashboardDrawer/DashboardDrawer';
 import DashboardContent from '../DashboardContent/DashboardContent';
 
-
-
+import GridViewIcon from '@mui/icons-material/GridView';
+import MedicationIcon from '@mui/icons-material/Medication';
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import PaidIcon from '@mui/icons-material/Paid';
 
 function AdminDashboard() {
   const theme = useTheme();
@@ -32,7 +36,7 @@ function AdminDashboard() {
     page: 'admin',
     color: '#fff',
     // open ,
-    bgColor: '#424e82',
+    bgColor: '#496b78',
     handleDrawerOpen,
     setOpen,
   }
@@ -40,27 +44,33 @@ function AdminDashboard() {
   const navigationLinks = [
     {
       navItem: 'Dashboard',
-      navLink: '/admin/dashboard'
+      navLink: '/admin/dashboard',
+      icon: <GridViewIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Doctors',
-      navLink: '/admin/doctors'
+      navLink: '/admin/doctors',
+      icon: <MedicationIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Patients',
-      navLink: '/admin/patients'
+      navLink: '/admin/patients',
+      icon: <EscalatorWarningIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Appointments',
-      navLink: '/admin/appointments'
+      navLink: '/admin/appointments',
+      icon: <ScheduleIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Specialities',
-      navLink: '/admin/specialities'
+      navLink: '/admin/specialities',
+      icon: <FolderSpecialIcon sx={{color: '#579ab5'}}/>
     } ,
     {
       navItem: 'Transactions',
-      navLink: '/admin/transactions'
+      navLink: '/admin/transactions',
+      icon: <PaidIcon sx={{color: '#579ab5'}}/>
     }
   ]
 

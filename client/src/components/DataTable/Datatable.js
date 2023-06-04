@@ -27,15 +27,18 @@ import AddIcon from '@mui/icons-material/Add';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 
+
+
+
 // for speaciality model
-
-
+                         
 
 
 import './DataTable.css'
 import { useState } from 'react';
 import ConfirmModal from '../Modal/Modal';
 import SpecialityModal from '../SpecialityModal/SpecialityModal';
+import PdfModal from '../PdfModal/PdfModal';
 
 
 
@@ -169,7 +172,7 @@ EnhancedTableToolbar.propTypes = {
 function DataTable(props) {
 
 
-  const { headCells, rows, heading, statusToggler, tableContent } = props;
+  const { headCells, rows, heading, statusToggler, tableContent , userRole } = props;
   
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -251,7 +254,7 @@ function DataTable(props) {
   // const visibleRows = rows;
 
 
-  // confirmation related modal logic related methods and states
+  // confirmation related modal related methods and states
 
   const [id, setId] = useState(null);
 
@@ -296,6 +299,15 @@ function DataTable(props) {
   const handleSpecialityModalOpen = () => setspecialityModelOpen(true);
 
   const [editId, setEditId] = useState(null);
+
+
+  // view pdf related modal methods and states
+  const [pdfLink, setPdfLink] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
 
   
@@ -359,14 +371,48 @@ function DataTable(props) {
                           component="th"
                           id={labelId}
                           scope="row"
-                          padding="none">{row.email}</TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none">
-                          {row.phone}
+                          padding="none">{row.email}
                         </TableCell>
+                        {
+                          userRole === 'doctor' ?
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none">
+                            {row?.speciality?.name}
+                          </TableCell> :
+                          <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none">
+                              {row.phone}
+                          </TableCell>
+                        }
+                        {
+                          userRole === 'doctor' &&
+                          <TableCell
+                              component="th"
+                              align='center'
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                          >
+                          <Button
+                            onClick={() => {
+                              openModal()
+                              setPdfLink(row.certificate.secure_url)
+                            }}
+                            size='small'
+                            sx={{ marginLeft: '-3rem' }}
+                          >
+                            View
+                          </Button>
+                           {/* <PreviewIcon sx={{marginLeft: '-2rem'}}/>  */}
+                        </TableCell>
+                        }
+                        
                         <TableCell align="right" padding='none'>
                                 <FormControlLabel
                                     control={
@@ -512,9 +558,14 @@ function DataTable(props) {
       <SpecialityModal
         specialityModelOpen={specialityModelOpen} 
         id={editId}
-        setEditId = {setEditId}
+        setEditId={setEditId}
         setspecialityModelOpen = {setspecialityModelOpen}
       />
+
+      {/* PDF MODAL */}
+      {isOpen !== undefined && (
+           <PdfModal isOpen={isOpen} closeModal={closeModal} pdfLink={pdfLink} />
+      )}
         
       {/* Confirmation - Blocking and Unblocking */}
       <ConfirmModal

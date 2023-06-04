@@ -28,11 +28,17 @@ import { updatePatient, updatePatientReset } from '../../app/features/patient/pa
 import { updateDoctor, updateDoctorReset } from './../../app/features/doctor/doctorSlice';
 
 
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import CircularProgress from '@mui/material/CircularProgress';
-import instance from '../../api/axiosInstance';
 // import FormHelperText from "@mui/material/FormHelperText"
+
+import Autocomplete from '@mui/material/Autocomplete';
+
+
+
+import instance from '../../api/axiosInstance';
 
 
 import './UserOnboarding.css'
@@ -84,7 +90,20 @@ function UserOnboarding({ role }) {
         instance.defaults.headers.common = {
             Authorization : `Bearer ${user.token}`
         }
-    } , [])
+    }, [])
+
+    const [specialities , setSpecialites] = useState([])
+
+    const fetchSpecialities = async () => {
+        const { data } = await instance.get('doctor/specialities')
+        setSpecialites(data.specialities);
+    }
+    
+    useEffect(() => {
+        if (role === 'doctor') {
+            fetchSpecialities();
+        }
+    } , [role])
 
 
     const [formData, setFormData] = useState({
@@ -92,6 +111,7 @@ function UserOnboarding({ role }) {
         gender: '',
         phone: '+91',
         houseName: '',
+        speciality: '' ,
         city: '',
         state: '',
     });
@@ -119,6 +139,9 @@ function UserOnboarding({ role }) {
         }
         if (!formData.gender) {
             errors.gender = 'Gender is required';
+        }
+        if (!formData.speciality) {
+            errors.speciality = 'speciality is required';
         }
         if (!formData.phone) {
             errors.phone = 'Mobile number is required';
@@ -150,13 +173,29 @@ function UserOnboarding({ role }) {
         })
     };
 
+    // handling the services auto completing changes
+    const handleServicesChange = (event, newValue) => {
+         setFormData((prevState) => ({ ...prevState, services: newValue }));
+    };
+
+
+    // profile photo upload logic
     const [file, setFile] = useState('');
     const [profilePic, setProfilePic] = useState('');
   
 
     const handleChange = (e) => {
         setProfilePic(e.target.files[0]);
+        // for displaying the file
         setFile(URL.createObjectURL(e.target.files[0]));
+    }
+
+    // certificate or pdf upload logic
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [certificate , setCertificate] = useState('')
+    const handleUpload = (e) => {
+        setCertificate(e.target.files[0])
+        setUploadSuccess(true);
     }
 
     
@@ -173,10 +212,12 @@ function UserOnboarding({ role }) {
         });
                 
             form.append('profilePic', profilePic);
+            form.append('certificate', certificate);
             
             if (role === 'patient') {
                 dispatch(updatePatient(form));
             } else {
+                // console.log(form);
                 dispatch(updateDoctor(form));
             }
 
@@ -275,18 +316,112 @@ function UserOnboarding({ role }) {
                         marginTop: '2.5rem'
                     }}
                 >
+                    
+                    {/* Certificate upload */}
+                    <Box
+                            sx={{
+                                border: '1px dotted gray',
+                                textAlign: 'center',
+                                padding: '.3rem',
+                                borderRadius: '0.2rem',
+                                height: '5rem'
+                            }}
+                         >
+                            <label htmlFor="upload-button">
+                                {uploadSuccess ? (
+                                <CheckCircleIcon fontSize="large" />
+                                ) : (
+                                <CloudUploadIcon fontSize="large" />
+                                )}
+                            </label>
+                            <div>{uploadSuccess ? 'File uploaded successfully!' : 'Please upload your certificate here'}</div>
+                            <input
+                                id="upload-button"
+                                type="file"
+                                onChange={handleUpload}
+                                style={{ display: 'none' }}
+                            />
+                    </Box>
+                    
+                    {/* User name and Speciality */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between' ,
+                            marginTop: '1.5rem'
+                        }}
+                    >
                     <TextField
                         id="outlined-basic"
                         label="Full Name"
-                        variant="outlined" 
+                        variant="outlined"     
                         name='username'
                         autoComplete='off'
                         onChange={handleInputChange}
                         error={!!formErrors.username}
                         helperText={formErrors.username}
-                        fullWidth
-                    />  
+                        sx={{
+                          width: '48%'    
+                        }}    
+                    /> 
+                        
+                        <FormControl
+                            error={!!formErrors.speciality}
+                            sx={{
+                                width: '48%'
+                            }}
+                        >
+                            <InputLabel id="speciality-label">Speciality</InputLabel>
+                            <Select
+                                labelId="speciality-label"
+                                id="speciality"
+                                label="Speciality"
+                                variant="outlined" 
+                                name="speciality"
+                                value={formData.speciality || ''}
+                                onChange={handleInputChange}
+                            >
+                                {/* <MenuItem value="">
+                                <em>None</em>
+                                </MenuItem> */}
+                                {
+                                   specialities.length >  0 && specialities.map((speciality) => (
+                                        <MenuItem key={speciality._id} value={speciality._id}>
+                                            {speciality.name}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                            {!!formErrors.gender && (
+                                <FormHelperText
+                                    sx={{
+                                        color: 'red'
+                                    }}
+                                >
+                                    {formErrors.gender}
+                                </FormHelperText>
+                            )}
+                        </FormControl>
 
+                        
+                    </Box>
+
+                    {/* Services */}
+                    <Autocomplete
+                        multiple
+                        freeSolo
+                        
+                        sx={{
+                            margin: '1rem 0'
+                        }}
+                        options={[]}
+                        onChange={handleServicesChange}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Services" />
+                        )}
+                    />
+
+                    {/* Gender and modile number */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -343,6 +478,8 @@ function UserOnboarding({ role }) {
                             value={formData.phone}
                         />
                     </Box>
+                    
+                    {/* House name */}
                     <TextField
                         id="outlined-basic"
                         label="Enter address"
@@ -358,6 +495,8 @@ function UserOnboarding({ role }) {
                         }}
 
                     /> 
+
+                    {/* City and state */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -397,6 +536,7 @@ function UserOnboarding({ role }) {
                         />
                         
                     </Box>
+                    
                     <ColorButton type='submit' disabled = {doctorUpdateState.loading || patientUpdateState.loading}>
                         Continue
                         {

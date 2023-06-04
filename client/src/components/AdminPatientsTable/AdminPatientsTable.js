@@ -68,13 +68,15 @@ function AdminPatientsTable() {
   console.log(rows);
 
   const tableContent = 'user'
+  const userRole =  'patient'
 
   const adminProps = {
     tableContent,
     rows,
     headCells,
     heading: 'Patients List',
-    statusToggler
+    statusToggler,
+    userRole
   }
   
   return (

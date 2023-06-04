@@ -8,6 +8,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button'
 import { Box } from '@mui/material';
 import instance from '../../api/axiosInstance';
+
+import CircularProgress from '@mui/material/CircularProgress';
+
+
 import { addSpecialaity, updateSpeciality } from '../../app/features/admin/adminSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,10 +22,17 @@ function SpecialityModal(props) {
     let specialities = useSelector((state) => {
         return state.admin?.user?.specialities;
     })
-    console.log(specialities);
+  
+    // console.log(adminState)
+  
+    // let specialities  = adminState?.user?.specialities
+    // console.log(specialities);
 
-    const { specialityModelOpen, setspecialityModelOpen, id , setEditId } = props;
-
+    const { specialityModelOpen, setspecialityModelOpen, id, setEditId } = props;
+  
+  const [loading, setLoading] = useState(false);
+  
+  
     const [uploadSuccess, setUploadSuccess] = useState(false);
 
 
@@ -39,7 +50,9 @@ function SpecialityModal(props) {
     const handleSpecialityModalClose = () => {
       setspecialityModelOpen(false);
       setEditId(null);
-      setFormData({name:'' , fees:''})
+      setFormData({ name: '', fees: '' })
+      setUploadSuccess(false)
+      setSpecialityImg('');
     };
   
     const [formData, setFormData] = useState({
@@ -52,8 +65,6 @@ function SpecialityModal(props) {
         fees: false,
     });
   
-  
-  console.log(formData);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -75,17 +86,6 @@ function SpecialityModal(props) {
     }, [])
   
   
-    // if(id) {
-    //   const data = specialities?.find(item => item._id === id);
-    //   if (data) {
-    //       const result = {
-    //         name: data.name,
-    //         fees: data.fees
-    //     };
-    //     setFormData(result);
-    //   }
-    //   setId(null);
-    // }
     useEffect(() => {
       if (id) {
         const data = specialities?.find((item) => item._id === id);
@@ -99,8 +99,6 @@ function SpecialityModal(props) {
       }
     }, [id]);
     
-      
- 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const errors = {
@@ -122,12 +120,13 @@ function SpecialityModal(props) {
             if (id) {
               
                 try {
-
+                    setLoading(true);
                     let {data} = await instance.put(`/admin/edit/speciality/${id}`, form, {
                         headers: {
                         'Content-Type': 'multipart/form-data'
                         }
                     })
+                    setLoading(false);
                     dispatch(updateSpeciality(data.specialities)) 
                   } catch (err) {
                     
@@ -136,12 +135,13 @@ function SpecialityModal(props) {
             } else {
 
                 try {
-
+                  setLoading(true);
                   let {data} = await instance.post('/admin/add/speciality', form, {
                       headers: {
                       'Content-Type': 'multipart/form-data'
                       }
                   })
+                  setLoading(false);
                   dispatch(addSpecialaity(data.specialities)) 
                 } catch (err) {
                   
@@ -154,7 +154,7 @@ function SpecialityModal(props) {
             handleSpecialityModalClose();
             setSpecialityImg('');
         }
-  };
+    };
   
     
 
@@ -239,13 +239,27 @@ function SpecialityModal(props) {
               variant="contained"
               fullWidth
               type='submit'
+              disabled = {loading}
               sx={{
                 marginTop: '1rem',
                 backgroundColor: '#424E82',
                 color: '#fff'
               }}
             >
-              Save Changes
+            Save Changes
+              {
+                 loading  && <CircularProgress
+                                size={28}
+                                sx={{
+                                color: '#fff',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px',
+                            }}
+                            />
+              }
             </Button>
           </Box>
       </Modal>
