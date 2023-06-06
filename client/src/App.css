@@ -5,6 +5,21 @@
   box-sizing: border-box;
 }
 
+.css-2dum1v-MuiDrawer-docked,
+.css-k1tok0-MuiDrawer-docked {
+  width: 0;
+}
+
+.css-k1tok0-MuiDrawer-docked {
+  width: 0;
+}
+
+
+@media (min-width: 600px) {
+ .css-2dum1v-MuiDrawer-docked {
+   width:  0;
+ }
+}
 /* body {
   padding: 0 2rem;
 } */

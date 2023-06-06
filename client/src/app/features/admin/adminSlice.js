@@ -12,8 +12,6 @@ const initialState = {
 
 
 export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin , { rejectWithValue }) => {
-
-
     try {
       const response = await instance.post("/auth/admin/login", admin);
         return response.data;
@@ -56,7 +54,6 @@ export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', asyn
       return rejectWithValue(error.response.data);
     }
 })
-
 
 
 export const adminGetSpecialities = createAsyncThunk('admin/getSpecialities', async ( speciality, {rejectWithValue}) => {

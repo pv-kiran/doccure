@@ -1,0 +1,9 @@
+.custom-date-picker .MuiInputBase-root {
+    height: 40px;
+    /* Adjust the height value as needed */
+}
+
+.custom-date-picker .MuiPickersCalendar-root {
+    height: 200px;
+    /* Adjust the height value as needed */
+}

@@ -11,10 +11,10 @@ function DashboardContent() {
   return (
     <Box component="main" sx={{
         flexGrow: 1,
-        p: 3,
+        // p: 3,
         padding: '2rem 0',
       }}>
-          <DrawerHeader />
+          {/* <DrawerHeader /> */}
           <Outlet></Outlet>
       </Box>
   );

@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 function App() {
 
   const location = useLocation()
+
+  // todo: remove
   useEffect(() => {
     console.log(`${location.pathname} ... testing`);
   } , [location.pathname])

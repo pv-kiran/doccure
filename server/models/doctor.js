@@ -92,10 +92,10 @@ const doctorSchema = new mongoose.Schema({
       slots: [
         {
           startTime: {
-            type: Date
+            type: String
           },
           endTime: {
-            type: Date
+            type: String
           },
           status: {
             type: Boolean,

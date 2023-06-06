@@ -30,7 +30,7 @@ function SpecialityModal(props) {
 
     const { specialityModelOpen, setspecialityModelOpen, id, setEditId } = props;
   
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   
   
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -157,9 +157,7 @@ function SpecialityModal(props) {
     };
   
     
-
-    
-  return (
+   return (
       <Modal
           open={specialityModelOpen}
           onClose={handleSpecialityModalClose}>
@@ -263,7 +261,7 @@ function SpecialityModal(props) {
             </Button>
           </Box>
       </Modal>
-  )
+   )
 }
 
 export default SpecialityModal
