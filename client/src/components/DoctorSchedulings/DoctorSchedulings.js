@@ -18,8 +18,7 @@ import Typography from '@mui/material/Typography';
 
 import './DoctorSchedulings.css'
 
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useEffect } from 'react';
 import instance from '../../api/axiosInstance';
 import { doctorAddSlots, doctorDeleteSlots, doctorGetSlots, doctorUpdateSlots } from '../../app/features/appointment/appointmentSlice';
@@ -28,7 +27,50 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import AppointmentModal from '../AppointmentModal/AppointmentModal';
 
+import Slider from "react-slick";
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+import DateButton from '../Shared/DateButton';
+import TimeButton from '../Shared/TimeButton';
 
+
+
+
+ 
+const settings = {
+      dots: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      initialSlide: 0,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            infinite: true,
+            dots: true
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            initialSlide: 2
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1
+          }
+        }
+      ]
+};
 
 
 
@@ -67,15 +109,15 @@ const DoctorSchedulings = () => {
   }
 
 
+
+  const [selectedId, setSelectedId] = useState(dateArray.length > 0 ? dateArray[0]._id : null);
+  const [slotId, setSlotId] = useState(null);
+
   useEffect(() => {
     if (dateArray.length > 0) {
       setSelectedId(dateArray[0]._id);
     }
   }, [dateArray.length]);
-
-
-  const [selectedId, setSelectedId] = useState(dateArray.length > 0 ? dateArray[0]._id : null);
-  const [slotId, setSlotId] = useState(null);
 
 
 
@@ -144,6 +186,9 @@ const DoctorSchedulings = () => {
     setRows(newRows);
   };
 
+  const isAddButtonDisabled = rows.length > 9;
+
+
   const [date, setValue] = useState(dayjs());
 
 
@@ -169,7 +214,6 @@ const DoctorSchedulings = () => {
   };
 
 
-  
   // edit slots - logic
   const [editTimings, setEditTimings] = useState({});
 
@@ -198,8 +242,6 @@ const DoctorSchedulings = () => {
   }
 
 
-
-
   const deleteSlot = (id) => {
       let slotIdDetails = {
         mainSlotId: selectedId,
@@ -207,21 +249,13 @@ const DoctorSchedulings = () => {
       }
     dispatch(doctorDeleteSlots(slotIdDetails));
   }
-  
-  const isAddButtonDisabled = rows.length > 9;
-  
-
-  // edit modal logic
-
 
 
   return (
     <Box sx={{
       marginLeft: { lg: '-3rem', md: '-15rem', sm: "-9rem", xs: "1rem" },
       marginTop: '5rem',
-      // backgroundColor: 'red',
       width: '50rem',
-      // border: '1px gray dotted',
       minHeight: '23rem',
       borderRadius: '.5rem',
       padding: '1.5rem'
@@ -253,51 +287,27 @@ const DoctorSchedulings = () => {
         marginTop: '2rem',
       }}>
         <Box sx={{
-          // display: 'flex',
-          // flexDirection: 'row',
-          // justifyContent: 'space-between',
-          // flexWrap: 'wrap',
           borderBottom: '1px gray dotted',
-          padding: '1rem'
-         }}>
-            { dateArray.length  && dateArray.map(({ date, _id }) => (
-                <Button
-                  key={_id}
-                  sx={{
-                    border: '1px gray dotted',
-                    color: '#878180',
-                    width: '9.7rem',
-                    marginRight: '1.2rem'
-                }}
-                onClick={() => onClickDate(_id)}
-                >
-                  {date.split('T')[0]}
-                </Button>
+          padding: '1.5rem 1rem'
+        }}>
+          <Slider {...settings}>
+            {dateArray.length && dateArray.map(({ date, _id }) => (
+              <DateButton
+                date={date}
+                _id={_id}
+                selectedId={selectedId}
+                onClickDate={onClickDate}
+              />
             ))}
+          </Slider>
         </Box>
         <Box textAlign='justify' sx={{ padding: '.5rem 0' }}>
-          {dateSlotes[0]?.slots && dateSlotes[0]?.slots.map(({ startTime, endTime, _id }) => (
-              <Button
-                key={_id}
-                sx={{
-                  margin: '.5rem .9rem',
-                  backgroundColor: '#F3F9FF',
-                  color: '#878180',
-                  padding: '.3rem .75rem',
-                  cursor: 'default'
-                }}
-              >
-                {startTime} - {endTime}
-                <EditIcon
-                  onClick={() => { editSlot(_id ,{ startTime, endTime })}}
-                  sx={{ fontSize: '.9rem', marginLeft: '.5rem', cursor: 'pointer' }}
-                />
-                <DeleteIcon
-                  onClick = {() => {deleteSlot(_id)}}
-                  sx={{ fontSize: '.9rem', marginLeft: '.5rem', cursor: 'pointer' }}
-                />
-              </Button>
-          ))}
+          {dateSlotes[0]?.slots && dateSlotes[0]?.slots.map(({ startTime, endTime, _id }) => 
+             {
+                  const data = { startTime , endTime , editSlot , deleteSlot , _id }
+                  return <TimeButton {...data}></TimeButton>
+             }
+          )}
         </Box>
       </Box>
             
@@ -362,12 +372,7 @@ const DoctorSchedulings = () => {
                 )}
               </div>
             ))}
-            {/* <Button
-              onClick={addRow}
-              disabled={isAddButtonDisabled}
-            >
-              Add slot
-            </Button> */}
+           
             <Button
               variant="outlined"
               startIcon={<AddIcon />}

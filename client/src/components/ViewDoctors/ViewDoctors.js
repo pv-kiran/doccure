@@ -244,7 +244,7 @@ function ViewDoctors() {
               }}>
               {
                 doctors.length > 0 && doctors.map((doctor) => 
-                    <DoctorCard doctor={doctor}></DoctorCard>
+                    <DoctorCard key={doctor._id} doctor={doctor}></DoctorCard>
                 )
               }
             </Box>

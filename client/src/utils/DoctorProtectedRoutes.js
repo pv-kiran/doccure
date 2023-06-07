@@ -9,7 +9,7 @@ function DoctorProtectedRoutes() {
 
 
   return (
-     authState?.role === 'doctor' ? <Outlet/> : <Navigate to='/'/>
+     authState?.role === 'doctor' ? <Outlet/> : <Navigate to='/signin'/>
   )
 }
 

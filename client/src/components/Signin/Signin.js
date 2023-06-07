@@ -3,7 +3,7 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import registerLogo from '../../assets/login-banner.png';
@@ -11,8 +11,9 @@ import './Signin.css';
 
 // import { Link } from '@mui/material';
 
+
 import { useState , useEffect } from 'react';
-import { useNavigate , Link } from 'react-router-dom';
+import { useNavigate , Link , useLocation } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { logginDoctorReset, loginDoctor } from '../../app/features/doctor/doctorSlice';
@@ -78,6 +79,7 @@ function Signin() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     let doctorLoginState = useSelector((state) => {
         return state.doctor;
@@ -102,13 +104,7 @@ function Signin() {
         }
     }, [patientLoginState.success])
 
-    // if (patientLoginState.success) {
-    //     if (!patientLoginState.user.fullName) {
-    //       navigate("/patient/onboarding");     
-    //     } else {
-    //         navigate('/');
-    //     }
-    //  }
+   
     
 
     useEffect(() => {
@@ -120,13 +116,7 @@ function Signin() {
         }
     }, [doctorLoginState.success])
 
-    // if (doctorLoginState.success ) {
-    //    if (!doctorLoginState.user.fullName) {
-    //       navigate("/doctor/onboarding");     
-    //     } else {
-    //         navigate('/');
-    //     }
-    // } 
+    
     
      useEffect(() => {
         if (doctorLoginState.error || patientLoginState.error) {
@@ -137,10 +127,6 @@ function Signin() {
              return () => clearTimeout(timer);
         }
      }, [doctorLoginState.error, patientLoginState.error]);
-    
-     
-
-    
     
 
     const handleSubmit = (e) => {

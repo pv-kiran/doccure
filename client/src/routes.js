@@ -52,6 +52,7 @@ import PatientAppointmentTable from './components/PateinetAppointmentsTable/Pati
 import PatientNotifications from './components/PatientNotifications/PatientNotifications';
 import PatientMessages from './components/PatientMessages/PatientMessages';
 import ViewDoctors from './components/ViewDoctors/ViewDoctors';
+import AvailableSlots from './pages/AvailableSlots';
 
 function AppRoutes() {
   return (
@@ -59,7 +60,7 @@ function AppRoutes() {
         
         <Route path='/' element={<Doccure></Doccure>}></Route>
         <Route path='/doctors/all' element={<ViewDoctors></ViewDoctors>}></Route>
-        
+        <Route path='/:id/appointment' element={<AvailableSlots></AvailableSlots>}></Route>
 
         {/* Public routes */}
         <Route element={<PublicRoutes></PublicRoutes>}>
@@ -75,13 +76,15 @@ function AppRoutes() {
         {/* Patient specfic routes */}
         <Route element={<PatientProtectedRoutes></PatientProtectedRoutes>}>
           <Route path="/patient/onboarding" element={<Onboarding role='patient' />} />
+          <Route path='/doctor/:id' element={<AvailableSlots/>}></Route>
           <Route path='/patient' element={<PatientDashboardLayout/>}>
                <Route path='dashboard' element={<PatientDoctorsTable/>}></Route>
                <Route path='appointments' element={<PatientAppointmentTable/>}></Route>
                <Route path='notifications' element={<PatientNotifications/>}></Route>
-               <Route path='messages' element={<PatientMessages/>}></Route>
+               <Route path='messages' element={<PatientMessages />}></Route>
           </Route>
         </Route>  
+      
 
         {/* Doctor specific routes */}
         <Route element={<DoctorProtectedRoutes></DoctorProtectedRoutes>}>

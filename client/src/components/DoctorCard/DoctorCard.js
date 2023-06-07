@@ -11,6 +11,7 @@ import Rating from '@mui/material/Rating';
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -32,8 +33,10 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 function DoctorCard({ doctor }) {
 
-
+  console.log(doctor);
+  
     const {
+       _id ,
         fullName, 
         speciality,
         services,
@@ -53,7 +56,9 @@ function DoctorCard({ doctor }) {
         setLiked(true);
         }
     };
-
+ 
+    const navigate = useNavigate();
+ 
     const [value, setValue] = useState(2);
 
         return (
@@ -70,7 +75,7 @@ function DoctorCard({ doctor }) {
                       marginBottom: '1.5rem'
                     }}>
                       <Box sx={{width: '12rem'  , height: '10rem' , marginTop: '.4rem' }}>
-                        <img src={profilePicture.secure_url}
+                        <img src={profilePicture?.secure_url}
                           style={{
                             width: '100%',
                             height: '100%',
@@ -87,10 +92,10 @@ function DoctorCard({ doctor }) {
                              <Typography variant='subtitle2' sx={{ color: 'gray', paddingLeft: '.4rem' }}>
                                 <span style={{display: 'flex' , alignItems: 'space-between' }}>
                                   <img
-                                    src={speciality.specialityImg.secure_url}
+                                    src={speciality?.specialityImg?.secure_url}
                                     style={{ width: '1.2rem', marginRight: '.6rem' }} alt=""   
                                   />
-                                  { speciality.name}
+                                  { speciality?.name}
                                 </span>
                             </Typography>
                           <Box sx={{ paddingLeft: '.5rem' }}>
@@ -147,10 +152,17 @@ function DoctorCard({ doctor }) {
                             <Stack direction="row" marginBottom={1} spacing={2}  > 
                                <CurrencyRupeeIcon fontSize='small'  onClick={handleLike}/>
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
-                                    {speciality.fees}
+                                    {speciality?.fees}
                                 </Typography>
                             </Stack>
-                            <ColorButton sx={{marginTop: '.5rem'}}>Appoinment</ColorButton>                    
+                           <ColorButton
+                              sx={{ marginTop: '.5rem' }}
+                              onClick={() => {
+                                  navigate(`/doctor/${_id}`)
+                              }}
+                           >
+                               Appoinment
+                           </ColorButton>                    
                       </Box> 
                     </Box>
             )

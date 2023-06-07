@@ -78,7 +78,8 @@ router.get('/slots', isLoggedIn, isDoctor, async (req, res) => {
       return res.status(404).json({ errorInfo: 'Doctor not found' });
     }
 
-    const availableSlots = doctor.availableSlots;
+    const availableSlots = doctor.availableSlots.sort((a, b) => new Date(a.date) - new Date(b.date));
+;
 
     return res.json({ availableSlots });
   } catch (error) {
