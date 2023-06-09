@@ -9,9 +9,10 @@ import TextField from '@mui/material/TextField';
 import  Typography  from '@mui/material/Typography';
 import  Divider  from '@mui/material/Divider';
 import  Button  from '@mui/material/Button';
-
+import Rating from '@mui/material/Rating';
 
 import { styled } from '@mui/material/styles';
+import BookingInfo from '../Shared/BookingInfo';
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -26,7 +27,6 @@ const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#2CE1FE',
   }
 }));
-
 
 
 function Payment() {
@@ -98,9 +98,9 @@ function Payment() {
         <>
             <Navbar {...navBarProps}></Navbar>
             <Stack
-                direction= 'row'
+                direction='row'
+                spacing={5}
                 sx={{
-                    border: '2px red solid',
                     marginTop: '5rem',
                     padding: '2rem'
                 }}>
@@ -157,15 +157,64 @@ function Payment() {
                         />
       
                         <ColorButton
-                        //   onClick={() => navigate(`/doctor/${id}/checkout`)}
                           sx={{
                            }}>
                             Confirm Pay
                         </ColorButton>
                     </Stack>
                 </Box>
-                <Box>
-                
+                <Box sx={{
+                    width: '30%',
+                    border: '1px gray dotted',
+                    borderRadius: '.3rem'
+                }}>
+                    <Typography variant='h5' padding= '1rem'>Booking Summary</Typography>
+                    <Divider />
+                    <Stack padding='.8rem' direction='row' spacing={2}>
+                        <img style={{ width: '25%', height: '25%' }}
+                            src={doctor[0]?.profilePicture?.secure_url}
+                            alt="speciality_img"    
+                        />
+                        <Box padding= '.3rem 0rem'>
+                            <Typography variant='subtitle1'>
+                               Dr. {doctor[0]?.fullName}
+                            </Typography>
+                            <Typography
+                                variant='subtitle2' 
+                                sx={{color: 'gray'}}
+                            >
+                                  { doctor[0]?.speciality?.name}
+                            </Typography>
+                            <Rating name="read-only" size='medium' value={2} readOnly />
+                        </Box>
+                    </Stack>
+                    
+                    <BookingInfo description={'Date'} info={'23-07-2023'}/>
+                    <BookingInfo description={'Start Time'} info={'10:00AM'}/>
+                    <BookingInfo description={'End Time'} info={'11:00AM'}/>
+                    <BookingInfo description={'Consultation Fee'} info={400}/>
+                    <BookingInfo description={'Booking Fee'} info={50}/>
+                    <Divider sx={{ width: '90%', margin: '.5rem auto' }} />
+                    <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '.4rem 1.5rem'
+                    }}>
+                        <Typography
+                            sx={{
+                                fontSize: '1.5rem',
+                                letterSpacing: '.3rem'
+                            }}
+                        >
+                            Total
+                        </Typography>
+                        <Typography  sx={{
+                                fontSize: '1.5rem',
+                                letterSpacing: '.3rem'
+                        }}>
+                            450
+                        </Typography>
+                    </Box>
                 </Box>
             </Stack>
         </>
