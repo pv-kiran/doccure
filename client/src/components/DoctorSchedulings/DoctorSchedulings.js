@@ -64,18 +64,28 @@ const DoctorSchedulings = () => {
     return state.appointment
   })
 
+  console.log(appointmentState.availableSlots);
+
   let dateArray = [];
 
-  if (appointmentState.appointments) {
-     dateArray = appointmentState.appointments.map(slot => {
+  if (appointmentState.availableSlots.length > 0) {
+     dateArray = appointmentState.availableSlots.map(slot => {
       return {
         date: slot.date,
         _id: slot._id
       };
+     });
+    dateArray.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+
+      return dateA - dateB;
     });
+
+    console.log(dateArray);
   }
 
-
+  
 
   const [selectedId, setSelectedId] = useState(dateArray.length > 0 ? dateArray[0]._id : null);
   const [slotId, setSlotId] = useState(null);
@@ -92,12 +102,14 @@ const DoctorSchedulings = () => {
   // const [selectedId, setSelectedId] = useState(dateArray[0]);
 
   const onClickDate = (_id) => {
-    console.log(_id);
-    setSelectedId(_id);
+     console.log('hello');
+     console.log(_id);
+    //  dispatch(setSelectedDate(_id));
+     setSelectedId(_id);
   };
 
 
-  const dateSlotes = appointmentState.appointments.filter(data => data._id === selectedId) || [];
+  const dateSlotes = appointmentState.availableSlots.filter(data => data._id === selectedId) || [];
 
   // console.log(dateSlots);
 
@@ -223,7 +235,8 @@ const DoctorSchedulings = () => {
     selectedId,
     onClickDate,
     editSlot,
-    deleteSlot
+    deleteSlot,
+    role: 'doctor'
   }
 
 
@@ -256,7 +269,9 @@ const DoctorSchedulings = () => {
           </ColorButton>
       </Stack>
        
-      <SchedulingCard {...schedulingCardProps}></SchedulingCard>
+          <SchedulingCard {...schedulingCardProps}></SchedulingCard>
+
+    
             
       <Modal sx={{paddingTop: '2rem' }}  open={isOpen} onClose={closeModal}>
         <Box

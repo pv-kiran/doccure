@@ -5,7 +5,7 @@ import instance from '../../../api/axiosInstance';
 export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slots , {rejectWithValue}) => {
   // console.log(user);
   try {
-    let response = await instance.get('doctor/slots');
+    let response = await instance.get('appointment/slots');
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -15,7 +15,7 @@ export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slot
 
 export const doctorAddSlots = createAsyncThunk('doctor/addSlots', async (slots , { rejectWithValue }) => {
     try {
-        const response = await instance.post('doctor/slots', slots);
+        const response = await instance.post('appointment/slots', slots);
         console.log(response.data); 
         return response.data;
     } catch (error) {
@@ -27,7 +27,7 @@ export const doctorAddSlots = createAsyncThunk('doctor/addSlots', async (slots ,
 export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({mainSlotId , details}, { rejectWithValue }) => {
   
     try {
-        const response = await instance.put(`doctor/${mainSlotId}/slots`, details);
+        const response = await instance.put(`appointment/${mainSlotId}/slots`, details);
         console.log(response.data); 
         return response.data;
     } catch (error) {
@@ -37,7 +37,7 @@ export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({
 
 export const doctorDeleteSlots = createAsyncThunk('doctor/deleteSlots', async ({mainSlotId , slotId}, { rejectWithValue }) => {
     try {
-        const response = await instance.delete(`doctor/${mainSlotId}/slots/${slotId}`);
+        const response = await instance.delete(`appointment/${mainSlotId}/slots/${slotId}`);
         console.log(response.data); 
         return response.data;
     } catch (error) {
@@ -48,7 +48,9 @@ export const doctorDeleteSlots = createAsyncThunk('doctor/deleteSlots', async ({
 const initialState = {
   loading: false,
   success: false,
-  appointments: [] ,
+  availableSlots: [],
+  selectedDateId: null ,
+  selectedSlotId: null,
   error: ''
 }
 
@@ -63,6 +65,13 @@ const appointmentSlice = createSlice({
             state.success = false;
             state.error = '';
         },
+        setSelectedDateId: (state, action) => {
+            console.log(action.payload)
+            state.selectedDateId = action.payload;
+        } ,
+        setSelectedSlot: (state, action) => {
+            state.selectedSlotId =  action.payload;
+        }
     } ,
     extraReducers: builder => {
         builder.addCase(doctorGetSlots.pending, state => {
@@ -72,7 +81,7 @@ const appointmentSlice = createSlice({
         builder.addCase(doctorGetSlots.fulfilled, (state , action) => {
             state.loading = false;
             state.success = true;
-            state.appointments = action.payload.availableSlots
+            state.availableSlots = action.payload.availableSlots
             state.error = '';
         })
       
@@ -87,7 +96,7 @@ const appointmentSlice = createSlice({
         builder.addCase(doctorAddSlots.fulfilled, (state , action) => {
             state.loading = false;
             state.success = true;
-            state.appointments = action.payload.availableSlots
+            state.availableSlots = action.payload.availableSlots
             state.error = '';
         })
       
@@ -102,7 +111,7 @@ const appointmentSlice = createSlice({
         builder.addCase(doctorUpdateSlots.fulfilled, (state , action) => {
             state.loading = false;
             state.success = true;
-            state.appointments = action.payload.availableSlots
+            state.availableSlots = action.payload.availableSlots
             state.error = '';
         })
       
@@ -117,7 +126,7 @@ const appointmentSlice = createSlice({
         builder.addCase(doctorDeleteSlots.fulfilled, (state , action) => {
             state.loading = false;
             state.success = true;
-            state.appointments = action.payload.availableSlots
+            state.availableSlots = action.payload.availableSlots
             state.error = '';
         })
       
@@ -131,4 +140,4 @@ const appointmentSlice = createSlice({
 
 
 export default appointmentSlice.reducer
-export const { appointmentStateReset } = appointmentSlice.actions;
+export const { appointmentStateReset , setSelectedSlot , setSelectedDateId } = appointmentSlice.actions;

@@ -66,7 +66,7 @@ function DoctorVerticalCard({ doctor }) {
                       // direction='row'
                       // spacing={1}
                       sx={{
-                      border: '1px gray dotted',
+                      border: '1px #d4d3d2 dotted',
                       borderRadius: '.3rem' ,
                       padding: '1rem',
 
@@ -87,7 +87,7 @@ function DoctorVerticalCard({ doctor }) {
                           }} alt="" />    
                       </Box>
                       
-                      <Stack spacing={1} sx={{width: '100%', padding: '0 .5rem'}}>
+                      <Stack spacing={1} sx={{width: '100%', padding: '0 .2rem'}}>
                         <Typography variant='h6' color='#2CE1FE'>Dr. { fullName}</Typography>
                             <Typography variant='subtitle2' sx={{color: 'gray' , paddingLeft: '.4rem' }}>
                                 BDS, MDS - Oral & Maxillofacial Surgery
@@ -101,7 +101,7 @@ function DoctorVerticalCard({ doctor }) {
                                   { speciality?.name}
                                 </span>
                             </Typography>
-                          <Box sx={{ paddingLeft: '.5rem' }}>
+                          <Box>
                                 <Rating
                                   name="simple-controlled"
                                   value={value}
@@ -109,9 +109,30 @@ function DoctorVerticalCard({ doctor }) {
                                     setValue(newValue);
                                   }}
                                 />
-                            </Box>
-                            <Box sx={{ margin: '.2rem 0', display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ marginLeft: '0.5rem' , color: 'gray' }}>
+                          </Box>
+                          <Box sx={{
+                                width: '100%',
+                                color: '#424240',
+                                padding: '.5rem .3rem',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                marginBottom: '1rem',
+                                // border: '2px red solid'
+                              }}>
+                                <Stack direction="row" color= 'gray' marginRight={2} spacing={1}> 
+                                    <ThumbUpOffAltIcon fontSize='small' onClick={handleLike}/>
+                                    <Typography variant='subtitle2'>{ likes}</Typography>
+                                </Stack>
+                                <Stack direction="row" color= 'gray'  spacing={1}> 
+                                    <ChatBubbleOutlineIcon fontSize='small'  onClick={handleLike}/>
+                                    <Typography variant='subtitle2' sx={{fontsize: '.7rem'}} >17 Comments</Typography>
+                                </Stack>
+                          </Box> 
+                      </Stack>
+                      
+                      <Box sx={{ margin: '.5rem 0', display: 'flex', alignItems: 'center' }}>
+                            <Box sx={{ marginLeft: '-1.2rem' , color: 'gray' }}>
                                   {services.map((service, index) => (
                                       <span
                                       key={index}
@@ -127,39 +148,7 @@ function DoctorVerticalCard({ doctor }) {
                                       </span>
                                   ))}
                             </Box>
-                          </Box>
-                      </Stack>
-                      <Box sx={{
-                        width: '100%',
-                        color: '#424240',
-                        padding: '.5rem 1rem',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        marginTop: '.4rem'
-                      }}>
-                            <Stack direction="row" color= 'gray' marginRight={2} spacing={1}> 
-                                <ThumbUpOffAltIcon fontSize='small' onClick={handleLike}/>
-                                <Typography variant='subtitle2'>{ likes}</Typography>
-                            </Stack>
-                            <Stack direction="row" color= 'gray'  spacing={1}> 
-                                <ChatBubbleOutlineIcon fontSize='small'  onClick={handleLike}/>
-                                <Typography variant='subtitle2' sx={{fontsize: '.7rem'}} >17 Comments</Typography>
-                            </Stack>
-                            {/* <Stack direction="row" marginBottom={1} spacing={2}> 
-                                <FmdGoodOutlinedIcon fontSize='small'  onClick={handleLike}/>
-                                <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
-                                 {address.city} , {address.state}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" marginBottom={1} spacing={2}  > 
-                               <CurrencyRupeeIcon fontSize='small'  onClick={handleLike}/>
-                                <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
-                                    {speciality?.fees}
-                                </Typography>
-                            </Stack>                   */}
-                      </Box> 
+                      </Box>
                     </Box>
             )
 }

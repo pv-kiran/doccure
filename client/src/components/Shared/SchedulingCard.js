@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useState} from 'react'
 import Slider from "react-slick";
 
 import { Box } from '@mui/material';
@@ -9,6 +9,8 @@ import 'slick-carousel/slick/slick-theme.css'
 
 import DateButton from '../Shared/DateButton';
 import TimeButton from '../Shared/TimeButton';
+import { useDispatch } from 'react-redux';
+import { setSelectedSlot } from '../../app/features/appointment/appointmentSlice';
 
 const settings = {
       dots: true,
@@ -46,8 +48,18 @@ const settings = {
 };
 
 
-function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSlot, deleteSlot }) {
+
+function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSlot, deleteSlot, role }) {
     
+  const [selectedSlotId, setSelectedSlotId] = useState(null);
+    
+  const dispatch = useDispatch();
+
+  const handleSelect = (id) => {
+      setSelectedSlotId(id);
+      dispatch(setSelectedSlot(id));
+  };
+
   return (
     <Box sx={{
         // width: '94%',
@@ -63,6 +75,7 @@ function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSl
           <Slider {...settings}>
             {dateArray.length && dateArray.map(({ date, _id }) => (
               <DateButton
+                 key={_id}
                 date={date}
                 _id={_id}
                 selectedId={selectedId}
@@ -74,8 +87,8 @@ function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSl
         <Box textAlign='justify' sx={{ padding: '.5rem 0' }}>
           {dateSlotes[0]?.slots && dateSlotes[0]?.slots.map(({ startTime, endTime, _id }) => 
              {
-                  const data = { startTime , endTime , editSlot , deleteSlot , _id }
-                  return <TimeButton {...data}></TimeButton>
+                  const data = { startTime , endTime , editSlot , deleteSlot , _id , role , handleSelect , selectedSlotId }
+                  return <TimeButton key={_id} {...data}></TimeButton>
              }
           )}
         </Box>

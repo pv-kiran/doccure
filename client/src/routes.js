@@ -53,6 +53,7 @@ import PatientNotifications from './components/PatientNotifications/PatientNotif
 import PatientMessages from './components/PatientMessages/PatientMessages';
 import ViewDoctors from './components/ViewDoctors/ViewDoctors';
 import AvailableSlots from './pages/AvailableSlots';
+import Checkout from './pages/Checkout';
 
 function AppRoutes() {
   return (
@@ -76,7 +77,8 @@ function AppRoutes() {
         {/* Patient specfic routes */}
         <Route element={<PatientProtectedRoutes></PatientProtectedRoutes>}>
           <Route path="/patient/onboarding" element={<Onboarding role='patient' />} />
-          <Route path='/doctor/:id' element={<AvailableSlots/>}></Route>
+          <Route path='/doctor/:id' element={<AvailableSlots />}></Route>
+          <Route path='/doctor/:id/checkout' element={<Checkout/>}></Route>
           <Route path='/patient' element={<PatientDashboardLayout/>}>
                <Route path='dashboard' element={<PatientDoctorsTable/>}></Route>
                <Route path='appointments' element={<PatientAppointmentTable/>}></Route>

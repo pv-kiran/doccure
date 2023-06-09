@@ -19,6 +19,7 @@
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.2",
-    "nodemailer": "^6.9.2"
+    "nodemailer": "^6.9.2",
+    "razorpay": "^2.8.6"
   }
 }

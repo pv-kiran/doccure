@@ -1,18 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// const { cloudinary } = require('../utils/cloudinaryHelper');
 const Doctor = require('../models/doctor');
-// const Speciality = require('../models/speciality');
-
-
-const { isLoggedIn, isDoctor } = require('../middlewares/authMiddleware');
-const { updateDoctorProfile, getSpecialities } = require('../controllers/doctorController');
-
-
-router.put('/profile/update', isLoggedIn, isDoctor, updateDoctorProfile)
-
-router.get('/specialities', getSpecialities);
+const { isDoctor, isLoggedIn, isPatient } = require('../middlewares/authMiddleware');
+const { razorpay } = require('../utils/razorpay');
+const Appointment = require('../models/appointment');
 
 
 
@@ -194,6 +186,89 @@ router.delete('/:mainSlotId/slots', isLoggedIn , isDoctor , async (req, res) => 
 })
 
 
+router.get('/doctor/:id', isLoggedIn , async (req, res) => {
+    const { id } = req.params;
+    try {
+        const doctor = await Doctor.find({ _id: id }).populate('speciality');
+        if (doctor.length > 0) {
+            res.status(200).json({
+                doctor: doctor
+            })
+        } else {
+            res.status(404).json({errorInfo: 'Doctor not found'})
+        }
+    } catch (err) {
+        res.status(500).json({
+            errorInfo: 'Internal server error'
+        })
+    }
+})
+
+router.post('/new', isLoggedIn, isPatient, async (req, res) => {
+    
+    const patientId = req.userId;
+
+    try {
+
+        const { doctorId, dateId, slotId, startTime, endTime } = req.body;
+
+        const appointmentExists = await Appointment.findOne({
+            doctorId,
+            patientId,
+            dateId,
+            slotId,
+         });
+
+        if (appointmentExists) {
+              return res.status(400).json({ errorInfo: 'This slot s already booked' });
+        }
+
+        // Create a new appointment
+        const appointment = new Appointment({
+            doctorId,
+            patientId,
+            dateId,
+            slotId,
+            startTime,
+            endTime
+        });
+
+        // Save the appointment to the database
+        await appointment.save();
 
 
-module.exports = router
+
+        // Create Razorpay order
+        const order = await razorpay.orders.create({
+            amount: 100, // Replace with the actual appointment amount
+            currency: 'INR',
+            receipt: "receipt#1"
+        });
+
+        console.log(order);
+
+        // Return the order ID to the client
+        res.json({ order });
+        
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while creating the appointment.' });
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = router;
