@@ -48,7 +48,7 @@ function TimeButton({ startTime, endTime, editSlot, deleteSlot, _id, role , hand
                 marginLeft: '1rem',
                 cursor: 'pointer'
               }} 
-              onClick={() => {handleSelect(_id)}}
+              onClick={() => {handleSelect(_id , startTime , endTime)}}
           />
       }
         

@@ -101,6 +101,8 @@ const DoctorSchedulings = () => {
 
   // const [selectedId, setSelectedId] = useState(dateArray[0]);
 
+
+  // todo - move to date button component
   const onClickDate = (_id) => {
      console.log('hello');
      console.log(_id);
@@ -193,7 +195,8 @@ const DoctorSchedulings = () => {
   };
 
 
-  // edit slots - logic
+  // edit slots - logic 
+  // todo - move to time button
   const [editTimings, setEditTimings] = useState({});
 
   const editSlot = (id ,timings) => {
@@ -206,9 +209,11 @@ const DoctorSchedulings = () => {
   const handleEditModalOpen = () => setEditModalOpen(true);
  
   const handleEditSubmit = (updatedTimings) => {
-    console.log(updatedTimings);
-    console.log(selectedId);
-    console.log(slotId)
+    // selectedId - selected date Id
+    // slotId - selectedTimeId
+    // console.log(updatedTimings);
+    // console.log(selectedId);
+    // console.log(slotId)
     const slotDetials = {
       mainSlotId: selectedId,
       details: {

@@ -55,9 +55,9 @@ function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSl
     
   const dispatch = useDispatch();
 
-  const handleSelect = (id) => {
-      setSelectedSlotId(id);
-      dispatch(setSelectedSlot(id));
+  const handleSelect = (id , startTime , endTime) => {
+      // setSelectedSlotId(id);
+    dispatch(setSelectedSlot({ id, startTime, endTime }));
   };
 
   return (

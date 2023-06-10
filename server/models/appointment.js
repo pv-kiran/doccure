@@ -18,6 +18,14 @@ const appointmentSchema = new mongoose.Schema({
       slotId: {
         type: mongoose.Schema.Types.ObjectId
       },
+      paymentId: {
+        type: String,
+        required: true
+      },
+      orderId: {
+        type: String,
+        required : true
+      } ,
       isApprovedByDoctor: {
         type: Boolean,
         default: false

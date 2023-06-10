@@ -1,7 +1,8 @@
 import React from 'react'
 import { Button, Box } from '@mui/material';
 
-function DateButton({date , _id , selectedId , onClickDate}) {
+function DateButton({ date, _id, selectedId, onClickDate }) {
+    
   return (
     <Box key={_id}>
         <Button

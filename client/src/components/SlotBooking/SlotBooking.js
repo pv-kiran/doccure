@@ -90,7 +90,8 @@ function SlotBooking() {
         return state.appointment
     })
 
-    const { selectedSlotId } = appointmentState;
+  const {selectedDateId ,  selectedSlotId , startTime , endTime } = appointmentState;
+  
 
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;
@@ -137,15 +138,16 @@ function SlotBooking() {
     const [selectedId, setSelectedId] = useState(dateArray.length > 0 ? dateArray[0]._id : null);
 
     useEffect(() => {
-        if (dateArray.length > 0) {
-        setSelectedId(dateArray[0]._id);
+      if (dateArray.length > 0) {
+           dispatch(setSelectedDateId(dateArray[0]._id));
+           setSelectedId(dateArray[0]._id);
         }
     }, [dateArray.length]);
 
     const onClickDate = (_id) => {
         console.log(_id);
-      setSelectedId(_id);
-      // dispatch(setSelectedDateId(id));
+        setSelectedId(_id);
+        dispatch(setSelectedDateId(_id));
     };
 
 
@@ -183,6 +185,15 @@ function SlotBooking() {
     };
 
 
+    const appointmentDetails = {
+            doctorId : id , 
+            dateId : selectedDateId,
+            slotId :selectedSlotId,
+            startTime : startTime,
+            endTime : endTime
+    }
+  
+ 
 
 
     // console.log(id);
@@ -239,7 +250,9 @@ function SlotBooking() {
                         onChangeIndex={handleChangeIndex}
                     >
                         <TabPanel value={value} index={0} dir={theme.direction}>
-                              <SchedulingCard  {...schedulingCardProps} />          
+                            {
+                              dateArray.length > 0 && <SchedulingCard  {...schedulingCardProps} />
+                            }            
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
                           Item Two
@@ -249,7 +262,12 @@ function SlotBooking() {
 
                     {
                        selectedSlotId && <ColorButton
-                          onClick={() => navigate(`/doctor/${id}/checkout`)}
+                           onClick={() => {
+                              console.log(appointmentDetails);
+                              localStorage.setItem('bookedSlot' , JSON.stringify(appointmentDetails))
+                              navigate(`/doctor/${id}/checkout`)
+                           } 
+                          }
                           sx={{
                             position: 'absolute',
                             bottom: '1rem',

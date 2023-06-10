@@ -77,7 +77,6 @@ router.post('/slots', isLoggedIn, isDoctor, async (req, res) => {
 });
 
 
-
 router.put('/:mainSlotId/slots', isLoggedIn, isDoctor, async (req, res) => {
   try {
     const { mainSlotId } = req.params;
@@ -204,19 +203,86 @@ router.get('/doctor/:id', isLoggedIn , async (req, res) => {
     }
 })
 
-router.post('/new', isLoggedIn, isPatient, async (req, res) => {
+router.post('/initiate', isLoggedIn, isPatient, async (req, res) => {
     
     const patientId = req.userId;
 
     try {
 
-        const { doctorId, dateId, slotId, startTime, endTime } = req.body;
+        // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
+      
+        const { doctorId, dateId, slotId, startTime, endTime, fees } = req.body;
+      
 
         const appointmentExists = await Appointment.findOne({
             doctorId,
             patientId,
-            dateId,
+            dateId , 
             slotId,
+            startTime,
+            endTime
+         });
+
+        if (appointmentExists) {
+              return res.status(400).json({ errorInfo: 'This slot s already booked' });
+      }
+      
+        const order = await razorpay.orders.create({
+            amount: fees * 100, 
+            currency: 'INR',
+            receipt: "receipt#1"
+        });
+
+        console.log(order);
+
+        res.json({ order });
+        
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while creating the appointment.' });
+  }
+})
+
+router.post('/create', isLoggedIn, isPatient, async (req, res) => {
+    
+    const patientId = req.userId;
+
+    try {
+
+        // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
+      
+      const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId } = req.body;
+      // const { selectedDateId, selectedSlotId, startTime, endTime, doctorId, fees, paymentId, orderId } = req.body;
+      
+      const doctor = await Doctor.findById(doctorId);
+      console.log(doctor);
+
+      const slot = doctor.availableSlots.find((slot) => slot._id.toString() === dateId);
+
+      console.log(dateId);
+      console.log(slot);
+
+      if (!slot) {
+        return res.status(400).json({ message: 'Slot not available' });
+      }
+
+      const selectedSlot = slot.slots.find((slot) => slot._id.toString() === slotId);
+
+      if (!selectedSlot || selectedSlot.status === true) {
+        return res.status(400).json({ message: 'Slot not available' });
+      }
+
+      // Mark the slot as booked
+      selectedSlot.status = true;
+
+      // Save the changes to the doctor's availableSlots
+      await doctor.save();
+
+        const appointmentExists = await Appointment.findOne({
+            doctorId,
+            patientId,
+            dateId , 
+            slotId 
          });
 
         if (appointmentExists) {
@@ -227,36 +293,24 @@ router.post('/new', isLoggedIn, isPatient, async (req, res) => {
         const appointment = new Appointment({
             doctorId,
             patientId,
-            dateId,
+            dateId ,
             slotId,
             startTime,
-            endTime
+            endTime, 
+            fees,
+            orderId,
+            paymentId
         });
 
-        // Save the appointment to the database
         await appointment.save();
 
-
-
-        // Create Razorpay order
-        const order = await razorpay.orders.create({
-            amount: 100, // Replace with the actual appointment amount
-            currency: 'INR',
-            receipt: "receipt#1"
-        });
-
-        console.log(order);
-
-        // Return the order ID to the client
-        res.json({ order });
+        res.status(200).json({ appointment });
         
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while creating the appointment.' });
   }
 })
-
-
 
 
 

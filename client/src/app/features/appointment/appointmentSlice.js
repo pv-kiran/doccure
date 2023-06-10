@@ -51,6 +51,9 @@ const initialState = {
   availableSlots: [],
   selectedDateId: null ,
   selectedSlotId: null,
+  startTime: '',
+  endTime: '',
+  bookedSlot: JSON.parse(localStorage.getItem('bookedSlot')) ?  JSON.parse(localStorage.getItem('user')) : null,
   error: ''
 }
 
@@ -66,12 +69,20 @@ const appointmentSlice = createSlice({
             state.error = '';
         },
         setSelectedDateId: (state, action) => {
-            console.log(action.payload)
             state.selectedDateId = action.payload;
         } ,
         setSelectedSlot: (state, action) => {
-            state.selectedSlotId =  action.payload;
-        }
+          // state.selectedSlotId = action.payload.id;
+          // state.startTime = action.payload.startTime;
+          // state.endTime = action.payload.endTime
+          const { id, startTime, endTime } = action.payload;
+          state.selectedSlotId = id;
+          state.startTime = startTime;
+          state.endTime = endTime;
+       },
+       saveSelectedSlot: (state) => {
+         state.bookedSlot = JSON.parse(localStorage.getItem('bookedSlot'));
+       }
     } ,
     extraReducers: builder => {
         builder.addCase(doctorGetSlots.pending, state => {

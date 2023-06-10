@@ -15,6 +15,8 @@ import { styled } from '@mui/material/styles';
 import BookingInfo from '../Shared/BookingInfo';
 
 
+
+
 const ColorButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#0AE4B3',
   fontsize: '2rem',
@@ -67,6 +69,8 @@ function Payment() {
       return state.appointment
     })
 
+    const {selectedDateId ,  selectedSlotId , startTime , endTime } = appointmentState;
+
     console.log(appointmentState);
 
     const userInfo = {
@@ -93,6 +97,92 @@ function Payment() {
         bgColor: '#fff',
         color: 'green'
     }
+
+
+    // payment handler
+  function loadScript(src) {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+  }
+
+    const onConfirmPay = async () => {
+
+        const bookedSlot = JSON.parse(localStorage.getItem('bookedSlot'))
+        const fees = Number.parseInt(doctor[0]?.speciality?.fees)  + 50
+
+        console.log(bookedSlot);
+
+        
+
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+        }
+
+        const data = await instance.post('/appointment/initiate',
+                    {
+                        ...bookedSlot , fees
+                    }
+        )
+        console.log(data.data.order);
+
+
+        const options = {
+            key: process.env.REACT_APP_RZP_KEY, // Enter the Key ID generated from the Dashboard
+            amount: 450,
+            currency: 'INR',
+            name: "Soumya Corp.",
+            description: "Test Transaction",
+            // image: { logo },
+            order_id: data.data.order.id,
+            handler: async function (response) {
+
+                console.log(response);
+                const appointmentDetails = {
+                    ...bookedSlot,
+                    fees,
+                    paymentId: response.razorpay_payment_id ,
+                    orderId: response.razorpay_order_id
+                }
+                // const data = {
+                //     orderCreationId: order_id,
+                //     razorpayPaymentId: response.razorpay_payment_id,
+                //     razorpayOrderId: response.razorpay_order_id,
+                //     razorpaySignature: response.razorpay_signature,
+                // };
+
+                const result = await instance.post('/appointment/create', appointmentDetails);
+                console.log(result);
+
+                // alert(result.data.msg);
+            },
+            prefill: {
+                name: "Soumya Dey",
+                email: "SoumyaDey@example.com",
+                contact: "9999999999",
+            },
+            notes: {
+                address: "Soumya Dey Corporate Office",
+            },
+            theme: {
+                color: "#61dafb",
+            },
+        };
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+
+    }
+
 
     return (
         <>
@@ -156,9 +246,7 @@ function Payment() {
                             onChange={e => handleFieldChange('phone', e.target.value)}
                         />
       
-                        <ColorButton
-                          sx={{
-                           }}>
+                        <ColorButton onClick={() => {onConfirmPay()}}>
                             Confirm Pay
                         </ColorButton>
                     </Stack>
@@ -192,7 +280,7 @@ function Payment() {
                     <BookingInfo description={'Date'} info={'23-07-2023'}/>
                     <BookingInfo description={'Start Time'} info={'10:00AM'}/>
                     <BookingInfo description={'End Time'} info={'11:00AM'}/>
-                    <BookingInfo description={'Consultation Fee'} info={400}/>
+                    <BookingInfo description={'Consultation Fee'} info={doctor[0]?.speciality?.fees}/>
                     <BookingInfo description={'Booking Fee'} info={50}/>
                     <Divider sx={{ width: '90%', margin: '.5rem auto' }} />
                     <Box sx={{
@@ -212,7 +300,9 @@ function Payment() {
                                 fontSize: '1.5rem',
                                 letterSpacing: '.3rem'
                         }}>
-                            450
+                            {
+                               doctor.length > 0 &&  Number.parseInt(doctor[0]?.speciality?.fees)  + 50
+                            }
                         </Typography>
                     </Box>
                 </Box>
