@@ -10,7 +10,7 @@ const initialState = {
   error: ''
 }
 
-
+// todo : move the api call to the respective component
 export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin , { rejectWithValue }) => {
     try {
       const response = await instance.post("/auth/admin/login", admin);
@@ -21,7 +21,7 @@ export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin , { 
     }   
 })
 
-
+// todo : move the api call to the respective component
 export const logoutAdmin = createAsyncThunk('admin/logoutAdmin', async (admin , {rejectWithValue}) => {
   try {
     let response = await instance.get('/auth/admin/logout');

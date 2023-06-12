@@ -14,11 +14,11 @@ function DateButton({ date, _id, selectedId, onClickDate }) {
                 marginRight: '1.2rem',
                 padding: '.5rem 1.5rem',
                 backgroundColor: selectedId === _id ? '#FF4877' : 'initial',
-            '&:hover': {
+                '&:hover': {
                     backgroundColor: selectedId === _id ? '#FF4877' : 'initial',
                 }
             }}
-            onClick={() => onClickDate(_id)}
+            onClick={() => onClickDate(_id , date)}
         >
             {date.split('T')[0]}
         </Button>

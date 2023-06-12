@@ -41,6 +41,9 @@ import SpecialityModal from '../SpecialityModal/SpecialityModal';
 import PdfModal from '../PdfModal/PdfModal';
 
 
+import VerifiedIcon from '@mui/icons-material/Verified';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -314,7 +317,7 @@ function DataTable(props) {
   return (
       <Box sx={{
           width: {lg: '100%' , md: '100%', sm : '90%' , xs: '17.5rem'} ,
-          marginTop: '2rem',
+          marginTop: '4rem',
           marginLeft: {lg: '-14rem' , md: '-8rem' , sm: '1rem' , xs: '.5rem'}
       }}>
           <Paper sx={{
@@ -534,6 +537,144 @@ function DataTable(props) {
                   )}
                </TableBody>
             }
+            {
+              tableContent === 'appointment' &&  <TableBody>
+                  {visibleRows.map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row._id}
+                        sx={{
+                          cursor: 'pointer',
+                          height: '2rem'
+                        }}
+                      >
+                        
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {
+                            userRole === 'doctor' ? row.patient?.fullName : row.doctor?.fullName
+                          }
+                        </TableCell>
+                        <TableCell 
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          Date
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {row.startTime} - {row.endTime}
+                        </TableCell>
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none">
+                            {
+                            row.isCancelled ? <Typography sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#b31e41',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                  }}>Cancelled</Typography> :
+                             ( row.isApprovedByDoctor ?
+                                <Typography
+                                  variant='subtitle2'
+                                  sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#0AE4B3',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                  }} color='green'>
+                                  Approved
+                                </Typography> :
+                                <Typography variant='subtitle2'
+                                  sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#c9b075',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                }}>
+                                  Pending
+                                </Typography>
+                              )
+                            }
+                        </TableCell>
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none">
+                            {
+                            
+                              userRole === 'doctor' ?
+                                row.isCancelled ?
+                                    <DisabledByDefaultIcon sx={{ color: 'red' }}></DisabledByDefaultIcon> :
+                                      row.isApprovedByDoctor ?
+                                        <VerifiedIcon sx={{ color: '#0AE4B3' }}></VerifiedIcon> :
+                                          <Button
+                                            onClick={() => { statusToggler(row._id) }}
+                                            sx={{
+                                              border: '1px dotted #0AE4B3',
+                                              fontsize: '1rem', height: '1.3rem',
+                                              color: '#0AE4B3'
+                                            }}>
+                                              Approve
+                                          </Button> :
+                                      row.isApprovedByDoctor ?
+                                          <VerifiedIcon sx={{ color: '#0AE4B3' }}></VerifiedIcon> :
+                                            row.isCancelled ? 
+                                              <DisabledByDefaultIcon sx={{ color: 'red' }}></DisabledByDefaultIcon> :
+                                              <Button
+                                                sx={{
+                                                  border: '1px dotted red',
+                                                  fontsize: '1rem',
+                                                  height: '1.3rem',
+                                                  color: '#e07581'
+                                                }}
+                                                onClick={() => {statusToggler(row._id)}}
+                                              >
+                                                Cancel
+                                              </Button>
+                            }
+                            
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+               </TableBody>
+            }
           </Table>
         </TableContainer>
         <TablePagination
@@ -580,3 +721,29 @@ function DataTable(props) {
 
 
 export default DataTable
+
+
+
+{/* userRole === 'doctor' ?
+                              row.isApprovedByDoctor ? <VerifiedIcon sx={{color: '#0AE4B3'}}></VerifiedIcon> :
+                              <Button
+                                onClick={() => { statusToggler(row._id) }}
+                                sx={{
+                                  border: '1px dotted #0AE4B3',
+                                  fontsize: '1rem', height: '1.3rem',
+                                  color: '#0AE4B3'
+                                }}>
+                                  Approve
+                              </Button> :
+                                row.isCancelled ? <DisabledByDefaultIcon sx={{color: 'red'}}></DisabledByDefaultIcon> :
+                              <Button
+                                  sx={{
+                                    border: '1px dotted red',
+                                    fontsize: '1rem',
+                                    height: '1.3rem',
+                                    color: '#e07581'
+                                  }}
+                                  onClick={() => {statusToggler(row._id)}}
+                              >
+                                  Cancel
+                              </Button> */}

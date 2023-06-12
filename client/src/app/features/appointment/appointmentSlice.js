@@ -49,11 +49,12 @@ const initialState = {
   loading: false,
   success: false,
   availableSlots: [],
-  selectedDateId: null ,
+  selectedDateId: null,
+  selectedDate: null ,
   selectedSlotId: null,
   startTime: '',
   endTime: '',
-  bookedSlot: JSON.parse(localStorage.getItem('bookedSlot')) ?  JSON.parse(localStorage.getItem('user')) : null,
+  bookedSlot: JSON.parse(localStorage.getItem('bookedSlot')) ?  JSON.parse(localStorage.getItem('bookedSlot')) : null,
   error: ''
 }
 
@@ -69,7 +70,10 @@ const appointmentSlice = createSlice({
             state.error = '';
         },
         setSelectedDateId: (state, action) => {
-            state.selectedDateId = action.payload;
+          console.log(action.payload);
+          const { _id, date } = action.payload;
+          state.selectedDateId = _id;
+          state.selectedDate = date;
         } ,
         setSelectedSlot: (state, action) => {
           // state.selectedSlotId = action.payload.id;
@@ -82,6 +86,9 @@ const appointmentSlice = createSlice({
        },
        saveSelectedSlot: (state) => {
          state.bookedSlot = JSON.parse(localStorage.getItem('bookedSlot'));
+       },
+       clearSelectedSlot: (state) => {
+         state.bookedSlot = null;
        }
     } ,
     extraReducers: builder => {
@@ -151,4 +158,4 @@ const appointmentSlice = createSlice({
 
 
 export default appointmentSlice.reducer
-export const { appointmentStateReset , setSelectedSlot , setSelectedDateId } = appointmentSlice.actions;
+export const { appointmentStateReset , setSelectedSlot , setSelectedDateId  , clearSelectedSlot , saveSelectedSlot} = appointmentSlice.actions;

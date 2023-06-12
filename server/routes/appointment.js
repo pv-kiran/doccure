@@ -6,6 +6,7 @@ const { isDoctor, isLoggedIn, isPatient } = require('../middlewares/authMiddlewa
 const { razorpay } = require('../utils/razorpay');
 const Appointment = require('../models/appointment');
 
+const mongoose = require('mongoose');
 
 
 
@@ -17,7 +18,11 @@ router.get('/slots', isLoggedIn, isDoctor, async (req, res) => {
       return res.status(404).json({ errorInfo: 'Doctor not found' });
     }
 
-    const availableSlots = doctor.availableSlots.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const filteredSlots = doctor.availableSlots.filter(slot => new Date(slot.date) >= today);
+
+    const availableSlots = filteredSlots.sort((a, b) => new Date(a.date) - new Date(b.date));
 ;
 
     return res.json({ availableSlots });
@@ -65,10 +70,16 @@ router.post('/slots', isLoggedIn, isDoctor, async (req, res) => {
       existingSlots.push(...slots);
     }
 
-      const result = await doctor.save();
-      console.log(result);
+    const result = await doctor.save();
 
-    return res.status(201).json({ message: 'Slots added successfully', availableSlots: doctor.availableSlots });
+     const today = new Date();
+     today.setHours(0, 0, 0, 0);
+     const filteredSlots = doctor.availableSlots.filter(slot => new Date(slot.date) >= today);
+
+     const availableSlots = filteredSlots.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+
+    return res.status(201).json({ message: 'Slots added successfully', availableSlots: availableSlots });
       
   } catch (error) {
     console.error(error);
@@ -105,8 +116,13 @@ router.put('/:mainSlotId/slots', isLoggedIn, isDoctor, async (req, res) => {
     slotToUpdate.status = status || false;
 
     await doctor.save();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const filteredSlots = doctor.availableSlots.filter(slot => new Date(slot.date) >= today);
 
-    return res.json({ message: 'Slot updated successfully' , availableSlots: doctor.availableSlots});
+     const availableSlots = filteredSlots.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    return res.json({ message: 'Slot updated successfully' , availableSlots: availableSlots});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Server error' });
@@ -205,7 +221,11 @@ router.get('/doctor/:id', isLoggedIn , async (req, res) => {
 
 router.post('/initiate', isLoggedIn, isPatient, async (req, res) => {
     
-    const patientId = req.userId;
+  const patientId = req.userId;   
+  
+  // todo -check for the slot is booked or not
+
+  
 
     try {
 
@@ -250,6 +270,7 @@ router.post('/create', isLoggedIn, isPatient, async (req, res) => {
     try {
 
         // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
+      console.log(req.body);
       
       const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId } = req.body;
       // const { selectedDateId, selectedSlotId, startTime, endTime, doctorId, fees, paymentId, orderId } = req.body;
@@ -260,13 +281,14 @@ router.post('/create', isLoggedIn, isPatient, async (req, res) => {
       const slot = doctor.availableSlots.find((slot) => slot._id.toString() === dateId);
 
       console.log(dateId);
-      console.log(slot);
+      console.log(slot.date);
 
       if (!slot) {
         return res.status(400).json({ message: 'Slot not available' });
       }
 
       const selectedSlot = slot.slots.find((slot) => slot._id.toString() === slotId);
+      console.log(selectedSlot);
 
       if (!selectedSlot || selectedSlot.status === true) {
         return res.status(400).json({ message: 'Slot not available' });
@@ -313,10 +335,156 @@ router.post('/create', isLoggedIn, isPatient, async (req, res) => {
 })
 
 
+router.get('/:id/details', isLoggedIn, isPatient, async (req, res) => {
+
+     const { id } = req.params;
+  
+     try {
+       
+        const appointment = await Appointment.findById(id).populate('doctorId');
+        console.log(appointment);
+
+        const details = {
+          doctorName: appointment?.doctorId?.fullName,
+          startTime: appointment?.startTime,
+          endTime: appointment?.endTime
+        }
+
+        res.status(200).json({ details });
+          
+     } catch (err) {
+        console.log(err);
+     }
+})
+
+router.put('/:id/approve', isLoggedIn, isDoctor, async (req, res) => {
+  const { id } = req.params;
+  try {
 
 
 
+    const appointments = await Appointment.aggregate([
+                {
+                    $match: { _id: new mongoose.Types.ObjectId(id) }
+                },
+                {
+                    '$lookup': {
+                    'from': 'patients', 
+                    'localField': 'patientId', 
+                    'foreignField': '_id', 
+                    'as': 'patient'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$patient'
+                    }
+                },
+                {
+                    '$project': {
+                        'patient.password': 0,
+                    }
+                }
+    ]);
+    
+    if (appointments[0].isApprovedByDoctor) {
+      return res.status(400).json({
+        errorInfo: 'Already approved by doctor'
+      })
+    }
 
+    appointments[0].isApprovedByDoctor = true;
+    await Appointment.findOneAndUpdate({ _id: id }, { $set: appointments[0] })
+    res.status(200).json({success: true , appointment: appointments[0]})
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        errorInfo : 'Internal Server Error'
+      })
+    }
+})
+
+
+router.put('/:id/cancel', isLoggedIn, isPatient, async (req, res) => {
+  try {
+    const {id} = req.params;
+
+     const appointments = await Appointment.aggregate([
+                {
+                    $match: { _id: new mongoose.Types.ObjectId(id) }
+                },
+                {
+                    '$lookup': {
+                    'from': 'doctors', 
+                    'localField': 'doctorId', 
+                    'foreignField': '_id', 
+                    'as': 'doctor'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$doctor'
+                    }
+                },
+                {
+                    '$project': {
+                        'doctor.password': 0,
+                    }
+                }
+    ]);
+
+    if (appointments.length === 0 ) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    if (appointments[0].isCancelled) {
+      return res.status(400).json({ error: 'Appointment is already canceled' });
+    }
+
+    if (appointments[0].isApprovedByDoctor) {
+      return res.status(400).json({ error: 'Appointment is already approved. Cancellation is not allowed' });
+    }
+
+    const doctor = await Doctor.findById(appointments[0].doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    const dateSlot = doctor.availableSlots.find(slot => slot._id.toString() === appointments[0].dateId.toString());
+
+    if (!dateSlot) {
+      return res.status(404).json({ error: 'Date slot not found' });
+    }
+
+    console.log(dateSlot);
+
+    const timeSlot = dateSlot.slots.find(slot => slot._id.toString() === appointments[0].slotId.toString());
+
+
+    if (!timeSlot) {
+      return res.status(404).json({ error: 'Time slot not found' });
+    }
+
+
+    console.log(timeSlot);
+
+    timeSlot.status = false;
+
+    await doctor.save();
+
+    console.log(timeSlot);
+
+    appointments[0].isCancelled = true;
+    await Appointment.findOneAndUpdate({ _id: id }, { $set: appointments[0] })
+
+    res.json({ success: true , appointment : appointments[0]  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while canceling the appointment' });
+  }
+});
 
 
 

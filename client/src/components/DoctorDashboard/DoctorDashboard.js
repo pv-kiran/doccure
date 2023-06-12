@@ -10,7 +10,12 @@ import { useState } from 'react';
 import DashboardDrawer from '../DashboardDrawer/DashboardDrawer';
 import DashboardContent from './../DashboardContent/DashboardContent';
 
-
+import GridViewIcon from '@mui/icons-material/GridView';
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import LockClockIcon from '@mui/icons-material/LockClock';
+import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
+import MessageIcon from '@mui/icons-material/Message';
 
 
 function DoctorDashboard() {
@@ -31,27 +36,35 @@ function DoctorDashboard() {
   const navigationLinks = [
     {
       navItem: 'Dashboard',
-      navLink: '/doctor/dashboard'
+      navLink: '/doctor/dashboard',
+      icon: <GridViewIcon sx={{color: '#579ab5'}}/>
     } ,
     {
       navItem: 'Patients',
-      navLink: '/doctor/mypatients'
+      navLink: '/doctor/mypatients',
+      icon: <EscalatorWarningIcon sx={{color: '#579ab5'}}/>
+
     },
     {
       navItem: 'Appointments',
-      navLink: '/doctor/appointments'
+      navLink: '/doctor/appointments' ,
+      icon: <LockClockIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Schedule Timings',
-      navLink: '/doctor/schedulings'
+      navLink: '/doctor/schedulings' ,
+      icon: <ScheduleIcon sx={{color: '#579ab5'}}/>
+
     } ,
     {
       navItem: 'Notifications',
-      navLink: '/doctor/notifications'
+      navLink: '/doctor/notifications' ,
+      icon: <CircleNotificationsIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Messages',
-      navLink: '/doctor/messagges'
+      navLink: '/doctor/messagges' ,
+      icon: <MessageIcon sx={{color: '#579ab5'}}/>
     }
   ]
 
@@ -60,7 +73,7 @@ function DoctorDashboard() {
     page: 'doctor',
     color: '#fff',
     // open ,
-    bgColor: '#424e82',
+    bgColor: '#496b78',
     handleDrawerOpen,
     setOpen
   }

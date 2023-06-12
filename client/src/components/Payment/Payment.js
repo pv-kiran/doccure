@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import instance from '../../api/axiosInstance';
 import Navbar from '../Navbar/Navbar';
 import { useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ function Payment() {
 
     const [doctor, setDoctors] = useState([]);
 
+    const navigate = useNavigate();
     
   
     useEffect(() => {
@@ -69,7 +70,7 @@ function Payment() {
       return state.appointment
     })
 
-    const {selectedDateId ,  selectedSlotId , startTime , endTime } = appointmentState;
+    const {selectedDateId ,  selectedSlotId , startTime , endTime , bookedSlot } = appointmentState;
 
     console.log(appointmentState);
 
@@ -121,66 +122,73 @@ function Payment() {
 
         console.log(bookedSlot);
 
-        
+        try {
 
-        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-        if (!res) {
-            alert("Razorpay SDK failed to load. Are you online?");
-            return;
-        }
+            const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+            if (!res) {
+                alert("Razorpay SDK failed to load. Are you online?");
+                return;
+            }
 
-        const data = await instance.post('/appointment/initiate',
-                    {
-                        ...bookedSlot , fees
+            const data = await instance.post('/appointment/initiate',
+                        {
+                            ...bookedSlot , fees
+                        }
+            )
+
+
+            const options = {
+                key: process.env.REACT_APP_RZP_KEY, // Enter the Key ID generated from the Dashboard
+                amount: 450,
+                currency: 'INR',
+                name: "Soumya Corp.",
+                description: "Test Transaction",
+                // image: { logo },
+                order_id: data.data.order.id,
+                handler: async function (response) {
+
+                    console.log(response);
+                    const appointmentDetails = {
+                        ...bookedSlot,
+                        fees,
+                        paymentId: response.razorpay_payment_id ,
+                        orderId: response.razorpay_order_id
                     }
-        )
-        console.log(data.data.order);
 
+                    const {data} = await instance.post('/appointment/create', appointmentDetails);
+                    console.log(data);
 
-        const options = {
-            key: process.env.REACT_APP_RZP_KEY, // Enter the Key ID generated from the Dashboard
-            amount: 450,
-            currency: 'INR',
-            name: "Soumya Corp.",
-            description: "Test Transaction",
-            // image: { logo },
-            order_id: data.data.order.id,
-            handler: async function (response) {
+                    navigate(`/appointment/${data?.appointment?._id}/success`)
 
-                console.log(response);
-                const appointmentDetails = {
-                    ...bookedSlot,
-                    fees,
-                    paymentId: response.razorpay_payment_id ,
-                    orderId: response.razorpay_order_id
-                }
-                // const data = {
-                //     orderCreationId: order_id,
-                //     razorpayPaymentId: response.razorpay_payment_id,
-                //     razorpayOrderId: response.razorpay_order_id,
-                //     razorpaySignature: response.razorpay_signature,
-                // };
+                    // alert(result.data.msg);
+                },
+                prefill: {
+                    name: "Testing",
+                    email: "test@gmail.com",
+                    contact: "9999999999",
+                },
+                notes: {
+                    address: "Soumya Dey Corporate Office",
+                },
+                theme: {
+                    color: "#61dafb",
+                },
+            };
+            
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
 
-                const result = await instance.post('/appointment/create', appointmentDetails);
-                console.log(result);
+            } catch (err) {
+                console.log(err);
+            }
 
-                // alert(result.data.msg);
-            },
-            prefill: {
-                name: "Soumya Dey",
-                email: "SoumyaDey@example.com",
-                contact: "9999999999",
-            },
-            notes: {
-                address: "Soumya Dey Corporate Office",
-            },
-            theme: {
-                color: "#61dafb",
-            },
-        };
-        const paymentObject = new window.Razorpay(options);
-        paymentObject.open();
+    }
 
+    const dateFormat = (date) => {
+            const inputDate = new Date(date);
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const formattedDate = inputDate.toLocaleDateString('en-US', options);
+            return formattedDate
     }
 
 
@@ -277,9 +285,9 @@ function Payment() {
                         </Box>
                     </Stack>
                     
-                    <BookingInfo description={'Date'} info={'23-07-2023'}/>
-                    <BookingInfo description={'Start Time'} info={'10:00AM'}/>
-                    <BookingInfo description={'End Time'} info={'11:00AM'}/>
+                    <BookingInfo description={'Date'} info={dateFormat(bookedSlot?.selectedDate)} />
+                    <BookingInfo description={'Start Time'} info={bookedSlot?.startTime}/>
+                    <BookingInfo description={'End Time'} info={bookedSlot?.endTime}/>
                     <BookingInfo description={'Consultation Fee'} info={doctor[0]?.speciality?.fees}/>
                     <BookingInfo description={'Booking Fee'} info={50}/>
                     <Divider sx={{ width: '90%', margin: '.5rem auto' }} />

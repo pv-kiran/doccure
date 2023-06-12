@@ -5,12 +5,13 @@ import axios from 'axios';
 
 const initialState = {
   loading: false,
-  success: false ,
+  success: false,
+  actionSuccess: false,
   user: {} ,
   error: ''
 }
 
-
+// todo: move to respective component
 export const registerPatient = createAsyncThunk('patient/registerPatient', async (patient, { rejectWithValue }) => {
   
   try {
@@ -23,6 +24,8 @@ export const registerPatient = createAsyncThunk('patient/registerPatient', async
 
 })
 
+
+// todo: move to respective component
 export const loginPatient = createAsyncThunk('patient/loginPatient', async (patient, { rejectWithValue }) => {
   
   try {
@@ -38,6 +41,8 @@ export const loginPatient = createAsyncThunk('patient/loginPatient', async (pati
 
 })
 
+
+// todo: move to respective component
 export const updatePatient = createAsyncThunk('patient/updatePatient', async (form, { rejectWithValue }) => {
   
   try {
@@ -57,10 +62,24 @@ export const updatePatient = createAsyncThunk('patient/updatePatient', async (fo
 
 })
 
+
+// todo: move to respective component
 export const logoutPatient = createAsyncThunk('patient/logoutPatient', async (patient , {rejectWithValue}) => {
   // console.log(user);
   try {
     let response = await instance.get('/auth/patient/logout');
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+
+export const getPatientAppointments = createAsyncThunk('patient/getAppointments', async (patient, { rejectWithValue }) => {
+  
+  try {
+    let response = await instance.get('/patient/appointments')
+    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -90,7 +109,16 @@ const patientSlice = createSlice({
          state.loading = false;
          state.success = false;
          state.error = '';
-     }
+    } ,
+    updatePatientAppointmentList: (state, action) => {
+      console.log(state);
+        state.user = state.user.map((obj) => {
+           if (obj._id === action.payload._id) {
+                return action.payload; 
+           }
+           return obj;
+       })
+    }
    } ,
   extraReducers: builder => {
 
@@ -162,9 +190,24 @@ const patientSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+        builder.addCase(getPatientAppointments.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(getPatientAppointments.fulfilled, (state , action) => {
+            state.loading = false;
+            state.actionSuccess = true ;
+            state.error = '';
+            state.user =  action.payload.appointments
+        })
+      
+        builder.addCase(getPatientAppointments.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
 
   }
 })
 
 export default patientSlice.reducer
-export const { registerPatientReset , logginPatientReset , updatePatientReset  } = patientSlice.actions;
+export const { registerPatientReset , logginPatientReset , updatePatientReset , updatePatientAppointmentList  } = patientSlice.actions;

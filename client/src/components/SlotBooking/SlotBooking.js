@@ -21,7 +21,7 @@ import Typography from '@mui/material/Typography';
 
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedDateId } from '../../app/features/appointment/appointmentSlice';
+import { saveSelectedSlot, setSelectedDateId,  } from '../../app/features/appointment/appointmentSlice';
 
 
 
@@ -90,7 +90,7 @@ function SlotBooking() {
         return state.appointment
     })
 
-  const {selectedDateId ,  selectedSlotId , startTime , endTime } = appointmentState;
+  const {selectedDateId ,  selectedSlotId , startTime , endTime , selectedDate } = appointmentState;
   
 
     useEffect(() => {
@@ -121,17 +121,20 @@ function SlotBooking() {
     console.log(doctor[0]?.availableSlots);
 
     if (doctor[0]?.availableSlots) {
-        dateArray = doctor[0].availableSlots?.map(slot => {
-        return {
-            date: slot.date,
-            _id: slot._id
-        };
-        });
-        dateArray.sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateA - dateB;
-        });
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const filteredDateArray = doctor[0].availableSlots?.filter(slot => new Date(slot.date) >= today);
+      dateArray = filteredDateArray.map(slot => {
+          return {
+              date: slot.date,
+              _id: slot._id
+          };
+      });
+      dateArray.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateA - dateB;
+      });
 
     }
         
@@ -139,15 +142,16 @@ function SlotBooking() {
 
     useEffect(() => {
       if (dateArray.length > 0) {
-           dispatch(setSelectedDateId(dateArray[0]._id));
+        dispatch(setSelectedDateId({ _id: dateArray[0]._id, date: dateArray[0].date }));
            setSelectedId(dateArray[0]._id);
         }
     }, [dateArray.length]);
 
-    const onClickDate = (_id) => {
+    const onClickDate = (_id, date) => {
+        //  console.log('Hello')
         console.log(_id);
         setSelectedId(_id);
-        dispatch(setSelectedDateId(_id));
+        dispatch(setSelectedDateId({_id:_id , date: date}));
     };
 
 
@@ -190,7 +194,8 @@ function SlotBooking() {
             dateId : selectedDateId,
             slotId :selectedSlotId,
             startTime : startTime,
-            endTime : endTime
+            endTime: endTime ,
+            selectedDate: selectedDate
     }
   
  
@@ -264,7 +269,8 @@ function SlotBooking() {
                        selectedSlotId && <ColorButton
                            onClick={() => {
                               console.log(appointmentDetails);
-                              localStorage.setItem('bookedSlot' , JSON.stringify(appointmentDetails))
+                              localStorage.setItem('bookedSlot', JSON.stringify(appointmentDetails))
+                              dispatch(saveSelectedSlot());
                               navigate(`/doctor/${id}/checkout`)
                            } 
                           }

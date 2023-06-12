@@ -11,6 +11,11 @@ import DashboardDrawer from '../DashboardDrawer/DashboardDrawer';
 import DashboardContent from '../DashboardContent/DashboardContent';
 
 
+import LockClockIcon from '@mui/icons-material/LockClock';
+import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
+import MessageIcon from '@mui/icons-material/Message';
+import MedicationIcon from '@mui/icons-material/Medication';
+
 
 
 function PatientDashboard() {
@@ -30,19 +35,25 @@ function PatientDashboard() {
     const navigationLinks = [
     {
       navItem: 'Doctors',
-      navLink: '/patient/dashboard'
+      navLink: '/patient/dashboard',
+      icon: <MedicationIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Appointments',
-      navLink: '/patient/appointments'
+      navLink: '/patient/appointments' ,
+      icon: <LockClockIcon sx={{color: '#579ab5'}}/>
+
     },
     {
       navItem: 'Notifications',
-      navLink: '/patient/notifications'
+      navLink: '/patient/notifications',
+      icon: <CircleNotificationsIcon sx={{color: '#579ab5'}}/>
     },
     {
       navItem: 'Messages',
-      navLink: '/patient/messages'
+      navLink: '/patient/messages' ,
+      icon: <MessageIcon sx={{color: '#579ab5'}}/>
+
     }
   ]
     
@@ -53,7 +64,7 @@ function PatientDashboard() {
     page: 'patient',
     color: '#fff',
     // open ,
-    bgColor: '#424e82',
+    bgColor: '#496b78',
     handleDrawerOpen,
     setOpen,
   }

@@ -85,9 +85,9 @@ function SchedulingCard({ dateArray, dateSlotes, selectedId, onClickDate, editSl
           </Slider>
         </Box>
         <Box textAlign='justify' sx={{ padding: '.5rem 0' }}>
-          {dateSlotes[0]?.slots && dateSlotes[0]?.slots.map(({ startTime, endTime, _id }) => 
+          {dateSlotes[0]?.slots && dateSlotes[0]?.slots.map(({ startTime, endTime, status ,_id }) => 
              {
-                  const data = { startTime , endTime , editSlot , deleteSlot , _id , role , handleSelect , selectedSlotId }
+                  const data = { startTime , status , endTime , editSlot , deleteSlot , _id , role , handleSelect , selectedSlotId }
                   return <TimeButton key={_id} {...data}></TimeButton>
              }
           )}

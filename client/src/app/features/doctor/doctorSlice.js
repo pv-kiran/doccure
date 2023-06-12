@@ -3,12 +3,14 @@ import instance from './../../../api/axiosInstance';
 
 const initialState = {
   loading: false,
-  success: false ,
+  success: false,
+  actionSuccess: false ,
   user: {} ,
-  error: ''
+  error: '',
+  appointments: null
 }
 
-
+// todo : move the api call to the respective component
 export const registerDoctor = createAsyncThunk('doctor/registerDoctor', async (doctor , { rejectWithValue }) => {
 
     try {
@@ -20,7 +22,7 @@ export const registerDoctor = createAsyncThunk('doctor/registerDoctor', async (d
     }   
 })
 
-
+// todo : move the api call to the respective component
 export const loginDoctor = createAsyncThunk('doctor/loginDoctor', async (doctor , { rejectWithValue }) => {
 
     try {
@@ -32,7 +34,8 @@ export const loginDoctor = createAsyncThunk('doctor/loginDoctor', async (doctor 
     }   
 })
 
-export const updateDoctor = createAsyncThunk('patient/updateDoctor', async (form, { rejectWithValue }) => {
+// todo : move the api call to the respective component
+export const updateDoctor = createAsyncThunk('doctor/updateDoctor', async (form, { rejectWithValue }) => {
   
   try {
     let response = await instance.put('/doctor/profile/update', form, {
@@ -51,7 +54,8 @@ export const updateDoctor = createAsyncThunk('patient/updateDoctor', async (form
 
 })
 
-export const logoutDoctor = createAsyncThunk('patient/logoutDoctor', async (patient , {rejectWithValue}) => {
+// todo : move the api call to the respective component
+export const logoutDoctor = createAsyncThunk('doctor/logoutDoctor', async (patient , {rejectWithValue}) => {
   // console.log(user);
   try {
     let response = await instance.get('/auth/doctor/logout');
@@ -60,6 +64,20 @@ export const logoutDoctor = createAsyncThunk('patient/logoutDoctor', async (pati
       return rejectWithValue(error.response.data);
     }
 })
+
+
+export const getAppointments = createAsyncThunk('doctor/getAppointments', async (doctor, { rejectWithValue }) => {
+  
+  try {
+    let response = await instance.get('/doctor/appointments')
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+
 
 
 
@@ -81,9 +99,18 @@ const doctorSlice = createSlice({
          state.loading = false;
          state.success = false;
          state.error = '';
-     }
+    },
+    updateAppointmentList: (state, action) => {
+      console.log(state);
+        state.user = state.user.map((obj) => {
+           if (obj._id === action.payload._id) {
+                return action.payload; 
+           }
+           return obj;
+       })
+    }
    } ,
-  extraReducers: builder => {
+   extraReducers: builder => {
         builder.addCase(registerDoctor.pending, state => {
           state.loading = true;
         })
@@ -147,11 +174,29 @@ const doctorSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+    
+        builder.addCase(getAppointments.pending, state => {
+          state.loading = true;
+        })
+      
+        builder.addCase(getAppointments.fulfilled, (state , action) => {
+            state.loading = false;
+            state.actionSuccess = true ;
+            state.error = '';
+            state.user =  action.payload.appointments
+        })
+      
+        builder.addCase(getAppointments.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
+    
+    
   }
 })
 
 export default doctorSlice.reducer
-export const { registerDoctorReset, logginDoctorReset , updateDoctorReset } = doctorSlice.actions;
+export const { registerDoctorReset, logginDoctorReset , updateDoctorReset , updateAppointmentList } = doctorSlice.actions;
 
 
 
