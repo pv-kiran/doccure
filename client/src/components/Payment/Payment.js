@@ -168,7 +168,7 @@ function Payment() {
                     contact: "9999999999",
                 },
                 notes: {
-                    address: "Soumya Dey Corporate Office",
+                    address: "Doccure",
                 },
                 theme: {
                     color: "#61dafb",
@@ -267,21 +267,21 @@ function Payment() {
                     <Typography variant='h5' padding= '1rem'>Booking Summary</Typography>
                     <Divider />
                     <Stack padding='.8rem' direction='row' spacing={2}>
-                        <img style={{ width: '25%', height: '25%' }}
+                        <img style={{ width: '6rem', height: '6rem' , objectFit: 'contain'}}
                             src={doctor[0]?.profilePicture?.secure_url}
                             alt="speciality_img"    
                         />
                         <Box padding= '.3rem 0rem'>
-                            <Typography variant='subtitle1'>
+                            <Typography variant='h6'>
                                Dr. {doctor[0]?.fullName}
                             </Typography>
                             <Typography
-                                variant='subtitle2' 
+                                variant='subtitle1' 
                                 sx={{color: 'gray'}}
                             >
                                   { doctor[0]?.speciality?.name}
                             </Typography>
-                            <Rating name="read-only" size='medium' value={2} readOnly />
+                            <Rating name="read-only" size='small' value={2} readOnly />
                         </Box>
                     </Stack>
                     

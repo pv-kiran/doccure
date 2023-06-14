@@ -41,7 +41,8 @@ function DoctorCard({ doctor }) {
         speciality,
         services,
         profilePicture,
-        address
+        address, 
+        qualification
     } = doctor
 
     const [likes, setLikes] = useState(0);
@@ -80,14 +81,14 @@ function DoctorCard({ doctor }) {
                             width: '100%',
                             height: '100%',
                             display: 'block',
-                            objectFit: 'contain'
+                            objectFit: 'cover'
                           }} alt="" />    
                       </Box>
                       
                       <Stack spacing={1} sx={{width: '55%', padding: '0 .5rem'}}>
                         <Typography variant='h6' color='#2CE1FE'>Dr. { fullName}</Typography>
                             <Typography variant='subtitle2' sx={{color: 'gray' , paddingLeft: '.4rem' }}>
-                                BDS, MDS - Oral & Maxillofacial Surgery
+                                {qualification}
                             </Typography> 
                              <Typography variant='subtitle2' sx={{ color: 'gray', paddingLeft: '.4rem' }}>
                                 <span style={{display: 'flex' , alignItems: 'space-between' }}>

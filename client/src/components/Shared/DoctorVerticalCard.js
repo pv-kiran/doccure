@@ -81,10 +81,10 @@ function DoctorVerticalCard({ doctor }) {
                         <img src={profilePicture?.secure_url}
                           style={{
                             width: '100%',
-                            height: '100%',
+                            height: '90%',
                             display: 'block',
                             objectFit: 'contain'
-                          }} alt="" />    
+                          }} alt="profile" />    
                       </Box>
                       
                       <Stack spacing={1} sx={{width: '100%', padding: '0 .2rem'}}>
@@ -132,7 +132,7 @@ function DoctorVerticalCard({ doctor }) {
                       </Stack>
                       
                       <Box sx={{ margin: '.5rem 0', display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ marginLeft: '-1.2rem' , color: 'gray' }}>
+                            <Box sx={{ marginLeft: '-4rem' , color: 'gray' }}>
                                   {services.map((service, index) => (
                                       <span
                                       key={index}

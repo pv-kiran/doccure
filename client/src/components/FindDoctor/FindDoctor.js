@@ -23,8 +23,7 @@ function FindDoctor() {
       <Typography
         variant="h4"
         sx={{
-          textAlign: 'center',
-          fontFamily: 'robot'
+          textAlign: 'center'
         }}
       >
         What are you looking for?

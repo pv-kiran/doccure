@@ -109,6 +109,7 @@ function UserOnboarding({ role }) {
     const [formData, setFormData] = useState({
         username: '',
         gender: '',
+        qualification: '' ,
         phone: '+91',
         houseName: '',
         speciality: '' ,
@@ -136,6 +137,9 @@ function UserOnboarding({ role }) {
             errors.username = 'Full name is required';
         } else if (!/^[a-z]+ [a-z]+$/i.test(formData.username)) {
             errors.username = 'Please enter your full name';
+        }
+        if (!formData.qualification) {
+            errors.gender = 'Qualification is required';
         }
         if (!formData.gender) {
             errors.gender = 'Gender is required';
@@ -343,6 +347,7 @@ function UserOnboarding({ role }) {
                             />
                     </Box>
                     
+                    
                     {/* User name and Speciality */}
                     <Box
                         sx={{
@@ -351,20 +356,19 @@ function UserOnboarding({ role }) {
                             marginTop: '1.5rem'
                         }}
                     >
-                    <TextField
-                        id="outlined-basic"
-                        label="Full Name"
-                        variant="outlined"     
-                        name='username'
-                        autoComplete='off'
-                        onChange={handleInputChange}
-                        error={!!formErrors.username}
-                        helperText={formErrors.username}
-                        sx={{
-                          width: '48%'    
-                        }}    
-                    /> 
-                        
+                        <TextField
+                            id="outlined-basic"
+                            label="Full Name"
+                            variant="outlined"     
+                            name='username'
+                            autoComplete='off'
+                            onChange={handleInputChange}
+                            error={!!formErrors.username}
+                            helperText={formErrors.username}
+                            sx={{
+                            width: '48%'    
+                            }}    
+                        />  
                         <FormControl
                             error={!!formErrors.speciality}
                             sx={{
@@ -402,15 +406,26 @@ function UserOnboarding({ role }) {
                                 </FormHelperText>
                             )}
                         </FormControl>
-
-                        
                     </Box>
 
+                    {/* Qualification */}
+                    <TextField
+                        id="outlined-basic"
+                        label="Qualification"
+                        variant="outlined"     
+                        name='qualification'
+                        autoComplete='off'
+                        onChange={handleInputChange}
+                        error={!!formErrors.username}
+                        helperText={formErrors.username}
+                        fullWidth
+                        sx={{marginTop: '1.5rem'}}
+                    /> 
+                    
                     {/* Services */}
                     <Autocomplete
                         multiple
                         freeSolo
-                        
                         sx={{
                             margin: '1rem 0'
                         }}
