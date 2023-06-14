@@ -11,7 +11,6 @@ const { isLoggedIn, isDoctor } = require('../middlewares/authMiddleware');
 const { updateDoctorProfile, getSpecialities } = require('../controllers/doctorController');
 const Appointment = require('../models/appointment');
 
-
 router.put('/profile/update', isLoggedIn, isDoctor, updateDoctorProfile)
 
 router.get('/specialities', getSpecialities);

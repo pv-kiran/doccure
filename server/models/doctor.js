@@ -72,6 +72,9 @@ const doctorSchema = new mongoose.Schema({
   },
   phone: {
       type: String,
+  },
+  qualification: {
+    type: String
   } ,
   fullName: {
       type: String, 

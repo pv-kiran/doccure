@@ -270,7 +270,7 @@ router.post('/create', isLoggedIn, isPatient, async (req, res) => {
     try {
 
         // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
-      console.log(req.body);
+      console.log(req.body)
       
       const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId } = req.body;
       // const { selectedDateId, selectedSlotId, startTime, endTime, doctorId, fees, paymentId, orderId } = req.body;

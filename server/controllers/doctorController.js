@@ -6,7 +6,7 @@ const Speciality = require('../models/speciality');
 
 const updateDoctorProfile = async (req, res) => {
 
-    const { username, gender, speciality ,phone, houseName, city, state , services } = req.body;
+    const { username, gender, speciality ,phone, houseName, city, state , services , qualification } = req.body;
     console.log(username);
     console.log(gender);
     console.log(req.files);
@@ -37,7 +37,7 @@ const updateDoctorProfile = async (req, res) => {
         doctor.services = services.split(',');
         doctor.address = { houseName, city, state };
         doctor.speciality = speciality;
-
+        doctor.qualification = qualification;
         
         
         await doctor.save()

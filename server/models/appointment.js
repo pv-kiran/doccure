@@ -9,9 +9,15 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Patient'
       },
-      date: Date,
-      startTime: String,
-      endTime: String,
+      date: {
+         type: Date
+      },
+      startTime: {
+         type: String
+      },
+      endTime: {
+         type: String
+      },
       dateId: {
         type: mongoose.Schema.Types.ObjectId
       },
