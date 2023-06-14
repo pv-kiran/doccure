@@ -5,7 +5,7 @@ import instance from '../../../api/axiosInstance';
 export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slots , {rejectWithValue}) => {
   // console.log(user);
   try {
-    let response = await instance.get('appointment/slots');
+    let response = await instance.get('doctor/slots');
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -15,7 +15,7 @@ export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slot
 
 export const doctorAddSlots = createAsyncThunk('doctor/addSlots', async (slots , { rejectWithValue }) => {
     try {
-        const response = await instance.post('appointment/slots', slots);
+        const response = await instance.post('doctor/slots', slots);
         console.log(response.data); 
         return response.data;
     } catch (error) {
@@ -27,7 +27,7 @@ export const doctorAddSlots = createAsyncThunk('doctor/addSlots', async (slots ,
 export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({mainSlotId , details}, { rejectWithValue }) => {
   
     try {
-        const response = await instance.put(`appointment/${mainSlotId}/slots`, details);
+        const response = await instance.put(`doctor/${mainSlotId}/slots`, details);
         console.log(response.data); 
         return response.data;
     } catch (error) {
@@ -37,7 +37,7 @@ export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({
 
 export const doctorDeleteSlots = createAsyncThunk('doctor/deleteSlots', async ({mainSlotId , slotId}, { rejectWithValue }) => {
     try {
-        const response = await instance.delete(`appointment/${mainSlotId}/slots/${slotId}`);
+        const response = await instance.delete(`doctor/${mainSlotId}/slots/${slotId}`);
         console.log(response.data); 
         return response.data;
     } catch (error) {

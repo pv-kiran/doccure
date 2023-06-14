@@ -1,7 +1,12 @@
 
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
+const Appointment = require('../models/appointment');
+
 const { cloudinary } = require('../utils/cloudinaryHelper');
+
+const mongoose = require('mongoose')
+
 
 const updatePatientProfile = async (req, res) => {
 
@@ -61,7 +66,56 @@ const getAllDoctors = async (req, res) => {
     }
 }
 
+const getMyAppointments = async (req, res) => {
+    console.log(req.userId);
+        try {
+            const appointments = await Appointment.aggregate([
+                {
+                    $match: { patientId: new mongoose.Types.ObjectId(req.userId) }
+                },
+                {
+                    '$lookup': {
+                    'from': 'doctors', 
+                    'localField': 'doctorId', 
+                    'foreignField': '_id', 
+                    'as': 'doctor'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$doctor'
+                    }
+                },
+                {
+                    '$project': {
+                        'doctor.availableSlots': 0 ,
+                        'doctor.password': 0,
+                        'doctor.services': 0
+                    }
+                }
+            ]);
+
+            console.log(appointments);
+            // if (appointments.length === 0) {
+            //   return res.status(404).json({
+            //       success: false ,
+            //       errorInfo: 'No Appointments were found'
+            //   })
+            // }
+
+            res.status(200).json({ appointments:appointments })
+
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({
+            errorInfo: 'Inernal Server Error'
+        })
+  }
+
+}
+
 module.exports = {
     updatePatientProfile,
-    getAllDoctors
+    getAllDoctors,
+    getMyAppointments
 }
