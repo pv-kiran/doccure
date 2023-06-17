@@ -33,7 +33,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 function DoctorCard({ doctor }) {
 
-  console.log(doctor);
+  // console.log(doctor);
   
     const {
        _id ,

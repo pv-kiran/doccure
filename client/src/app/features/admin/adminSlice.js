@@ -11,9 +11,12 @@ const initialState = {
 }
 
 // todo : move the api call to the respective component
-export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin , { rejectWithValue }) => {
+export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin, { rejectWithValue }) => {
+  
+    console.log(admin);
     try {
       const response = await instance.post("/auth/admin/login", admin);
+      console.log(response);
         return response.data;
         
     } catch (error) {
@@ -122,7 +125,8 @@ const adminSlice = createSlice({
             state.error = '';
         })
       
-        builder.addCase(loginAdmin.rejected, (state, action) => {
+    builder.addCase(loginAdmin.rejected, (state, action) => {
+          console.log(action.payload)
             state.loading = false
             state.error = action.payload.errorInfo;
         })

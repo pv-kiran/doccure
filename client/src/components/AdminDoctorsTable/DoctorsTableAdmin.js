@@ -19,12 +19,12 @@ function AdminDoctorsTable() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-        let user = JSON.parse(localStorage.getItem('user')) ;
-        instance.defaults.headers.common = {
-            Authorization : `Bearer ${user.token}`
-    }
-  }, [])
+  // useEffect(() => {
+  //       let user = JSON.parse(localStorage.getItem('user')) ;
+  //       instance.defaults.headers.common = {
+  //           Authorization : `Bearer ${user.token}`
+  //   }
+  // }, [])
 
   useEffect(() => {
     console.log('Hello from admin doctor table')

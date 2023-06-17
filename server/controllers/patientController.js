@@ -46,8 +46,52 @@ const updatePatientProfile = async (req, res) => {
 }
 
 const getAllDoctors = async (req, res) => {
+    // let { limit, skip, specialities } = req.query;
+
+    let { limit, skip, specialities, gender, dates } = req.query;
+    
+    console.log(limit);
+    console.log(skip);
+    console.log(gender);
+    console.log(dates);
+
+    let query = { isAdminVerified: true };
+
+    if (gender) {
+        query.gender = gender;
+    }
+    
+    console.log(query);
+
+    if (specialities) {
+        specialities = specialities.split(',');
+        query.speciality = { $in: specialities }
+    }
+    // console.log(req.query);
+
+
     try {
-        const doctors = await Doctor.find({isAdminVerified: true}).populate('speciality');
+        let doctors = await Doctor.find(query).skip(parseInt(skip)).limit(parseInt(limit)).populate('speciality');
+
+        // console.log(doctors);
+
+        if (dates) {
+
+            const dateObj = new Date(dates);
+            dateObj.setUTCDate(dateObj.getUTCDate() + 1);
+            const year = dateObj.getUTCFullYear();
+            const month = dateObj.getUTCMonth() + 1; 
+            const day = dateObj.getUTCDate() ;
+            const formattedDate = new Date(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00.000Z`).toISOString();
+            console.log(formattedDate); 
+
+            doctors = doctors.filter(doctor =>
+                doctor.availableSlots.some(slot => slot.date.toISOString() === formattedDate)
+            );
+            
+        }
+
+
         if (doctors.length > 0) {
             res.status(200).json({
                 success: true,

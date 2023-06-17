@@ -6,9 +6,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DatePicker from 'react-datepicker';
+// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DateRange as DateRangeIcon } from '@mui/icons-material';
 import './VisitDoctors.css';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -22,8 +21,15 @@ import Button from '@mui/material/Button';
 import instance from '../../api/axiosInstance';
 import Navbar from '../Navbar/Navbar';
 import DoctorCard from '../DoctorCard/DoctorCard';
+import Radio  from '@mui/material/Radio';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import dayjs from 'dayjs';
 
 
 const theme = createTheme({
@@ -64,56 +70,69 @@ const ColorButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-const CustomInput = forwardRef(({ value, onClick }, ref) => (
-  <button ref={ref} className="myDatePicker" onClick={onClick}>
-    <span className="dateText">{value ? value.toString() : 'Select a date'}</span>
-    <DateRangeIcon className="dateIcon" />
-  </button>
-));
+// const CustomInput = forwardRef(({ value, onClick }, ref) => (
+//   <button ref={ref} className="myDatePicker" onClick={onClick}>
+//     <span className="dateText">{value ? value.toString() : 'Select a date'}</span>
+//     <DateRangeIcon className="dateIcon" />
+//   </button>
+// ));
 
 function ViewDoctors() {
 
   // rating
 
   // date picker
-  const [startDate, setStartDate] = useState(null);
+  // const [startDate, setStartDate] = useState(null);
+  const [date, setValue] = useState();
     
   // filtering  - based on the gender
-  const [gender, setGender] = useState({ male: false, female: false });
-  const handleGenderChange = (event) => {
-    setGender({ ...gender, [event.target.name]: event.target.checked });
+  // const [gender, setGender] = useState({ male: false, female: false });
+  // const handleGenderChange = (event) => {
+  //   setGender({ ...gender, [event.target.name]: event.target.checked });
+  // };
+
+  const [gender, setGender] = useState(''); // Updated state to hold selected gender
+
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
   };
+
+
+
 
   // filtering - based on the specialites
   const [selectedSpecialities, setSelectedSpecialities] = useState([]);
 
-    const handleSpecialityChange = (specialityId) => {
-    setSelectedSpecialities((prevSelectedSpecialities) => {
-      if (prevSelectedSpecialities.includes(specialityId)) {
-        return prevSelectedSpecialities.filter((id) => id !== specialityId);
-      } else {
-        return [...prevSelectedSpecialities, specialityId];
-      }
-    });
-    };
+  const handleSpecialityChange = (specialityId) => {
+      setSelectedSpecialities((prevSelectedSpecialities) => {
+          if (prevSelectedSpecialities.includes(specialityId)) {
+            return prevSelectedSpecialities.filter((id) => id !== specialityId);
+          } else {
+            return [...prevSelectedSpecialities, specialityId];
+          }
+      });
+  };
 
  
   const [doctors, setDoctors] = useState([]);
 
+  
+
+
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const {data} = await instance.get('patient/doctors/all') 
-        console.log(data);
-        setDoctors(data.doctors);
-      } catch (error) {
-        console.error('Error fetching Doctors:', error);
-      }
+
+    const fetchDoctors = async (skip , limit) => {
+        try {
+          const { data } = await instance.get(`patient/doctors/all?skip=${skip}&limit=${limit}`);
+          setDoctors(data.doctors);
+          // setDoctors(data.doctors);
+        } catch (error) {
+          console.error('Error fetching Doctors:', error);
+        }
     };
-
-    fetchDoctors();
+    fetchDoctors(0, 2);
+    
   }, []);
-
 
 
   // sidebar speciality logic
@@ -133,6 +152,42 @@ function ViewDoctors() {
     fetchSpecialities();
   }, []);
 
+  const fetchMoreDoctors = async (skip, limit) => {
+
+    const url = `patient/doctors/all?skip=${skip}&limit=${limit}${selectedSpecialities ? `&specialities=${selectedSpecialities}` : ''}${gender ? `&gender=${gender}` : ''}${date ? `&dates=${date}` : ''}`;
+
+    try {
+      const { data } = await instance.get(url);
+      setDoctors(prevDocotors => [...prevDocotors , ...data.doctors]);
+    } catch (error) {
+          console.error('Error fetching Doctors:', error);
+    }
+    
+  };
+
+  const handleFetchMore = () => {
+    const skip = doctors.length; // Calculate the number of items already fetched
+    const limit = 3; // Assuming you want to fetch 10 more items
+    fetchMoreDoctors(skip, limit);
+  }
+
+
+  const fetchDoctorsByFilteration = async (skip, limit) => {
+
+    const url = `patient/doctors/all?skip=${skip}&limit=${limit}${selectedSpecialities ? `&specialities=${selectedSpecialities}` : ''}${gender ? `&gender=${gender}` : ''}${date ? `&dates=${date}` : ''}`;
+
+    console.log(url);
+
+
+    try {
+      // const { data } = await instance.get(`patient/doctors/all?skip=${skip}&limit=${limit}&specialities=${selectedSpecialities}`);
+      const { data } = await instance.get(url);
+      setDoctors(data.doctors);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   
 
@@ -162,12 +217,26 @@ function ViewDoctors() {
                 <Divider /> 
                 <ListItem sx={{ marginTop: '2rem' }}>
                   <ThemeProvider theme={theme}>
-                    <DatePicker
+                    {/* <DatePicker
                       customInput={<CustomInput />}
                       className="myDatePicker"
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
-                    />
+                    /> */}
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DemoContainer components={['DatePicker']} sx={{overflow: 'hidden'}}>
+                            <DatePicker
+                            //  defaultValue={dayjs()}
+                              // value={dayjs()}
+                              date={date}
+                              onChange={(newValue) => {
+                                setValue(newValue);
+                              }}
+                              disablePast
+                              className="custom-date-picker"
+                            />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </ThemeProvider>
                 </ListItem>
                 <ListItem
@@ -178,31 +247,33 @@ function ViewDoctors() {
                   }}
                 >
                   <ListItemText primary="Gender" color="blue" />
-                  <Stack direction="column">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={gender.male}
-                          onChange={handleGenderChange}
-                          name="male"
+                      <Stack direction="row">
+                        <FormControlLabel
+                          control={
+                            <Radio
+                              checked={gender === 'male'}
+                              onChange={() => handleGenderChange('male')}
+                              value="male"
+                              name="gender"
+                            />
+                          }
+                          label="Male"
+                          sx={{ ml: '0.5rem', mb: '-.5rem', color: '#6a7073' }}
                         />
-                      }
-                      label="Male Doctor"
-                      sx={{ ml: '0.5rem',mb: '-.5rem' , color: '#6a7073' }} // Adjusted margin-left value
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={gender.female}
-                          onChange={handleGenderChange}
-                          name="female"
+                        <FormControlLabel
+                          control={
+                            <Radio
+                              checked={gender === 'female'}
+                              onChange={() => handleGenderChange('female')}
+                              value="female"
+                              name="gender"
+                            />
+                          }
+                          label="Female"
+                          sx={{ ml: '0.5rem', mb: '-.5rem', color: '#6a7073' }}
                         />
-                      }
-                      label="Female Doctor"
-                      sx={{ ml: '0.5rem',mb: '-.5rem' , color: '#6a7073' }} // Adjusted margin-left value
-                    />
-                  </Stack>
-                  </ListItem>
+                      </Stack>
+                </ListItem>
                 <ListItem
                   sx={{
                     display: 'flex',
@@ -232,7 +303,13 @@ function ViewDoctors() {
                   </Stack>
                 </ListItem>  
                 <ListItem>
-                  <ColorButton>Search</ColorButton>                    
+              <ColorButton
+                onClick={() => {
+                  console.log(selectedSpecialities);
+                  fetchDoctorsByFilteration(0, 2);
+                }}>
+                Search
+              </ColorButton>                    
                 </ListItem>                  
                       
               </List>
@@ -241,13 +318,23 @@ function ViewDoctors() {
               className="doctorsList"
               sx={{
                   width: '75%',
-              }}>
+              }}
+            >
               {
                 doctors.length > 0 && doctors.map((doctor) => 
                     <DoctorCard key={doctor._id} doctor={doctor}></DoctorCard>
                 )
               }
-            </Box>
+              <ColorButton
+                sx={{
+                    width: '20%',
+                    marginLeft: '45%'
+                }}
+                onClick={() =>  handleFetchMore()}
+              >
+                 Load more
+              </ColorButton> 
+           </Box>
        </Stack> 
      </>
   );
