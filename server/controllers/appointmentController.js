@@ -36,8 +36,9 @@ const initiateAppointment = async (req, res) => {
 
         // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
       
-        const { doctorId, dateId, slotId, startTime, endTime, fees } = req.body;
+        const { doctorId, dateId, slotId, startTime, endTime, fees , selectedDate } = req.body;
       
+      console.log(doctorId);
 
         const appointmentExists = await Appointment.findOne({
             doctorId,
@@ -50,7 +51,7 @@ const initiateAppointment = async (req, res) => {
 
         if (appointmentExists) {
               return res.status(400).json({ errorInfo: 'This slot s already booked' });
-      }
+        }
       
         const order = await razorpay.orders.create({
             amount: fees * 100, 
@@ -74,11 +75,11 @@ const completeAppointment = async (req, res) => {
 
     try {
 
-        // const { doctorId, dateId, slotId, startTime, endTime , fees } = req.body;
       console.log(req.body)
       
-      const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId } = req.body;
-      // const { selectedDateId, selectedSlotId, startTime, endTime, doctorId, fees, paymentId, orderId } = req.body;
+      const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId , selectedDate } = req.body;
+    
+      console.log(selectedDate);
       
       const doctor = await Doctor.findById(doctorId);
       console.log(doctor);
@@ -126,6 +127,7 @@ const completeAppointment = async (req, res) => {
             endTime, 
             fees,
             orderId,
+            selectedDate,
             paymentId
         });
 

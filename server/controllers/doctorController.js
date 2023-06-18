@@ -276,11 +276,40 @@ const deleteDateSlots = async (req, res) => {
 }
 
 const getAppointments = async (req, res) => {
-    console.log(req.userId);
+
+        const { status } = req.query;
+        const query = {
+          doctorId: new mongoose.Types.ObjectId(req.userId),
+          isCancelled: false
+        };
+  
+        if (status === 'pending') {
+          query.isApprovedByDoctor = false;
+        }
+        if (status === 'approved') {
+          query.isApprovedByDoctor = true;
+        }
+   
+        if (status === 'cancelled') {
+          query.isCancelled = true;
+        }
+  
+        if (status === 'upcoming') {
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $gte: formattedDate };
+        }
+        if (status === 'past') {
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $lt: formattedDate };
+        }
+        
+
         try {
             const appointments = await Appointment.aggregate([
                 {
-                    $match: { doctorId: new mongoose.Types.ObjectId(req.userId) }
+                    $match: query
                 },
                 {
                     '$lookup': {
@@ -303,12 +332,6 @@ const getAppointments = async (req, res) => {
             ]);
 
             console.log(appointments);
-             if (appointments.length === 0) {
-               return res.status(404).json({
-                  success: false ,
-                  errorInfo: 'No Appointments were found'
-              })
-            }
 
             res.status(200).json({ appointments })
 

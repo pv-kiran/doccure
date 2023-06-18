@@ -28,13 +28,19 @@ function PatientAppointmentTable() {
         } , [])
 
         const statusToggler = async (id) => {
-          console.log(id);
           const { data }  = await instance.put(`/appointment/${id}/cancel`);
-          console.log(data.appointment);
           dispatch(updatePatientAppointmentList(data.appointment));
         }
+  
 
-        const rows = patientState?.user ? patientState?.user : [];
+        const filterList = (status) => {
+            dispatch(getPatientAppointments(status))
+        }
+
+
+       const rows = patientState?.user ? patientState?.user : [];
+  
+       console.log(rows);
 
         const headCells = [
             {
@@ -78,13 +84,14 @@ function PatientAppointmentTable() {
           headCells,
           heading: 'My Appointments',
           userRole,
-          statusToggler
+          statusToggler,
+          filterList
         }
 
         return (
               <>
                   {
-                      rows.length > 0 && <DataTable {...patientProp}></DataTable>
+                      rows.length > 0  && <DataTable {...patientProp}></DataTable>
                   }
               </>
         )

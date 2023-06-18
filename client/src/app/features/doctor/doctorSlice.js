@@ -66,15 +66,22 @@ export const logoutDoctor = createAsyncThunk('doctor/logoutDoctor', async (patie
 })
 
 
-export const getAppointments = createAsyncThunk('doctor/getAppointments', async (doctor, { rejectWithValue }) => {
+export const getAppointments = createAsyncThunk('doctor/getAppointments', async (status, { rejectWithValue }) => {
+
+  let url = `/doctor/appointments`;
   
-  try {
-    let response = await instance.get('/doctor/appointments')
-    console.log(response.data);
-    return response.data;
+  if (status) {
+     url += `?status=${status}`;
+  }
+
+    try {
+        let response = await instance.get(url)
+        console.log(response.data);
+        return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+        return rejectWithValue(error.response.data);
     }
+  
 })
 
 

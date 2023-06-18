@@ -77,11 +77,11 @@ function DoctorVerticalCard({ doctor }) {
                       alignItems: 'center',
                     //   marginBottom: '1.5rem'
                     }}>
-                      <Box sx={{width: '12rem'  , height: '15rem' , marginTop: '.4rem' }}>
+                      <Box sx={{width: '17rem'  , height: '15rem' , marginTop: '.1rem' }}>
                         <img src={profilePicture?.secure_url}
                           style={{
                             width: '100%',
-                            height: '90%',
+                            height: '100%',
                             display: 'block',
                             objectFit: 'contain'
                           }} alt="profile" />    

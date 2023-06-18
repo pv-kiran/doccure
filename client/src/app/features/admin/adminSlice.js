@@ -36,10 +36,10 @@ export const logoutAdmin = createAsyncThunk('admin/logoutAdmin', async (admin , 
 })
 
 
-export const adminGetAllDoctors = createAsyncThunk('admin/getAllDoctors', async (doctor , {rejectWithValue}) => {
+export const adminGetAllDoctors = createAsyncThunk('admin/getAllDoctors', async (status , {rejectWithValue}) => {
   // console.log(user);
   try {
-    let response = await instance.get('/admin/get/doctors');
+    let response = await instance.get(`/admin/get/doctors?status=${status}`);
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -47,10 +47,10 @@ export const adminGetAllDoctors = createAsyncThunk('admin/getAllDoctors', async 
     }
 })
 
-export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', async (patient , {rejectWithValue}) => {
+export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', async (status , {rejectWithValue}) => {
   // console.log(user);
   try {
-    let response = await instance.get('/admin/get/patients');
+    let response = await instance.get(`/admin/get/patients?status=${status}`);
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -60,9 +60,24 @@ export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', asyn
 
 
 export const adminGetSpecialities = createAsyncThunk('admin/getSpecialities', async ( speciality, {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get(`admin/get/specialities`);
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+})
+
+export const adminGetAppoinments = createAsyncThunk('admin/getAppointments', async (status, { rejectWithValue }) => {
+  
+  let url = `admin/get/appointments`;
+  if (status) {
+    url += `?status=${status}`;
+  }
+
+  try {
+    let response = await instance.get(url);
     console.log(response.data);
     return response.data;
     } catch (error) {
@@ -125,7 +140,7 @@ const adminSlice = createSlice({
             state.error = '';
         })
       
-    builder.addCase(loginAdmin.rejected, (state, action) => {
+        builder.addCase(loginAdmin.rejected, (state, action) => {
           console.log(action.payload)
             state.loading = false
             state.error = action.payload.errorInfo;
@@ -193,6 +208,24 @@ const adminSlice = createSlice({
             state.loading = false
             state.error = action.payload.errorInfo;
         })
+    
+        builder.addCase(adminGetAppoinments.pending, state => {
+          state.loading = true;
+          state.actionSuccess = false
+        })
+      
+        builder.addCase(adminGetAppoinments.fulfilled, (state , action) => {
+            state.loading = false;
+            state.actionSuccess = true;
+            state.user = action.payload
+            state.error = '';
+        })
+      
+        builder.addCase(adminGetAppoinments.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload.errorInfo;
+        })
+        
   }
   
 })

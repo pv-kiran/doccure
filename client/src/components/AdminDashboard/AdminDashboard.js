@@ -15,7 +15,6 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
-import PaidIcon from '@mui/icons-material/Paid';
 
 function AdminDashboard() {
   const theme = useTheme();
@@ -66,12 +65,7 @@ function AdminDashboard() {
       navItem: 'Specialities',
       navLink: '/admin/specialities',
       icon: <FolderSpecialIcon sx={{color: '#579ab5'}}/>
-    } ,
-    {
-      navItem: 'Transactions',
-      navLink: '/admin/transactions',
-      icon: <PaidIcon sx={{color: '#579ab5'}}/>
-    }
+    } 
   ]
 
   const drawerProps = {

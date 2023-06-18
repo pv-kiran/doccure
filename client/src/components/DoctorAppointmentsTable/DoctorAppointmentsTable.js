@@ -23,11 +23,18 @@ function DoctorAppointmentsTable() {
 
         useEffect(() => {
           dispatch(getAppointments());
-        } , [])
+        }, [])
+  
+  
+        const filterList = (status) => {
+          dispatch(getAppointments(status));
+        }
 
 
         const rows = doctorState?.user ? doctorState?.user : [];
 
+        // console.log(rows);
+  
         const headCells = [
             {
               id: 'patient',
@@ -63,9 +70,7 @@ function DoctorAppointmentsTable() {
   
 
         const statusToggler = async (id) => {
-          console.log(id);
           const { data }  = await instance.put(`/appointment/${id}/approve`);
-          console.log(data.appointment);
           dispatch(updateAppointmentList(data.appointment));
         }
 
@@ -80,7 +85,8 @@ function DoctorAppointmentsTable() {
           headCells,
           heading: 'My Appointments',
           userRole,
-          statusToggler
+          statusToggler,
+          filterList
         }
 
         return (

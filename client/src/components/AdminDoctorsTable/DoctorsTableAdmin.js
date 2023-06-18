@@ -19,17 +19,22 @@ function AdminDoctorsTable() {
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //       let user = JSON.parse(localStorage.getItem('user')) ;
-  //       instance.defaults.headers.common = {
-  //           Authorization : `Bearer ${user.token}`
-  //   }
-  // }, [])
+  useEffect(() => {
+        let user = JSON.parse(localStorage.getItem('user')) ;
+        instance.defaults.headers.common = {
+            Authorization : `Bearer ${user.token}`
+    }
+  }, [])
 
   useEffect(() => {
     console.log('Hello from admin doctor table')
       dispatch(adminGetAllDoctors());
   }, [])
+
+
+  const filterList = (status) => {
+     dispatch(adminGetAllDoctors(status));
+  }
 
 
   // approving or rejection of doctors
@@ -44,8 +49,6 @@ function AdminDoctorsTable() {
   }
 
 
-
-  
   const rows = adminState?.user?.doctors ? adminState?.user.doctors : [];
   const headCells = [
   {
@@ -89,7 +92,8 @@ function AdminDoctorsTable() {
     headCells,
     heading: 'Doctors List',
     statusToggler,
-    userRole
+    userRole,
+    filterList
   }
   
   return (

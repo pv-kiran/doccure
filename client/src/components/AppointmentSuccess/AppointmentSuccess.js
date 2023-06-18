@@ -82,7 +82,7 @@ function AppointmentSuccess() {
                       </Typography>
                       <Typography variant='subtitle1'>
                           <strong style={{marginRight: '.5rem'}}>Time:</strong>
-                          {appointmentState?.bookedSlot.startTime} - {appointmentState.bookedSlot.endTime}
+                          {appointmentState?.bookedSlot?.startTime} - {appointmentState.bookedSlot?.endTime}
                       </Typography>
                       
                   </Box>

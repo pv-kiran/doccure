@@ -4,11 +4,25 @@ const { cloudinary } = require('../utils/cloudinaryHelper');
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
 const Speciality = require('../models/speciality');
+const Appointment = require('../models/appointment');
 
 
-const adminGetAllDoctors =  async (req, res) => {
+const adminGetAllDoctors = async (req, res) => {
+    
+    const { status } = req.query;
+    console.log(req.query);
+    const query = {};
+    if (status === 'pending') {
+        query.isAdminVerified = false;
+    }
+    if (status === 'approved') {
+        query.isAdminVerified = true;
+    }
+
+    console.log(query);
+
     try {
-        const doctors = await Doctor.find().populate('speciality');
+        const doctors = await Doctor.find(query).populate('speciality');
         if (doctors.length > 0) {
             res.status(200).json({
                 success: true,
@@ -52,9 +66,17 @@ const adminDoctorApproval = async (req, res) => {
     }
 }
 
-const adminGetAllPatients  = async (req, res) => {
+const adminGetAllPatients = async (req, res) => {
+    const { status } = req.query;
+    const query = {}
+    if (status === 'pending') {
+        query.isAdminVerified = false
+    }
+    if (status === 'approved') {
+        query.isAdminVerified = true;
+    }
     try {
-        const patients = await Patient.find();
+        const patients = await Patient.find(query);
         if (patients.length > 0) {
             res.status(200).json({
                 success: true,
@@ -197,6 +219,92 @@ const getSpeciality = async (req, res) => {
         })
     }
 }
+
+const getAllAppointments = async (req, res) => {
+
+        const { status } = req.query;
+    
+        const query = {
+          isCancelled: false
+        };
+  
+        if (status === 'pending') {
+          query.isApprovedByDoctor = false;
+        }
+        if (status === 'approved') {
+          query.isApprovedByDoctor = true;
+        }
+   
+        if (status === 'cancelled') {
+          query.isCancelled = true;
+        }
+  
+        if (status === 'upcoming') {
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $gte: formattedDate };
+        }
+        if (status === 'past') {
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $lt: formattedDate };
+        }
+
+
+
+    try {
+        const appointments = await Appointment.aggregate([
+                {
+                        $match: query 
+                } ,
+                {
+                    '$lookup': {
+                    'from': 'doctors', 
+                    'localField': 'doctorId', 
+                    'foreignField': '_id', 
+                    'as': 'doctor'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$doctor'
+                    }
+                },
+                {
+                    '$lookup': {
+                    'from': 'patients', 
+                    'localField': 'patientId', 
+                    'foreignField': '_id', 
+                    'as': 'patient'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$patient'
+                    }
+                }
+        ])
+
+        if (appointments.length > 0) {
+             res.status(200).json({
+                success: true,
+                appointments: appointments
+             })
+        } else {
+             res.status(404).json({
+                errorInfo: 'No Appointments are found'
+            })
+        }
+
+       
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            errorInfo: 'Internal Server Error'
+        })
+    }
+}
     
     
 module.exports = {
@@ -207,5 +315,6 @@ module.exports = {
     adminAddSpeciality,
     adminEditSpeciality,
     adminRemoveSpeciality,
-    getSpeciality
-}
+    getSpeciality,
+    getAllAppointments
+} 

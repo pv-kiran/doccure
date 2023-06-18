@@ -10,9 +10,10 @@ const { isLoggedIn, isAdmin } = require('../middlewares/authMiddleware');
 // const Speciality = require('../models/speciality');
 // const { cloudinary } = require('../utils/cloudinaryHelper');
 
+const Appointments = require('../models/appointment');
 
 
-const { adminGetAllDoctors, adminDoctorApproval, adminGetAllPatients, approvePatients, adminAddSpeciality, adminEditSpeciality, adminRemoveSpeciality, getSpeciality } = require('../controllers/adminController');
+const { adminGetAllDoctors, adminDoctorApproval, adminGetAllPatients, approvePatients, adminAddSpeciality, adminEditSpeciality, adminRemoveSpeciality, getSpeciality, getAllAppointments } = require('../controllers/adminController');
 
 
 router.get('/get/doctors', isLoggedIn , isAdmin , adminGetAllDoctors)
@@ -31,5 +32,6 @@ router.put('/speciality/status/:id', isLoggedIn , isAdmin , adminRemoveSpecialit
 
 router.get('/get/specialities', isLoggedIn , isAdmin , getSpeciality);
 
+router.get('/get/appointments', isLoggedIn, isAdmin, getAllAppointments);
 
 module.exports = router;

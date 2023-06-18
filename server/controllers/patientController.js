@@ -61,7 +61,6 @@ const getAllDoctors = async (req, res) => {
         query.gender = gender;
     }
     
-    console.log(query);
 
     if (specialities) {
         specialities = specialities.split(',');
@@ -69,14 +68,15 @@ const getAllDoctors = async (req, res) => {
     }
     // console.log(req.query);
 
+    console.log(query);
 
     try {
         let doctors = await Doctor.find(query).skip(parseInt(skip)).limit(parseInt(limit)).populate('speciality');
 
-        // console.log(doctors);
 
         if (dates) {
 
+            // formating the dates
             const dateObj = new Date(dates);
             dateObj.setUTCDate(dateObj.getUTCDate() + 1);
             const year = dateObj.getUTCFullYear();
@@ -111,11 +111,42 @@ const getAllDoctors = async (req, res) => {
 }
 
 const getMyAppointments = async (req, res) => {
-    console.log(req.userId);
+        const { status } = req.query;
+        const query = {
+            patientId: new mongoose.Types.ObjectId(req.userId) ,
+            isCancelled: false
+        }
+        if (status === 'pending') {
+            query.isApprovedByDoctor = false
+        }
+        if (status === 'approved') {
+            query.isApprovedByDoctor = true
+        }
+        if (status === 'cancelled') {
+            query.isCancelled = true
+        }
+
+        if (status === 'upcoming') {
+            // const dateObj = new Date();
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $gte: formattedDate };
+            // query.selectedDate = {$gte : dateObj}
+        }
+        if (status === 'past') {
+            // const dateObj = new Date();
+            const currentDate = new Date();
+            const formattedDate = new Date(currentDate.toISOString().split('T')[0]);
+            query.selectedDate = { $lt: formattedDate };
+            // query.selectedDate = {$gte : dateObj}
+        }
+    
+    console.log(query);
+    
         try {
             const appointments = await Appointment.aggregate([
                 {
-                    $match: { patientId: new mongoose.Types.ObjectId(req.userId) }
+                    $match: query
                 },
                 {
                     '$lookup': {
@@ -139,22 +170,15 @@ const getMyAppointments = async (req, res) => {
                 }
             ]);
 
-            console.log(appointments);
-            // if (appointments.length === 0) {
-            //   return res.status(404).json({
-            //       success: false ,
-            //       errorInfo: 'No Appointments were found'
-            //   })
-            // }
 
             res.status(200).json({ appointments:appointments })
 
         } catch (err) {
             console.log(err)
             res.status(500).json({
-            errorInfo: 'Inernal Server Error'
-        })
-  }
+             errorInfo: 'Inernal Server Error'
+            })
+        }
 
 }
 

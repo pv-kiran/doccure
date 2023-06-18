@@ -1,4 +1,4 @@
-import React, { useState, forwardRef , useEffect } from 'react';
+import React, { useState , useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -6,7 +6,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './VisitDoctors.css';
 import Checkbox from '@mui/material/Checkbox';
@@ -14,10 +13,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
-
-// import LocationOnIcon from '@mui/icons-material/LocationOn';
-
-// import img from '../../assets/doctor.jpg';
 import instance from '../../api/axiosInstance';
 import Navbar from '../Navbar/Navbar';
 import DoctorCard from '../DoctorCard/DoctorCard';
@@ -25,11 +20,9 @@ import Radio  from '@mui/material/Radio';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import dayjs from 'dayjs';
 
 
 const theme = createTheme({
@@ -70,34 +63,9 @@ const ColorButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-// const CustomInput = forwardRef(({ value, onClick }, ref) => (
-//   <button ref={ref} className="myDatePicker" onClick={onClick}>
-//     <span className="dateText">{value ? value.toString() : 'Select a date'}</span>
-//     <DateRangeIcon className="dateIcon" />
-//   </button>
-// ));
+
 
 function ViewDoctors() {
-
-  // rating
-
-  // date picker
-  // const [startDate, setStartDate] = useState(null);
-  const [date, setValue] = useState();
-    
-  // filtering  - based on the gender
-  // const [gender, setGender] = useState({ male: false, female: false });
-  // const handleGenderChange = (event) => {
-  //   setGender({ ...gender, [event.target.name]: event.target.checked });
-  // };
-
-  const [gender, setGender] = useState(''); // Updated state to hold selected gender
-
-  const handleGenderChange = (selectedGender) => {
-    setGender(selectedGender);
-  };
-
-
 
 
   // filtering - based on the specialites
@@ -111,6 +79,13 @@ function ViewDoctors() {
             return [...prevSelectedSpecialities, specialityId];
           }
       });
+  };
+  const [date, setValue] = useState();
+    
+  const [gender, setGender] = useState(''); 
+
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
   };
 
  
@@ -177,10 +152,7 @@ function ViewDoctors() {
     const url = `patient/doctors/all?skip=${skip}&limit=${limit}${selectedSpecialities ? `&specialities=${selectedSpecialities}` : ''}${gender ? `&gender=${gender}` : ''}${date ? `&dates=${date}` : ''}`;
 
     console.log(url);
-
-
     try {
-      // const { data } = await instance.get(`patient/doctors/all?skip=${skip}&limit=${limit}&specialities=${selectedSpecialities}`);
       const { data } = await instance.get(url);
       setDoctors(data.doctors);
       console.log(data);
@@ -217,17 +189,10 @@ function ViewDoctors() {
                 <Divider /> 
                 <ListItem sx={{ marginTop: '2rem' }}>
                   <ThemeProvider theme={theme}>
-                    {/* <DatePicker
-                      customInput={<CustomInput />}
-                      className="myDatePicker"
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                    /> */}
+                    
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                         <DemoContainer components={['DatePicker']} sx={{overflow: 'hidden'}}>
                             <DatePicker
-                            //  defaultValue={dayjs()}
-                              // value={dayjs()}
                               date={date}
                               onChange={(newValue) => {
                                 setValue(newValue);

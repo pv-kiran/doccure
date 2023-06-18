@@ -146,7 +146,7 @@ function DoctorCard({ doctor }) {
                             <Stack direction="row" marginBottom={1} spacing={2}> 
                                 <FmdGoodOutlinedIcon fontSize='small'  onClick={handleLike}/>
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
-                                 {address.city} , {address.state}
+                                 {address?.city} , {address?.state}
                                 </Typography>
                             </Stack>
 

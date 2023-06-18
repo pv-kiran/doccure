@@ -26,6 +26,10 @@ function AdminPatientsTable() {
        dispatch(adminGetAllPatients()); 
   }, [])
 
+  const filterList = (status) => {
+      dispatch(adminGetAllPatients(status))
+  }
+
 
   const statusToggler = async (patientId) => {
     try {
@@ -76,7 +80,8 @@ function AdminPatientsTable() {
     headCells,
     heading: 'Patients List',
     statusToggler,
-    userRole
+    userRole,
+    filterList
   }
   
   return (

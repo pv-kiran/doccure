@@ -12,9 +12,15 @@ const appointmentSchema = new mongoose.Schema({
       date: {
          type: Date
       },
+      fees: {
+        type: String
+      }  ,
       startTime: {
          type: String
       },
+      selectedDate: {
+        type: Date
+      } ,
       endTime: {
          type: String
       },

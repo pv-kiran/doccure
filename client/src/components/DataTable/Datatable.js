@@ -123,10 +123,19 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected , heading , handleSpecialityModalOpen , tableContent } = props;
+  const { numSelected, heading, handleSpecialityModalOpen, tableContent, filterList } = props;
+  
+  const [filterState, setFilterState] = useState('');
+
+  const clickHandler = (status) => {
+      setFilterState(status);
+      filterList(status);
+  }
+
 
   return (
-    <Toolbar
+    <>
+      <Toolbar
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -148,8 +157,8 @@ function EnhancedTableToolbar(props) {
           component="div"
         >
           {heading}
-      </Typography>
-
+        </Typography>
+      
       {
         tableContent === 'speciality' && <Button
         variant="outlined"
@@ -164,7 +173,77 @@ function EnhancedTableToolbar(props) {
       }
       
       
-    </Toolbar>
+      </Toolbar>
+      {
+        (tableContent === 'user' || tableContent === 'appointment' || tableContent === 'adminAppointment') &&
+        <Box sx={{marginBottom: '1rem'}}>
+            <Button
+              onClick={() => {
+                clickHandler('pending')}}
+              sx={{
+                  color:  filterState === 'pending' ? '#fff' : '#665f5f' ,
+                  backgroundColor: filterState === 'pending' ? '#C9B075' : 'fff' ,
+                  height: '2rem',
+                  border: '1px lightblue dotted'
+              }}>
+              Pending
+            </Button>
+            <Button
+              onClick={() => {clickHandler('approved')}}
+              sx={{
+                color:  filterState === 'approved' ? '#fff' : '#665f5f' ,
+                height: '2rem',
+                backgroundColor: filterState === 'approved' ? '#0AE4B3' : 'fff' ,
+                marginLeft: '1rem',
+                border: '1px lightblue dotted'
+              }}>
+              Approved
+            </Button>
+
+            {
+
+              ( tableContent === 'appointment' || tableContent === 'adminAppointment' ) && <>
+                  <Button
+                    onClick={() => {
+                      clickHandler('upcoming')}}
+                    sx={{
+                        color:  filterState === 'upcoming' ? '#fff' : '#665f5f' ,
+                        backgroundColor: filterState === 'upcoming' ? '#81bbc9' : 'fff' ,
+                        height: '2rem',
+                        border: '1px lightblue dotted',
+                        marginLeft: '1rem'
+                    }}>
+                    Upcoming 
+                  </Button>
+                  <Button
+                    onClick={() => {clickHandler('past')}}
+                    sx={{
+                      color:  filterState === 'past' ? '#fff' : '#665f5f' ,
+                      height: '2rem',
+                      backgroundColor: filterState === 'past' ? '#87dea7' : 'fff' ,
+                      marginLeft: '1rem',
+                      border: '1px lightblue dotted'
+                    }}
+                  >
+                    Past 
+                 </Button>
+                 <Button
+                    onClick={() => {clickHandler('cancelled')}}
+                    sx={{
+                      color:  filterState === 'cancelled' ? '#fff' : '#665f5f' ,
+                      height: '2rem',
+                      backgroundColor: filterState === 'cancelled' ? '#B31E41' : 'fff' ,
+                      marginLeft: '1rem',
+                      border: '1px lightblue dotted'
+                    }}
+                  >
+                    Cancelled
+                  </Button>
+              </>
+            }
+        </Box>
+      }
+    </>
   );
 }
 
@@ -175,7 +254,7 @@ EnhancedTableToolbar.propTypes = {
 function DataTable(props) {
 
 
-  const { headCells, rows, heading, statusToggler, tableContent , userRole } = props;
+  const { headCells, rows, heading, statusToggler, tableContent , userRole , filterList } = props;
   
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -329,7 +408,9 @@ function DataTable(props) {
           handleSpecialityModalOpen = {handleSpecialityModalOpen}
           heading={heading}
           tableContent = {tableContent}
-          numSelected={selected.length} />
+          numSelected={selected.length} 
+          filterList = {filterList}
+        />
         <TableContainer>
           <Table
             // sx={{ minWidth: 750 }}
@@ -569,7 +650,9 @@ function DataTable(props) {
                           id={labelId}
                           scope="row"
                           padding="none">
-                          Date
+                          {
+                            row?.selectedDate?.split('T')[0]
+                          }
                         </TableCell>
                         <TableCell
                           component="th"
@@ -675,6 +758,118 @@ function DataTable(props) {
                   )}
                </TableBody>
             }
+            {
+              tableContent === 'adminAppointment' &&  <TableBody>
+                  {visibleRows.map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row._id}
+                        sx={{
+                          cursor: 'pointer',
+                          height: '2rem'
+                        }}
+                      >
+                        
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {
+                              row.doctor?.fullName
+                          }
+                        </TableCell>
+                        <TableCell 
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {
+                            row.patient?.fullName
+                          }
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {
+                            row.selectedDate?.split('T')[0]
+                          }
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                          {
+                            row.fees
+                          }
+                        </TableCell>
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none">
+                            {
+                            row.isCancelled ? <Typography sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#b31e41',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                  }}>Cancelled</Typography> :
+                             ( row.isApprovedByDoctor ?
+                                <Typography
+                                  variant='subtitle2'
+                                  sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#0AE4B3',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                  }} color='green'>
+                                  Approved
+                                </Typography> :
+                                <Typography variant='subtitle2'
+                                  sx={{
+                                    width: '70%',
+                                    height: '1.5rem',
+                                    padding: '0 .3rem',
+                                    color: 'white',
+                                    backgroundColor: '#c9b075',
+                                    textAlign: 'center',
+                                    borderRadius: '.2rem'
+                                }}>
+                                  Pending
+                                </Typography>
+                              )
+                            }
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+               </TableBody>
+            }
           </Table>
         </TableContainer>
         <TablePagination
@@ -724,26 +919,3 @@ export default DataTable
 
 
 
-{/* userRole === 'doctor' ?
-                              row.isApprovedByDoctor ? <VerifiedIcon sx={{color: '#0AE4B3'}}></VerifiedIcon> :
-                              <Button
-                                onClick={() => { statusToggler(row._id) }}
-                                sx={{
-                                  border: '1px dotted #0AE4B3',
-                                  fontsize: '1rem', height: '1.3rem',
-                                  color: '#0AE4B3'
-                                }}>
-                                  Approve
-                              </Button> :
-                                row.isCancelled ? <DisabledByDefaultIcon sx={{color: 'red'}}></DisabledByDefaultIcon> :
-                              <Button
-                                  sx={{
-                                    border: '1px dotted red',
-                                    fontsize: '1rem',
-                                    height: '1.3rem',
-                                    color: '#e07581'
-                                  }}
-                                  onClick={() => {statusToggler(row._id)}}
-                              >
-                                  Cancel
-                              </Button> */}
