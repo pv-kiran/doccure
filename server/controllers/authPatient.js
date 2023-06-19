@@ -119,6 +119,12 @@ const loginPatient  = async (req, res) => {
                 }) 
             }
 
+            if (!patient.isAdminVerified) {
+                return res.status(401).json({
+                    errorInfo: 'Admin verification required'
+                })
+            }
+
             let isCorrectPassword = await bcrypt.compare(password, patient.password);
             if (isCorrectPassword) {
 

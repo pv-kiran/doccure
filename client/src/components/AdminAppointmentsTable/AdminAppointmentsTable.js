@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Box  from '@mui/material/Box';
 import { adminGetAppoinments } from '../../app/features/admin/adminSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import instance from '../../api/axiosInstance';
