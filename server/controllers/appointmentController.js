@@ -1,9 +1,14 @@
 const Doctor = require('../models/doctor');
-const { isDoctor, isLoggedIn, isPatient } = require('../middlewares/authMiddleware');
+// const { isDoctor, isLoggedIn, isPatient } = require('../middlewares/authMiddleware');
 const { razorpay } = require('../utils/razorpay');
 const Appointment = require('../models/appointment');
 
 const mongoose = require('mongoose');
+
+// const Doctor = require('../models/doctor');
+// const Patient = require('../models/patient');
+// const Speciality = require('../models/speciality');
+// const Appointment = require('../models/appointment');
 
 
 const getDoctorDetails = async (req, res) => {
@@ -290,6 +295,8 @@ const cancelAppointment = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while canceling the appointment' });
   }
 }
+
+
 
 module.exports = {
     initiateAppointment,

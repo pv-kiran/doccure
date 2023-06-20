@@ -33,11 +33,11 @@ function PatientDashboard() {
   };
     
     const navigationLinks = [
-    {
-      navItem: 'Doctors',
-      navLink: '/patient/dashboard',
-      icon: <MedicationIcon sx={{color: '#579ab5'}}/>
-    },
+    // {
+    //   navItem: 'Doctors',
+    //   navLink: '/patient/dashboard',
+    //   icon: <MedicationIcon sx={{color: '#579ab5'}}/>
+    // },
     {
       navItem: 'Appointments',
       navLink: '/patient/appointments' ,

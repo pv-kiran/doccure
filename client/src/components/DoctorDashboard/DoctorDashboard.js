@@ -34,17 +34,17 @@ function DoctorDashboard() {
     
 
   const navigationLinks = [
-    {
-      navItem: 'Dashboard',
-      navLink: '/doctor/dashboard',
-      icon: <GridViewIcon sx={{color: '#579ab5'}}/>
-    } ,
-    {
-      navItem: 'Patients',
-      navLink: '/doctor/mypatients',
-      icon: <EscalatorWarningIcon sx={{color: '#579ab5'}}/>
+    // {
+    //   navItem: 'Dashboard',
+    //   navLink: '/doctor/dashboard',
+    //   icon: <GridViewIcon sx={{color: '#579ab5'}}/>
+    // } ,
+    // {
+    //   navItem: 'Patients',
+    //   navLink: '/doctor/mypatients',
+    //   icon: <EscalatorWarningIcon sx={{color: '#579ab5'}}/>
 
-    },
+    // },
     {
       navItem: 'Appointments',
       navLink: '/doctor/appointments' ,

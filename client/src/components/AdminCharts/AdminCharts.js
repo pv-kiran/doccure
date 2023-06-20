@@ -3,15 +3,34 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import instance from '../../api/axiosInstance';
 import  Typography  from '@mui/material/Typography';
-
 import MedicationIcon from '@mui/icons-material/Medication';
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import  Box  from '@mui/material/Box';
+
+
+import Chart from "chart.js/auto";
+import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 function AdminCharts() {
 
   const [detailsCount, setDetaisCount] = useState([]);
+  const [specialityCount, setSpecialityCount] = useState([]);
+  const [revenueDoctor, setRevenueDoctor] = useState([]);
+  const [specialityAppointment, setSpecicalityAppointment] = useState([]);
+  const [revenueMonthly, setRevenueMonthly] = useState([]);
+  const [revenueYearly, setRevenueYearly] = useState([]);
+
+  let specialityLabel, specialityData;
+  let revenueLabel, revenueData;
+  let specialityAppointmentData, specialityAppointmentLabel
+  let revenueMonthlyLabel, revenueMonthlyData;
+  let revenueYearlyLabel, revenueYearlyData;
+
 
   useEffect(() => {
       let user = JSON.parse(localStorage.getItem('user')) ;
@@ -20,70 +39,237 @@ function AdminCharts() {
       }
   }, [])
 
-  useEffect(() => {
-    const fetchDashboardDetails = async () => {
-      const { data }  = await instance.get('/admin/get/dashboard');
-      console.log(data.count)
-      setDetaisCount(data.count);
-    }
-    
-    fetchDashboardDetails();
 
-  } , [])
+    const fetchDashboardDetails = async () => {
+        try {
+            const { data }  = await instance.get('/admin/get/dashboard');
+            console.log(data.count)
+            setDetaisCount(data.count);
+        } catch (err) {
+          console.log(err);
+        }
+    }
+    const fetchChartDetails = async () => {
+       try {
+         const { data } = await instance.get('/admin/get/chartdetails');
+         setSpecialityCount(data.specialityCount);
+         setRevenueDoctor(data.revenueByDoctor);
+         setSpecicalityAppointment(data.appointmentsBySpeciality);
+         setRevenueMonthly(data.monthlyRevenue)
+         setRevenueYearly(data.yearlyRevenue)
+
+       } catch (err) {
+         console.log(err);
+       }
+    }
+
+    useEffect(() => {
+      fetchDashboardDetails();
+      fetchChartDetails();
+
+    }, [])
+
+
+  if (specialityCount.length > 0) {
+    specialityData = specialityCount.map(item => item.total);
+    specialityLabel = specialityCount.map(item => item._id);
+  }
+
+  if (revenueDoctor.length > 0) {
+    revenueData = revenueDoctor.map(item => item.total);
+    revenueLabel = revenueDoctor.map(item => item._id);
+  }
+
+  if (specialityAppointment.length > 0) {
+    specialityAppointmentLabel = specialityAppointment.map(item => item._id);
+    specialityAppointmentData = specialityAppointment.map(item => item.total);
+  }
+  if (revenueMonthly.length > 0) {
+    revenueMonthlyLabel = revenueMonthly.map(item => item.month);
+    revenueMonthlyData = revenueMonthly.map(item => item.fees);
+    console.log(revenueMonthlyData);
+    console.log(revenueMonthlyLabel);
+  }
+  if (specialityAppointment.length > 0) {
+    revenueYearlyLabel = revenueYearly.map(item => item._id);
+    revenueYearlyData = revenueYearly.map(item => item.fees);
+  }
+
+  const specialityChart = {
+      labels: specialityLabel,
+      datasets: [
+        {
+          backgroundColor: [
+            '#496b78',
+            '#77a395',
+            '#8bc9b5' ,
+            '#00A6B4',
+            '#6800B4'
+          ],
+          data: specialityData,
+          label: "Number of Doctors"
+        }
+      ]
+  };
+
+
+  const revenueChart = {
+    labels: revenueLabel,
+    datasets: [
+      {
+        label: "Revenue by Doctor",
+        backgroundColor: "#496b78",
+        borderColor: "#496b78",
+        data: revenueData,
+      },
+    ],
+  };
+
+  const appointmentBySpeciality = {
+  labels: specialityAppointmentLabel,
+  datasets: [
+    {
+      label: "Number of appointments",
+      backgroundColor: [
+            '#496b78',
+            '#77a395',
+            '#72e0df',
+            '#00A6B4',
+            '#6800B4'
+      ],
+      data: specialityAppointmentData,
+    },
+  ],
+  };
+
+  const monthlyRevenue = {
+    labels: revenueMonthlyLabel,
+    datasets: [
+      {
+        label: "Monthly Revenue",
+        backgroundColor: "#496b78",
+        borderColor: "#496b78",
+        data: revenueMonthlyData,
+      },
+    ],
+  };
+
+  const yearlyRevenue = {
+    labels: revenueYearlyLabel,
+    datasets: [
+      {
+        label: "Yearly Revenue",
+        backgroundColor: "#496b78",
+        borderColor: "#496b78",
+        data: revenueYearlyData,
+      },
+    ],
+  };
+
 
   return (
-    <Stack
-      direction='row' 
-      spacing={10}
-      sx={{
-          width: {lg: '100%' , md: '100%', sm : '100%' , xs: '17.5rem'} ,
-          marginTop: '4rem',
-          marginLeft: { lg: '-4rem', md: '1rem', sm: '4rem', xs: '.5rem' },
-          '& > :not(style)': {
-          width: '10rem',
-          height: '5rem',
+    <>
+      <Stack
+        direction='row' 
+        spacing={3}
+        sx={{
+            width: {lg: '100%' , md: '100%', sm : '100%' , xs: '17.5rem'} ,
+            marginTop: '4rem',
+            marginLeft: { lg: '-4rem', md: '1rem', sm: '4rem', xs: '.5rem' },
+            '& > :not(style)': {
+            width: '13rem',
+            height: '5rem',
+          }
+      }}>
+        {
+          detailsCount.length > 0 && detailsCount.map((count, index) => {
+              let icon;
+              if (Object.keys(count)[0] === 'doctors') {
+                icon = <MedicationIcon sx={{color: '#579ab5' , fontSize: '2.5rem'}} />
+              }
+              if (Object.keys(count)[0] === 'pateints') {
+                  icon =  <EscalatorWarningIcon sx={{color: '#579ab5' , fontSize: '2.5rem'}}/>
+              }
+              if (Object.keys(count)[0] === 'specialities') {
+                  icon =  <FolderSpecialIcon sx={{color: '#579ab5' , fontSize: '2.5rem'}}/>
+              }
+              if (Object.keys(count)[0] === 'appointments') {
+                icon = <ScheduleIcon sx={{color: '#579ab5' , fontSize: '2.5rem'}}/>
+              }
+            return (
+              <Paper key={index} sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                padding: '.5rem'
+              }}>
+                {
+                    icon
+                }
+                <Stack>
+                  <Typography sx={{
+                    textTransform: 'capitalize',
+                    fontSize: '1.2rem',
+                    color: '#579ab5'
+                  }}>
+                     {Object.keys(count)[0]}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '1.2rem',
+                      color: '#579ab5'
+                    }}>
+                    {Object.values(count)[0]}
+                  </Typography>
+                </Stack>
+              </Paper>
+            )
+          })
         }
-    }}>
-      {
-        detailsCount.length > 0 && detailsCount.map((count, index) => {
-            let icon;
-            if (Object.keys(count)[0] === 'doctors') {
-              icon =  <MedicationIcon/>
-            }
-            if (Object.keys(count)[0] === 'pateints') {
-                icon =  <EscalatorWarningIcon/>
-            }
-            if (Object.keys(count)[0] === 'specialities') {
-                icon =  <FolderSpecialIcon/>
-            }
-            if (Object.keys(count)[0] === 'appointments') {
-              icon = <ScheduleIcon/>
-            }
-           return (
-             <Paper key={index} sx={{
-               display: 'flex',
-               flexDirection: 'column',
-               justifyContent: 'center',
-               alignItems: 'center'
-             }}>
-               {
-                  icon
-               }
-               <Typography sx={{
-                 textTransform: 'capitalize',
-                 fontSize: '1.2rem'
-               }}>
-                 {Object.keys(count)[0]}
-               </Typography>
-               <Typography sx={{fontSize: '1.2rem'}}>
-                 {Object.values(count)[0]}
-               </Typography>
-            </Paper>
-           )
-        })
-      }
+        
+      </Stack>
+      <Stack
+        direction='row'
+        spacing={10}
+        sx = {{
+            marginLeft: '-4rem',
+            width: '95%',
+            padding: '1rem 0'
+        }}
+      >
+         <Box sx={{width: '24rem' , padding: '2rem' , overflow: 'hidden'}}>
+            <Pie width= '100%' data={specialityChart} />
+          </Box>
+          <Box sx={{width: '24rem' , height: '25rem' , padding: '2rem' , overflow: 'hidden'}}>
+            <Bar width= '100%' data={revenueChart} />
+        </Box>
+        
+      </Stack>
+      <Stack
+        direction='row'
+        spacing={10}
+        sx = {{
+              marginLeft: '-4rem',
+              width: '95%',
+              padding: '1rem 0'
+        }}
+      >
+         <Box sx={{width: '24rem'  , padding: '2rem' , overflow: 'hidden'}}>
+            <Doughnut width= '100%' data={appointmentBySpeciality} />
+         </Box>
+         <Box sx={{width: '20rem' , height: '25rem' , padding: '2rem' , overflow: 'hidden'}}>
+            <Bar width= '100%' data={monthlyRevenue} />
+        </Box>
+      </Stack>
+      <Stack direction= 'row'>
+          <Box sx={{width: '20rem' , height: '25rem' , padding: '2rem' , overflow: 'hidden'}}>
+               <Bar width= '100%' data={yearlyRevenue} />
+          </Box>
+      </Stack>
       
-    </Stack>
+    </>
+    
   );
 }
 
