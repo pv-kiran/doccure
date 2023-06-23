@@ -1,63 +1,60 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import  Box  from '@mui/material/Box';
 import  Stack  from '@mui/material/Stack';
 import  Typography  from '@mui/material/Typography';
 
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+// import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
+// import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Rating from '@mui/material/Rating';
 
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+// import { styled } from '@mui/material/styles';
+// import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import instance from '../../api/axiosInstance';
 
 
-const ColorButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#2CE1FE',
-  fontsize: '2rem',
-//   marginTop: '-3rem',
-  borderRadius: '5px',
-  padding: '.4rem .8rem',
-  width: '100%',
-  position:'relative' ,
-  color:'white' ,
-  letterSpacing: '2px' ,
-  '&:hover': {
-      backgroundColor: '#0AE4B3',
+
+// const ColorButton = styled(Button)(({ theme }) => ({
+//   backgroundColor: '#2CE1FE',
+//   fontsize: '2rem',
+// //   marginTop: '-3rem',
+//   borderRadius: '5px',
+//   padding: '.4rem .8rem',
+//   width: '100%',
+//   position:'relative' ,
+//   color:'white' ,
+//   letterSpacing: '2px' ,
+//   '&:hover': {
+//       backgroundColor: '#0AE4B3',
       
-  }
-}));
+//   }
+// }));
 
 
-function DoctorVerticalCard({ doctor }) {
+
+
+function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
 
   console.log(doctor);
   
     const {
-       _id ,
         fullName, 
         speciality,
         services,
         profilePicture,
-        address
+        likes,
+        ratings
     } = doctor
 
-    const [likes, setLikes] = useState(0);
-    const [liked, setLiked] = useState(false);
+    // const [likes, setLikes] = useState(0);
+    // const [liked, setLiked] = useState(false);
+  
 
-    const handleLike = () => {
-        if (liked) {
-        setLikes(likes - 1);
-        setLiked(false);
-        } else {
-        setLikes(likes + 1);
-        setLiked(true);
-        }
-    };
+    
  
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
  
     const [value, setValue] = useState(2);
 
@@ -104,8 +101,9 @@ function DoctorVerticalCard({ doctor }) {
                           <Box>
                                 <Rating
                                   name="simple-controlled"
-                                  value={value}
+                                  value={(ratings.number || 0)}
                                   onChange={(event, newValue) => {
+                                    handleRatings(newValue);
                                     setValue(newValue);
                                   }}
                                 />
@@ -122,7 +120,9 @@ function DoctorVerticalCard({ doctor }) {
                               }}>
                                 <Stack direction="row" color= 'gray' marginRight={2} spacing={1}> 
                                     <ThumbUpOffAltIcon fontSize='small' onClick={handleLike}/>
-                                    <Typography variant='subtitle2'>{ likes}</Typography>
+                                    <Typography variant='subtitle2'>
+                                      {(likes?.number || 0)}
+                                    </Typography>
                                 </Stack>
                                 <Stack direction="row" color= 'gray'  spacing={1}> 
                                     <ChatBubbleOutlineIcon fontSize='small'  onClick={handleLike}/>

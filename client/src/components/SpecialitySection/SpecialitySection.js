@@ -46,21 +46,26 @@ function SpecialitySection() {
           <Stack direction='row' width= '100%' spacing={6} sx={{marginTop: '3rem'}}>
           {
               specialities.length > 0 && 
-              specialities.map((item) => {
-                  return <>
-                    <Box sx={{
-                        border: '1px white solid',
-                        width: '10rem',
-                        height: '10rem',
-                        borderRadius: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        boxShadow: '.1rem .1rem .4rem rgba(.3,.3,.3,.3)'
-                    }}>
-                       <img key={item._id} style={{width: '30%' , height: '30%'}} src={item?.specialityImg?.secure_url} alt="speciality"></img>
-                    </Box> 
-                  </>
+                  specialities.map((item, index) => {
+                      return (
+                      <Box
+                        key={index}      
+                            sx={{
+                                border: '1px white solid',
+                                width: '10rem',
+                                height: '10rem',
+                                borderRadius: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                boxShadow: '.1rem .1rem .4rem rgba(.3,.3,.3,.3)'
+                            }}
+                      >
+                        <img style={{ width: '30%', height: '30%' }} src={item?.specialityImg?.secure_url} alt="speciality">    
+                        </img>
+                     </Box> 
+                     )
+                    
                 })
               }
               </Stack>

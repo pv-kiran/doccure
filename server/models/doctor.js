@@ -85,6 +85,28 @@ const doctorSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'doctor'
+  },
+  likes: {
+     number: {
+       type: Number
+     },
+     user: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Patient'
+        }
+     ]
+  },
+  ratings: {
+     number: {
+       type: Number
+     },
+     user: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Patient'
+        }
+     ]
   } ,
   token: {
     type:  String

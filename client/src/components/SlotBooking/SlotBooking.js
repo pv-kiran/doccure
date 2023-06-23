@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import instance from '../../api/axiosInstance';
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import SchedulingCard from '../Shared/SchedulingCard';
 import DoctorVerticalCard from '../Shared/DoctorVerticalCard';
@@ -22,6 +22,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSelectedSlot, setSelectedDateId,  } from '../../app/features/appointment/appointmentSlice';
+
+
 
 
 
@@ -90,7 +92,7 @@ function SlotBooking() {
         return state.appointment
     })
 
-  const {selectedDateId ,  selectedSlotId , startTime , endTime , selectedDate } = appointmentState;
+    const {selectedDateId ,  selectedSlotId , startTime , endTime , selectedDate } = appointmentState;
   
 
     useEffect(() => {
@@ -113,6 +115,27 @@ function SlotBooking() {
         }
         fetchDoctor(id);
     }, [])
+  
+  
+  
+    const handleLike =  async () => {
+        try {
+          const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/like`);
+          setDoctors([data.doctor]);
+        } catch (err) {
+          console.log(err);
+        } 
+    };
+  
+
+    const handleRatings =  async (rating) => {
+        try {
+          const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/rating` , {rating});
+          setDoctors([data.doctor]);
+        } catch (err) {
+          console.log(err);
+        } 
+    };
   
     const dispatch = useDispatch();
     
@@ -155,10 +178,8 @@ function SlotBooking() {
     };
 
 
-  const dateSlotes = doctor[0]?.availableSlots?.filter(data => data._id === selectedId) || [];
+    const dateSlotes = doctor[0]?.availableSlots?.filter(data => data._id === selectedId) || [];
 
-    console.log(selectedId);
-    console.log(dateSlotes);
 
 
     const navBarProps = {
@@ -214,7 +235,12 @@ function SlotBooking() {
             }}>
                 {
                         doctor.length > 0  && doctor.map((doctor) => 
-                            <DoctorVerticalCard key={doctor._id} doctor={doctor}/>
+                          <DoctorVerticalCard
+                            key={doctor._id}
+                            doctor={doctor} 
+                            handleLike={handleLike}
+                            handleRatings={handleRatings}
+                          />
                         )
                 }       
             </Box>
@@ -260,7 +286,31 @@ function SlotBooking() {
                             }            
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
-                          Item Two
+                            <Box>
+                            <Stack>
+                              <Typography>
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
+                              </Typography>
+                              <Typography>
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
+                              </Typography><Typography>
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
+                              </Typography>
+                            </Stack>
+                            <Stack direction='row' sx={{ marginTop: '17rem' }}>
+                              <textarea
+                                  style={{
+                                        width: '85%',
+                                        marginRight: '1rem' ,
+                                        outline: 'none'
+                                      }}
+                              >
+                        
+                              </textarea>
+                              {/* <TextField sx={{width: '85%' , marginRight: '1rem'}}></TextField>  */}
+                              <ColorButton sx={{marginTop: '0' , width: '10rem'}}>Submit</ColorButton>
+                            </Stack>
+                          </Box>
                         </TabPanel>
                     </SwipeableViews>
                     </Box>

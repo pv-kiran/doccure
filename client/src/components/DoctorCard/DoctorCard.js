@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import  Box  from '@mui/material/Box';
 import  Stack  from '@mui/material/Stack';
 import  Typography  from '@mui/material/Typography';
@@ -12,6 +12,9 @@ import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+
+
+
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -33,34 +36,24 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 function DoctorCard({ doctor }) {
 
-  // console.log(doctor);
   
     const {
-       _id ,
+        _id ,
         fullName, 
         speciality,
         services,
         profilePicture,
         address, 
-        qualification
+        qualification, 
+        likes,
+        ratings
     } = doctor
 
-    const [likes, setLikes] = useState(0);
-    const [liked, setLiked] = useState(false);
-
-    const handleLike = () => {
-        if (liked) {
-        setLikes(likes - 1);
-        setLiked(false);
-        } else {
-        setLikes(likes + 1);
-        setLiked(true);
-        }
-    };
+   
+   
  
     const navigate = useNavigate();
  
-    const [value, setValue] = useState(2);
 
         return (
                     <Box
@@ -101,11 +94,9 @@ function DoctorCard({ doctor }) {
                             </Typography>
                           <Box sx={{ paddingLeft: '.5rem' }}>
                                 <Rating
+                                  readOnly
                                   name="simple-controlled"
-                                  value={value}
-                                  onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                  }}
+                                  value={(ratings.number || 0)}
                                 />
                             </Box>
                             <Box sx={{ margin: '.2rem 0', display: 'flex', alignItems: 'center' }}>
@@ -136,22 +127,22 @@ function DoctorCard({ doctor }) {
                         justifyContent: 'space-around'
                       }}>
                             <Stack direction="row" marginBottom={1} spacing={2}> 
-                                <ThumbUpOffAltIcon fontSize='small' onClick={handleLike}/>
-                                <Typography variant='subtitle2'>{ likes}</Typography>
+                                <ThumbUpOffAltIcon fontSize='small'/>
+                                <Typography variant='subtitle2'>{ (likes.number || 0)}</Typography>
                             </Stack>
                             <Stack direction="row" marginBottom={1} spacing={2}> 
-                                <ChatBubbleOutlineIcon fontSize='small'  onClick={handleLike}/>
+                                <ChatBubbleOutlineIcon fontSize='small'  />
                                 <Typography variant='subtitle2' sx={{fontsize: '.7rem'}} >17 Comments</Typography>
                             </Stack>
                             <Stack direction="row" marginBottom={1} spacing={2}> 
-                                <FmdGoodOutlinedIcon fontSize='small'  onClick={handleLike}/>
+                                <FmdGoodOutlinedIcon fontSize='small'  />
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
                                  {address?.city} , {address?.state}
                                 </Typography>
                             </Stack>
 
                             <Stack direction="row" marginBottom={1} spacing={2}  > 
-                               <CurrencyRupeeIcon fontSize='small'  onClick={handleLike}/>
+                               <CurrencyRupeeIcon fontSize='small'  />
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
                                     {speciality?.fees}
                                 </Typography>
