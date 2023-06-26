@@ -14,7 +14,15 @@ const mongoose = require('mongoose');
 const getDoctorDetails = async (req, res) => {
     const { id } = req.params;
     try {
-        const doctor = await Doctor.find({ _id: id }).populate('speciality');
+      const doctor = await Doctor.find({ _id: id }).populate('speciality')
+        .populate(
+           {
+             path: 'comments.user',
+             select: '-password'
+           }
+        )
+        .select('-password');
+        
         if (doctor.length > 0) {
             res.status(200).json({
                 doctor: doctor
@@ -171,8 +179,6 @@ const getAppointmentDetails = async (req, res) => {
 const approveAppointment = async (req, res) => {
   const { id } = req.params;
   try {
-
-
 
     const appointments = await Appointment.aggregate([
                 {

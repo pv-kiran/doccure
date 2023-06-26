@@ -45,7 +45,8 @@ function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
         services,
         profilePicture,
         likes,
-        ratings
+        ratings, 
+        comments
     } = doctor
 
     // const [likes, setLikes] = useState(0);
@@ -125,8 +126,12 @@ function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" color= 'gray'  spacing={1}> 
-                                    <ChatBubbleOutlineIcon fontSize='small'  onClick={handleLike}/>
-                                    <Typography variant='subtitle2' sx={{fontsize: '.7rem'}} >17 Comments</Typography>
+                                    <ChatBubbleOutlineIcon fontSize='small'/>
+                                    <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
+                                        {
+                                           `${comments.length || 0} comments` 
+                                        }
+                                    </Typography>
                                 </Stack>
                           </Box> 
                       </Stack>

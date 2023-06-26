@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import instance from '../../api/axiosInstance';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import SchedulingCard from '../Shared/SchedulingCard';
 import DoctorVerticalCard from '../Shared/DoctorVerticalCard';
@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveSelectedSlot, setSelectedDateId,  } from '../../app/features/appointment/appointmentSlice';
 
 
+import SendIcon from '@mui/icons-material/Send';
 
 
 
@@ -136,6 +137,25 @@ function SlotBooking() {
           console.log(err);
         } 
     };
+  
+    const [comment, setComment] = useState('');
+    
+    const handleCommentChange = (e) => {
+      setComment(e.target.value)
+    }
+  
+    const handleCommentSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/comment`, { comment })
+        setDoctors([data.doctor])
+        setComment('')
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+
   
     const dispatch = useDispatch();
     
@@ -287,28 +307,83 @@ function SlotBooking() {
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <Box>
-                            <Stack>
-                              <Typography>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
-                              </Typography>
-                              <Typography>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
-                              </Typography><Typography>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, laboriosam.
-                              </Typography>
+                            <Stack sx={{
+                              height: '20rem',
+                              overflow: 'auto',
+                              '&::-webkit-scrollbar': {
+                                   width: '0.5rem', // Width of the scrollbar
+                              },
+                              '&::-webkit-scrollbar-track': {
+                                  background: '#f1f1f1', // Background color of the track
+                              },
+                              '&::-webkit-scrollbar-thumb': {
+                                  background: '#888', // Color of the thumb
+                                  borderRadius: '0.25rem', // Border radius of the thumb
+                              },
+                              '&::-webkit-scrollbar-thumb:hover': {
+                                  background: '#555', // Color of the thumb on hover
+                              }
+                            }}>
+                               {
+                                  doctor[0]?.comments.length > 0 ?  
+                                  doctor[0]?.comments.map(item => {
+                                    return (
+                                        <>
+                                            <Typography variant='h6'>
+                                             {
+                                                  item.user?.fullName
+                                              }
+                                            </Typography>
+                                            <Typography
+                                              sx={{color: 'gray'}}
+                                              variant='subtitle'>
+                                              {
+                                                  item.comment
+                                              }
+                                            </Typography>
+                                        </>
+                                        
+                                    )
+                                  }) : <Typography>No reviews yet </Typography>
+                              }
                             </Stack>
-                            <Stack direction='row' sx={{ marginTop: '17rem' }}>
+                            <Stack
+                              direction='row'
+                              sx={{ marginTop: '1.5rem' }}
+                              position='relative'
+                              component='form'
+                              onSubmit={handleCommentSubmit}
+                            >
                               <textarea
-                                  style={{
-                                        width: '85%',
-                                        marginRight: '1rem' ,
-                                        outline: 'none'
-                                      }}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    paddingRight: '2.5rem',
+                                    outline: 'none',
+                                    resize: 'none'  ,
+                                    border: '.5px gray dotted',
+                                    borderRadius: '.3rem'
+                                 }}
+                                value={comment}
+                                onChange={handleCommentChange}
                               >
-                        
                               </textarea>
-                              {/* <TextField sx={{width: '85%' , marginRight: '1rem'}}></TextField>  */}
-                              <ColorButton sx={{marginTop: '0' , width: '10rem'}}>Submit</ColorButton>
+                              <Button
+                                type='submit'
+                                style={{
+                                    position: 'absolute',
+                                    top: '52%',
+                                    right: '0.5rem',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer'
+                                }}
+                              >
+                              <SendIcon
+                                sx={{ color: '#8fe876' }} 
+                              />
+                              </Button>
+                        
+                              
                             </Stack>
                           </Box>
                         </TabPanel>

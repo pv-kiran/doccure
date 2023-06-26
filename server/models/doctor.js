@@ -107,7 +107,18 @@ const doctorSchema = new mongoose.Schema({
           ref: 'Patient'
         }
      ]
-  } ,
+  },
+  comments: [
+    {
+       user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Patient'
+       },
+      comment: {
+         type: String
+       }
+    }
+  ] ,
   token: {
     type:  String
   } ,

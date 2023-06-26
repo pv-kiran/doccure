@@ -46,7 +46,8 @@ function DoctorCard({ doctor }) {
         address, 
         qualification, 
         likes,
-        ratings
+        ratings,
+        comments
     } = doctor
 
    
@@ -132,7 +133,11 @@ function DoctorCard({ doctor }) {
                             </Stack>
                             <Stack direction="row" marginBottom={1} spacing={2}> 
                                 <ChatBubbleOutlineIcon fontSize='small'  />
-                                <Typography variant='subtitle2' sx={{fontsize: '.7rem'}} >17 Comments</Typography>
+                                <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
+                                    {
+                                       `${comments.length || 0} comments`
+                                    }
+                                </Typography>
                             </Stack>
                             <Stack direction="row" marginBottom={1} spacing={2}> 
                                 <FmdGoodOutlinedIcon fontSize='small'  />
