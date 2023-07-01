@@ -1,8 +1,9 @@
 import React from 'react'
+import ChatUI from '../Shared/ChatUI'
 
 function PatientMessages() {
   return (
-    <div>PatientMessages</div>
+    <ChatUI role='patient'></ChatUI>
   )
 }
 

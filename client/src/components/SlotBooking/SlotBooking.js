@@ -385,7 +385,7 @@ function SlotBooking() {
                         
                               
                             </Stack>
-                          </Box>
+                            </Box>
                         </TabPanel>
                     </SwipeableViews>
                     </Box>

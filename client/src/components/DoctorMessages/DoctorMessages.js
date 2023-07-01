@@ -1,9 +1,14 @@
 import React from 'react'
+import ChatUI from '../Shared/ChatUI'
+
+
+
+
 
 function DoctorMessages() {
-  return (
-    <div>DoctorMessages</div>
-  )
+    return (
+      <ChatUI role='doctor'></ChatUI>
+    )
 }
 
 export default DoctorMessages

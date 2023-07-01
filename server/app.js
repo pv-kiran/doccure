@@ -42,6 +42,8 @@ const doctorRoutes = require('./routes/doctor');
 const adminRoutes = require('./routes/admin');
 const appointmemntRoutes = require('./routes/appointment');
 const chatRoutes = require('./routes/chat');
+const messageRoutes = require('./routes/message');
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/patient', patientRoutes);
@@ -49,6 +51,8 @@ app.use('/api/doctor', doctorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/appointment', appointmemntRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoutes);
+
 
 
 
