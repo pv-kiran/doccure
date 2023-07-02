@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.2",
     "nodemailer": "^6.9.2",
-    "razorpay": "^2.8.6"
+    "razorpay": "^2.8.6",
+    "socket.io": "^4.7.1"
   }
 }

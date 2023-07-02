@@ -7,7 +7,7 @@ import Typography  from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
 import  Button  from '@mui/material/Button';
 import instance from '../../api/axiosInstance';
-import { useState , useEffect} from 'react';
+import { useState , useEffect , useRef} from 'react';
 
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,6 +17,8 @@ import MuiAlert from '@mui/material/Alert';
 import { useSelector } from 'react-redux';
 
 import Chip from '@mui/material/Chip';
+
+import io from 'socket.io-client';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -29,10 +31,74 @@ function ChatUI({ role }) {
     const searchUrl = role === 'doctor' ? `/chat/getPatients` : `/chat/getDoctors` ;
     const createChatUrl = role === 'doctor' ? `chat/doctor/create` : `chat/patient/create`;
     const senderRole = role === 'doctor' ? 'Doctor' : 'Patient';
-    
+    // let selectedChatComparer;
+
+    const [socket, setSocket] = useState(null);
+    const selectedChatComparer = useRef(null);
+
+    // const socket = io('http://localhost:4000');
+
     const authState = useSelector((state) => {
       return state.auth?.authState
     })
+
+     useEffect(() => {
+    
+            const socket = io('http://localhost:4000');
+            setSocket(socket);
+
+            // Cleanup on component unmount
+            return () => {
+                socket.disconnect();
+            };
+     }, []);
+    
+     useEffect(() => {
+        if (socket) {
+            // Event listeners for socket events
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                // Send the user ID to the server for setup
+                socket.emit('setup', authState._id);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('message received', (message) => {
+                console.log('Received message:', message);
+            });
+        }
+     }, [socket]);
+
+
+
+    // original
+    // useEffect(() => {
+        
+
+
+    //     socket.on('connect', () => {
+    //         setsocketConnect(true);
+    //         console.log('Connected to the server my server');
+    //     });
+
+    //     socket.emit('setup', authState._id)
+
+    //     socket.on('disconnect', () => {
+    //         console.log('Disconnected from the server');
+    //     });
+
+    //     // Clean up the connection when the component unmounts
+    //     return () => {
+    //         socket.disconnect();
+    //     };
+        
+    // }, []);
+  
+    
+    
 
     const [myConversation, setmyConversation] = useState([]);
     const [myAppointments, setMyAppointments] = useState([]);
@@ -106,14 +172,17 @@ function ChatUI({ role }) {
         const { data } = await instance.get(`/message/${conversationId}`)
         console.log(data);
         setMessages(data)
+        socket.emit('join chat' , conversationId)
       } catch (err) {
         console.log(err);
       }
     }
     useEffect(() => {
       if (conversationId) {
-        fetchMessages(conversationId);
+          fetchMessages(conversationId);
+          selectedChatComparer.current = conversationId;
       }
+        
     }, [conversationId])
   
     // sending meassages
@@ -130,9 +199,14 @@ function ChatUI({ role }) {
             setMessage('');
             const { data } = await instance.post(`/message/${conversationId}`, messageDetails)
             console.log(data);
-            setMessages((prev) => {
-              return [...prev, data];
-             })
+            socket.emit('new message', data);  
+              setMessages((prev) => {
+                  if (prev) {
+                     return [...prev, data];
+                  } else {
+                      return [data];
+                  }
+            })
           }
           
     }
@@ -143,7 +217,34 @@ function ChatUI({ role }) {
       }
       setShowAlert(false);
     };
-  
+
+
+    // socket related states
+    const [socketConnect, setsocketConnect] = useState(false);
+
+    
+    useEffect(() => {
+        if (socket) {
+            console.log('hello');
+            socket.on('message recieved', (newMessage) => {
+                console.log(selectedChatComparer.current);
+                console.log(newMessage?.conversation._id)
+                if (!selectedChatComparer.current || selectedChatComparer.current !== newMessage?.conversation._id) {
+                    console.log(newMessage)
+                } else {
+                    socket.off('message recieved')
+                    setMessages((prev) => {
+                        return [...prev, newMessage]
+                    })
+                    // console.log('Hi')
+                }
+            })
+            
+        }
+    } , [socket]);
+
+    
+    
     
     return (
       <Stack
