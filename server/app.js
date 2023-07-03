@@ -43,7 +43,7 @@ const adminRoutes = require('./routes/admin');
 const appointmemntRoutes = require('./routes/appointment');
 const chatRoutes = require('./routes/chat');
 const messageRoutes = require('./routes/message');
-
+const notificationRoutes = require('./routes/notifications');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/patient', patientRoutes);
@@ -52,6 +52,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/appointment', appointmemntRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/notification', notificationRoutes);
 
 
 

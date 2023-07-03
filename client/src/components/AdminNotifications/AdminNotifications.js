@@ -1,10 +1,11 @@
 import React from 'react'
 import Notifications from '../Shared/Notifcations'
 
-function DoctorNotifications() {
+
+function AdminNotifications() {
   return (
     <Notifications></Notifications>
   )
 }
 
-export default DoctorNotifications
+export default AdminNotifications

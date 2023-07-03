@@ -1,14 +1,11 @@
-const Doctor = require('../models/doctor');
-// const { isDoctor, isLoggedIn, isPatient } = require('../middlewares/authMiddleware');
-const { razorpay } = require('../utils/razorpay');
-const Appointment = require('../models/appointment');
-
 const mongoose = require('mongoose');
 
-// const Doctor = require('../models/doctor');
-// const Patient = require('../models/patient');
-// const Speciality = require('../models/speciality');
-// const Appointment = require('../models/appointment');
+
+const { razorpay } = require('../utils/razorpay');
+const Appointment = require('../models/appointment');
+const Doctor = require('../models/doctor');
+const Notification = require('../models/notification');
+
 
 
 const getDoctorDetails = async (req, res) => {
@@ -145,8 +142,16 @@ const completeAppointment = async (req, res) => {
         });
 
         await appointment.save();
+      
+        const newNotification = await Notification.create({
+            recipient: doctorId,
+            recipientType: 'Doctor' ,
+            sender: patientId,
+            senderType: 'Patient',
+            message: 'New Appointment request' 
+        });
 
-        res.status(200).json({ appointment });
+        res.status(200).json({ appointment , newNotification});
         
   } catch (error) {
     console.error(error);
@@ -212,7 +217,16 @@ const approveAppointment = async (req, res) => {
 
     appointments[0].isApprovedByDoctor = true;
     await Appointment.findOneAndUpdate({ _id: id }, { $set: appointments[0] })
-    res.status(200).json({success: true , appointment: appointments[0]})
+
+    const newNotification = await Notification.create({
+            recipient: appointments[0].patientId,
+            recipientType: 'Patient' ,
+            sender: appointments[0].doctorId,
+            senderType: 'Doctor',
+            message: 'Appointment Request has been accepted' 
+        });
+
+    res.status(200).json({success: true , appointment: appointments[0] , newNotification})
 
     } catch (err) {
       console.log(err);
@@ -294,8 +308,18 @@ const cancelAppointment = async (req, res) => {
 
     appointments[0].isCancelled = true;
     await Appointment.findOneAndUpdate({ _id: id }, { $set: appointments[0] })
+    
+    const newNotification = await Notification.create({
+        recipient: appointments[0].doctorId,
+        recipientType: 'Doctor' ,
+        sender: appointments[0].patientId,
+        senderType: 'Patient',
+        message: 'Appointment Request has been cancelled' 
+    });
 
-    res.json({ success: true , appointment : appointments[0]  });
+    console.log(newNotification);
+
+    res.json({ success: true , appointment : appointments[0] , newNotification  });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while canceling the appointment' });

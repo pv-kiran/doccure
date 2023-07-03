@@ -15,6 +15,8 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
+
 
 function AdminDashboard() {
   const theme = useTheme();
@@ -65,7 +67,12 @@ function AdminDashboard() {
       navItem: 'Specialities',
       navLink: '/admin/specialities',
       icon: <FolderSpecialIcon sx={{color: '#579ab5'}}/>
-    } 
+    } ,
+    {
+      navItem: 'Notifications',
+      navLink: '/admin/notifications',
+      icon: <CircleNotificationsIcon sx={{color: '#579ab5'}}/>
+    }
   ]
 
   const drawerProps = {

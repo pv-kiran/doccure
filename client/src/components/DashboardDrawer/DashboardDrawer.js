@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -17,6 +17,8 @@ import { Link, NavLink } from 'react-router-dom';
 
 
 import './DashboardDrawer.css'
+import { useSelector } from 'react-redux';
+import instance from '../../api/axiosInstance';
 
 
 export const DrawerHeader = styled('div')(({ theme }) => ({
@@ -71,6 +73,30 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 function DashboardDrawer(props) {
 
+  const [notification, setNotification] = useState([])
+  console.log(notification);
+
+  const auth = useSelector((state) => {
+    return state?.auth?.authState
+  })
+
+
+  useEffect(() => {
+        let user = JSON.parse(localStorage.getItem('user')) ;
+        instance.defaults.headers.common = {
+            Authorization : `Bearer ${user.token}`
+        }
+    }, [])
+
+  const fetchNotification = async (role) => {
+    const { data } = await instance.get(`/notification/${role}`);
+    setNotification(data.notification)
+  }
+
+  useEffect(() => {
+    fetchNotification(auth.role);
+  } , [])
+
   const { open, handleDrawerClose, theme, navigationLinks } = props;
 
   return (
@@ -97,6 +123,11 @@ function DashboardDrawer(props) {
                     backgroundColor: '#eaf6ff',
                   }
               }}
+              onClick={() => {
+                if (text.navItem === 'Notifications') {
+                  setNotification([]);
+                }
+              }}
               component={NavLink}
               to={text.navLink}
             >
@@ -117,7 +148,21 @@ function DashboardDrawer(props) {
                   { text.icon}
                   {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                 </ListItemIcon>
+                
                 <ListItemText primary={text.navItem} sx={{ opacity: open ? 1 : 0 }} />
+                {
+                  text.navItem === 'Notifications' &&
+                    notification.length > 0 ?
+                    <ListItemText primary={notification.length}
+                      sx={{
+                        opacity: open ? 1 : 0 ,
+                        backgroundColor: 'lightgreen',
+                        textAlign: 'center',
+                        borderRadius: '.4rem'
+                      }} />
+                    :
+                    ''
+                }
               </ListItemButton>
             </ListItem>
           ))}

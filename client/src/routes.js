@@ -55,6 +55,8 @@ import ViewDoctors from './components/ViewDoctors/ViewDoctors';
 import AvailableSlots from './pages/AvailableSlots';
 import Checkout from './pages/Checkout';
 import BookingSuccess from './pages/BookingSuccess';
+import AdminNotifications from './components/AdminNotifications/AdminNotifications';
+import VideoCall from './components/VideoCall/VideoCall';
 
 function AppRoutes() {
   return (
@@ -92,16 +94,16 @@ function AppRoutes() {
 
         {/* Doctor specific routes */}
         <Route element={<DoctorProtectedRoutes></DoctorProtectedRoutes>}>
-          <Route path="/doctor/onboarding" element={<Onboarding role='doctor' />} />
-          <Route path='/doctor' element={<DoctorDashboardLayout></DoctorDashboardLayout>}>
+        <Route path="/doctor/onboarding" element={<Onboarding role='doctor' />} />
+        <Route path="/doctor/appointments/join/:id" element={ <VideoCall></VideoCall>} />
+        <Route path='/doctor' element={<DoctorDashboardLayout></DoctorDashboardLayout>}>
             <Route path='dashboard' element={<DoctorCharts></DoctorCharts>}></Route>
             <Route path='mypatients' element={<DoctorPatientsTable></DoctorPatientsTable>}></Route>
             <Route path='appointments' element={<DoctorAppointmentsTable/>}></Route>
             <Route path='notifications' element={<DoctorNotifications/>}></Route>
             <Route path='messagges' element={<DoctorMessages />}></Route>
             <Route path='schedulings' element={<DoctorSchedulings/>}></Route>
-            
-          </Route>
+        </Route>
           {/* <Route path="/doctor/dashboard" element={ <DashboardDoctor />} /> */}
         </Route>
 
@@ -113,7 +115,12 @@ function AppRoutes() {
             <Route path='patients' element={<AdminPatientsTable></AdminPatientsTable>}></Route> 
             <Route path='appointments' element={<AdminAppointmentsTable></AdminAppointmentsTable>}></Route>  
             <Route path='transactions' element={<AdminTransactionsTable></AdminTransactionsTable>}></Route>        
-            <Route path='specialities' element={<AdminSpecialitiesTable></AdminSpecialitiesTable>}></Route>        
+            <Route path='specialities'
+               element={<AdminSpecialitiesTable></AdminSpecialitiesTable>}>
+            </Route>  
+            <Route path='notifications'
+               element={<AdminNotifications></AdminNotifications>}>
+            </Route> 
           </Route>
         </Route>
 

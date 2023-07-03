@@ -28,11 +28,10 @@ import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 
-
+import VideoCallIcon from '@mui/icons-material/VideoCall';
 
 // for speaciality model
                          
-
 
 import './DataTable.css'
 import { useState } from 'react';
@@ -43,6 +42,7 @@ import PdfModal from '../PdfModal/PdfModal';
 
 import VerifiedIcon from '@mui/icons-material/Verified';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { useNavigate } from 'react-router-dom';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -391,8 +391,9 @@ function DataTable(props) {
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-
+  const navigate = useNavigate();
   
+
   return (
       <Box sx={{
           width: {lg: '100%' , md: '100%', sm : '90%' , xs: '17.5rem'} ,
@@ -622,7 +623,8 @@ function DataTable(props) {
               tableContent === 'appointment' &&  <TableBody>
                   {visibleRows.map((row, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
-
+                    const today = new Date(Date.now()).getTime();
+                    const appointmentDate = new Date(row.selectedDate).getTime();
                     return (
                       <TableRow
                         hover
@@ -726,7 +728,7 @@ function DataTable(props) {
                                             }}>
                                               Approve
                                           </Button> :
-                                      row.isApprovedByDoctor ?
+                                             row.isApprovedByDoctor ?
                                           <VerifiedIcon sx={{ color: '#0AE4B3' }}></VerifiedIcon> :
                                             row.isCancelled ? 
                                               <DisabledByDefaultIcon sx={{ color: 'red' }}></DisabledByDefaultIcon> :
@@ -744,6 +746,25 @@ function DataTable(props) {
                             }
                             
                         </TableCell>
+                        {
+                          (row.isApprovedByDoctor && appointmentDate > today) &&
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none">
+                            <VideoCallIcon
+                              onClick={() => {
+                                  userRole === 'doctor' ?
+                                    navigate(`/doctor/appointments/join/${row._id}`) :
+                                    navigate(`/patient/appointments/join/${row._id}`)
+                              }}    
+                            >
+                                
+                            </VideoCallIcon>
+                            
+                          </TableCell>
+                        }
                       </TableRow>
                     );
                   })}

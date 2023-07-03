@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Patient = require('../models/patient');
 const transporter = require('../utils/emailHelper');
+const Admin = require('../models/admin');
+const Notification = require('../models/notification');
 
 
 const registerPatient = async (req, res) => {
@@ -51,9 +53,19 @@ const registerPatient = async (req, res) => {
             newPatient.password = undefined;
             newPatient.verifyToken = undefined;
 
+            const admin = await Admin.findOne({});
+
+            const newNotification = await Notification.create({
+                    recipient: admin._id,
+                    recipientType: 'Admin' ,
+                    sender: newPatient._id,
+                    senderType: 'Patient',
+                    message: 'New Patient registered' 
+            });
+
             return res.status(201).json({
                 user: newPatient,
-                message: 'Please check your email and verify'
+                notification: newNotification
             })
         }
     } catch (err) {

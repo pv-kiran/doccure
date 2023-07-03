@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Doctor = require('../models/doctor');
 const transporter = require('../utils/emailHelper');
+const Notification = require('../models/notification');
+const Admin = require('../models/admin');
 
 
 const registerDoctor = async (req, res) => {
@@ -51,12 +53,24 @@ const registerDoctor = async (req, res) => {
             newDoctor.password = undefined;
             newDoctor.verifyToken = undefined;
 
+            const admin = await Admin.findOne({});
+
+            const newNotification = await Notification.create({
+                    recipient: admin._id,
+                    recipientType: 'Admin' ,
+                    sender: newDoctor._id,
+                    senderType: 'Doctor',
+                    message: 'New Doctor registered' 
+            });
+
             return res.status(201).json({
-                user: newDoctor
+                user: newDoctor,
+                notification:newNotification
             })
 
         }
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })

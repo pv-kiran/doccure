@@ -1,12 +1,11 @@
-
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
 const Appointment = require('../models/appointment');
+const Notification = require('../models/notification');
+
 
 const { cloudinary } = require('../utils/cloudinaryHelper');
-
-const mongoose = require('mongoose')
-
+const mongoose = require('mongoose');
 
 const updatePatientProfile = async (req, res) => {
 
@@ -206,10 +205,20 @@ const likeHandler = async (req, res) => {
 
                 await doctor.save();
 
+                const newNotification = await Notification.create({
+                    recipient: doctor._id,
+                    recipientType: 'Doctor' ,
+                    sender: req.userId,
+                    senderType: 'Patient',
+                    message: 'Liked by Patient' 
+                });
+                console.log(newNotification);
+
                 return res.status(200).json({
                     success: true,
                     message: 'Thanks for like',
-                    doctor
+                    doctor,
+                    newNotification
                 })
 
             }
@@ -271,10 +280,21 @@ const ratingHandler = async (req, res) => {
                 
                 await doctor.save();
 
+                const newNotification = await Notification.create({
+                    recipient: doctor._id,
+                    recipientType: 'Doctor' ,
+                    sender: req.userId,
+                    senderType: 'Patient',
+                    message: 'Rated by Patient' 
+                });
+
+                console.log(newNotification);
+
                 return res.status(200).json({
                     success: true,
                     message: 'Thanks for like',
-                    doctor
+                    doctor,
+                    newNotification
                 })
 
             }
@@ -341,11 +361,20 @@ const commentHandler = async (req, res) => {
             await doctor.populate({
                  path: 'speciality comments.user' 
             })
+
+            const newNotification = await Notification.create({
+                    recipient: doctor._id,
+                    recipientType: 'Doctor' ,
+                    sender: req.userId,
+                    senderType: 'Patient',
+                    message: 'Commented by Patient' 
+            });
            
 
             return res.status(200).json({
                 success: true ,
-                doctor
+                doctor,
+                newNotification
             })
         }
 
