@@ -17,6 +17,21 @@ router.post('/initiate', isLoggedIn, isPatient, initiateAppointment)
 
 router.post('/create', isLoggedIn, isPatient, completeAppointment)
 
+router.get('/:id', isLoggedIn, isDoctor, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const appointment = await Appointment.findById(id);
+        if (!appointment) {
+            return res.status(400).json({errorInfo: 'No appointment found'})
+        }
+        res.status(200).json({ appointment})
+    } catch (err) {
+        res.status(500).json({
+            errorInfo: 'Internal Server error'
+        })
+    }
+})
+
 router.get('/:id/details', isLoggedIn, isPatient, getAppointmentDetails)
 
 router.put('/:id/approve', isLoggedIn, isDoctor, approveAppointment)

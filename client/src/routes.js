@@ -57,6 +57,7 @@ import Checkout from './pages/Checkout';
 import BookingSuccess from './pages/BookingSuccess';
 import AdminNotifications from './components/AdminNotifications/AdminNotifications';
 import VideoCall from './components/VideoCall/VideoCall';
+import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 
 function AppRoutes() {
   return (
@@ -65,6 +66,7 @@ function AppRoutes() {
         <Route path='/' element={<Doccure></Doccure>}></Route>
         <Route path='/doctors/all' element={<ViewDoctors></ViewDoctors>}></Route>
         <Route path='/:id/appointment' element={<AvailableSlots></AvailableSlots>}></Route>
+        <Route path="/doctor/appointments/join/:id" element={ <VideoCall></VideoCall>} />
 
         {/* Public routes */}
         <Route element={<PublicRoutes></PublicRoutes>}>
@@ -95,7 +97,7 @@ function AppRoutes() {
         {/* Doctor specific routes */}
         <Route element={<DoctorProtectedRoutes></DoctorProtectedRoutes>}>
         <Route path="/doctor/onboarding" element={<Onboarding role='doctor' />} />
-        <Route path="/doctor/appointments/join/:id" element={ <VideoCall></VideoCall>} />
+        
         <Route path='/doctor' element={<DoctorDashboardLayout></DoctorDashboardLayout>}>
             <Route path='dashboard' element={<DoctorCharts></DoctorCharts>}></Route>
             <Route path='mypatients' element={<DoctorPatientsTable></DoctorPatientsTable>}></Route>
@@ -127,6 +129,7 @@ function AppRoutes() {
         {/* <Route element={<ProtectedRoutes></ProtectedRoutes>}>
             <Route path="/" element={<Home />} />
         </Route> */} 
+        <Route path='*' element={<NotFoundPage></NotFoundPage>}></Route>
 
       </Routes>
   )

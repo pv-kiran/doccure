@@ -747,7 +747,7 @@ function DataTable(props) {
                             
                         </TableCell>
                         {
-                          (row.isApprovedByDoctor && appointmentDate > today) &&
+                          (row.isApprovedByDoctor && userRole === 'doctor' && appointmentDate > today) &&
                           <TableCell
                             component="th"
                             id={labelId}
@@ -755,9 +755,8 @@ function DataTable(props) {
                             padding="none">
                             <VideoCallIcon
                               onClick={() => {
-                                  userRole === 'doctor' ?
-                                    navigate(`/doctor/appointments/join/${row._id}`) :
-                                    navigate(`/patient/appointments/join/${row._id}`)
+                                  let url = userRole === 'doctor' ? `/doctor/appointments/join/${row._id}` : `/patient/appointments/join/${row._id}`;
+                                  window.open(url , '_blank')
                               }}    
                             >
                                 

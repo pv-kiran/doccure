@@ -26,9 +26,6 @@ const fileupload = require('express-fileupload');
 app.use(fileupload({ useTempFiles: true, tempFileDir: '/temp/' }));
 
 
-
-
-
 const PORT = process.env.PORT || 4000;
 
 
@@ -110,6 +107,11 @@ connect().then((server) => {
                     }
                 })
             })
+    
+            socket.on('new call', (callLink) => {
+              console.log(callLink)
+              socket.in(callLink.patientId).emit('doctor call' , callLink.personalLink);
+            }); 
 
         
             socket.on('disconnect', () => {
