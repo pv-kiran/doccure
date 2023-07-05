@@ -27,16 +27,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import AppointmentModal from '../AppointmentModal/AppointmentModal';
 
-// todo : remove
-// import Slider from "react-slick";
-// import DateButton from '../Shared/DateButton';
-// import TimeButton from '../Shared/TimeButton';
+
 
 
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import SchedulingCard from '../Shared/SchedulingCard';
+import Toast from '../Shared/Toast';
 
 
 
@@ -100,6 +98,11 @@ const DoctorSchedulings = () => {
 
 
   // const [selectedId, setSelectedId] = useState(dateArray[0]);
+
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
 
 
   // todo - move to date button component
@@ -186,11 +189,8 @@ const DoctorSchedulings = () => {
         }
     
         dispatch(doctorAddSlots(slotDetails));
-    
-        // console.log(slotDetails);
-    
-        // console.log(date.format('YYYY-MM-DD'));
-        // console.log(timeValues);
+        setShowAlert(true)
+        setAlertMessage('Slot added');
         closeModal();
   };
 
@@ -209,11 +209,6 @@ const DoctorSchedulings = () => {
   const handleEditModalOpen = () => setEditModalOpen(true);
  
   const handleEditSubmit = (updatedTimings) => {
-    // selectedId - selected date Id
-    // slotId - selectedTimeId
-    // console.log(updatedTimings);
-    // console.log(selectedId);
-    // console.log(slotId)
     const slotDetials = {
       mainSlotId: selectedId,
       details: {
@@ -223,6 +218,8 @@ const DoctorSchedulings = () => {
       }
     }
     dispatch(doctorUpdateSlots(slotDetials));
+    setShowAlert(true)
+    setAlertMessage('Slot Edited');
   }
 
 
@@ -232,7 +229,12 @@ const DoctorSchedulings = () => {
         slotId: id
       }
     dispatch(doctorDeleteSlots(slotIdDetails));
+    setShowAlert(true)
+    setAlertMessage('Slot Deleted');
+    setSeverity('error')
   }
+
+
 
   const schedulingCardProps = {
     dateArray,
@@ -361,8 +363,17 @@ const DoctorSchedulings = () => {
         handleEditSubmit = {handleEditSubmit}
         setEditModalOpen = {setEditModalOpen}
       >
-        
       </AppointmentModal>
+
+      <Toast
+          setShowAlert={setShowAlert}
+          showAlert={showAlert}
+          message={alertMessage}
+          severity = {severity}
+      >
+      </Toast>
+      
+
     </Box>
   );
 };

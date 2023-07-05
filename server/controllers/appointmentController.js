@@ -73,7 +73,7 @@ const initiateAppointment = async (req, res) => {
 
         res.json({ order });
         
-  } catch (error) {
+    } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while creating the appointment.' });
   }
@@ -258,6 +258,19 @@ const cancelAppointment = async (req, res) => {
                     }
                 },
                 {
+                    '$lookup': {
+                    'from': 'patients', 
+                    'localField': 'patientId', 
+                    'foreignField': '_id', 
+                    'as': 'patient'
+                    }
+                },
+                {
+                    '$unwind': {
+                    'path': '$patient'
+                    }
+                },
+                {
                     '$project': {
                         'doctor.password': 0,
                     }
@@ -327,6 +340,21 @@ const cancelAppointment = async (req, res) => {
 }
 
 
+const getDetails = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const appointment = await Appointment.findById(id);
+        if (!appointment) {
+            return res.status(400).json({errorInfo: 'No appointment found'})
+        }
+        res.status(200).json({ appointment})
+    } catch (err) {
+        res.status(500).json({
+            errorInfo: 'Internal Server error'
+        })
+    }
+}
+
 
 module.exports = {
     initiateAppointment,
@@ -334,5 +362,6 @@ module.exports = {
     getAppointmentDetails,
     approveAppointment,
     cancelAppointment,
-    getDoctorDetails
+    getDoctorDetails,
+    getDetails
 }

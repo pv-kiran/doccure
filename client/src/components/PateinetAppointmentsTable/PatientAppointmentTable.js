@@ -1,10 +1,12 @@
 import React from 'react'
 import { useEffect } from 'react'
+import { useState } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import instance from '../../api/axiosInstance';
 import { getPatientAppointments, updatePatientAppointmentList } from '../../app/features/patient/patientSlice';
 import DataTable from '../DataTable/Datatable';
-
+import Toast from '../Shared/Toast';
 
 function PatientAppointmentTable() {
 
@@ -25,11 +27,18 @@ function PatientAppointmentTable() {
 
         useEffect(() => {
           dispatch(getPatientAppointments());
-        } , [])
+        }, [])
+  
+        const [showAlert, setShowAlert] = useState(false);
+        const [alertMessage, setAlertMessage] = useState('');
+        const [severity, setSeverity] = useState('success');
 
         const statusToggler = async (id) => {
           const { data }  = await instance.put(`/appointment/${id}/cancel`);
           dispatch(updatePatientAppointmentList(data.appointment));
+          setShowAlert(true);
+          setSeverity('error');
+          setAlertMessage('Appointment is cancelled');
         }
   
 
@@ -37,6 +46,7 @@ function PatientAppointmentTable() {
             dispatch(getPatientAppointments(status))
         }
 
+        
 
        const rows = patientState?.user ? patientState?.user : [];
   
@@ -93,6 +103,13 @@ function PatientAppointmentTable() {
                   {
                       rows.length > 0  && <DataTable {...patientProp}></DataTable>
                   }
+                  <Toast
+                      setShowAlert={setShowAlert}
+                      showAlert={showAlert}
+                      message={alertMessage}
+                      severity = {severity}
+                  >
+                  </Toast>
               </>
         )
   

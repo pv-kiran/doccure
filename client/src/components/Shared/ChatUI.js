@@ -12,20 +12,15 @@ import { useState , useEffect , useRef} from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+
 import { useSelector } from 'react-redux';
 
 import Chip from '@mui/material/Chip';
 
 import io from 'socket.io-client';
+import Toast from './Toast';
 
 
-
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 
 
@@ -184,12 +179,7 @@ function ChatUI({ role }) {
           
     }
   
-    const handleAlertClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-      setShowAlert(false);
-    };
+  
 
     
     useEffect(() => {
@@ -260,11 +250,13 @@ function ChatUI({ role }) {
                   )
                   }}
               />
-              <Snackbar open={showAlert} autoHideDuration={3000} onClose={handleAlertClose}>
-                  <Alert onClose={handleAlertClose} severity="error">
-                    Please enter a search query.
-                  </Alert>
-              </Snackbar>
+              
+              <Toast
+                setShowAlert={setShowAlert}
+                showAlert={showAlert}
+                message={'Please enter a search value'}
+              >
+              </Toast>
             </Box>
             {
                   myConversation.map((conversation) => {

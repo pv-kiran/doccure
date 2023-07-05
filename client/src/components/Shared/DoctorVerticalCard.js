@@ -1,36 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import  Box  from '@mui/material/Box';
 import  Stack  from '@mui/material/Stack';
 import  Typography  from '@mui/material/Typography';
 
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-// import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-// import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+
 import Rating from '@mui/material/Rating';
 
-// import { styled } from '@mui/material/styles';
-// import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-import instance from '../../api/axiosInstance';
 
-
-
-// const ColorButton = styled(Button)(({ theme }) => ({
-//   backgroundColor: '#2CE1FE',
-//   fontsize: '2rem',
-// //   marginTop: '-3rem',
-//   borderRadius: '5px',
-//   padding: '.4rem .8rem',
-//   width: '100%',
-//   position:'relative' ,
-//   color:'white' ,
-//   letterSpacing: '2px' ,
-//   '&:hover': {
-//       backgroundColor: '#0AE4B3',
-      
-//   }
-// }));
 
 
 
@@ -101,11 +79,14 @@ function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
                             </Typography>
                           <Box>
                                 <Rating
-                                  name="simple-controlled"
-                                  value={(ratings.number || 0)}
-                                  onChange={(event, newValue) => {
-                                    handleRatings(newValue);
-                                    setValue(newValue);
+                                      sx={{
+                                        marginLeft: '.7rem',
+                                      }}
+                                      name="simple-controlled"
+                                      value={(ratings.number || 0)}
+                                      onChange={(event, newValue) => {
+                                        handleRatings(newValue);
+                                        setValue(newValue);
                                   }}
                                 />
                           </Box>
@@ -137,7 +118,7 @@ function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
                       </Stack>
                       
                       <Box sx={{ margin: '.5rem 0', display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ marginLeft: '-4rem' , color: 'gray' }}>
+                            <Box sx={{ marginLeft: '.5rem' , color: 'gray' }}>
                                   {services.map((service, index) => (
                                       <span
                                       key={index}

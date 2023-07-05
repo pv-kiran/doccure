@@ -7,14 +7,19 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
-import  Box  from '@mui/material/Box';
+import Box from '@mui/material/Box';
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+import './AdminChart.css'
 
 import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import { Pie } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
+import { Button } from '@mui/material';
 
 function AdminCharts() {
 
@@ -166,6 +171,29 @@ function AdminCharts() {
     ],
   };
 
+  // docwnloading 
+  const printMonthlyDocument = () => {
+    const input = document.getElementById('divToPrintMonthly');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save("downloadMonthly.pdf");
+      });
+  }
+
+  const printYearlyDocument = () => {
+    const input = document.getElementById('divToPrintYearly');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save("downloadYearly.pdf");
+      });
+  }
+
 
   return (
     <>
@@ -267,7 +295,62 @@ function AdminCharts() {
                <Bar width= '100%' data={yearlyRevenue} />
           </Box>
       </Stack>
-      
+      <Box sx={{ width: '85%' }}> 
+
+        <Stack direction= 'row' spacing={5} marginBottom={3}>
+          <Typography variant='h5'>Monthly Revenue</Typography>
+          <Button variant='outline' onClick={printMonthlyDocument}>
+            Download
+          </Button>
+        </Stack>
+        <Box id="divToPrintMonthly" sx={{marginBottom: '3rem'}}>
+            <table className='table'>
+              <tr>
+                <th className='th'>Month</th>
+                <th className='th'>Revenue</th>
+              </tr>
+              {
+                  revenueMonthly && revenueMonthly.map((revenue) => {
+                    return (
+                        <tr>
+                          <td className='td'>{revenue.month}</td>
+                          <td className='td'>{revenue.fees}</td>
+                        </tr>
+                        
+                      )
+                  })
+              }
+            </table>
+        </Box>
+        
+
+        <Stack direction= 'row' spacing={5} marginBottom={3}>
+          <Typography variant='h5'>Yearly Revenue</Typography>
+          <Button variant='outline' onClick={printYearlyDocument}>
+            Download
+          </Button>
+        </Stack>
+        <Box id="divToPrintYearly">
+            <table className='table'>
+              <tr>
+                <th className='th'>Year</th>
+                <th className='th'>Revenue</th>
+              </tr>
+              {
+                  revenueYearly && revenueYearly.map((revenue) => {
+                    return (
+                        <tr>
+                          <td className='td'>{revenue._id}</td>
+                          <td className='td'>{revenue.fees}</td>
+                        </tr>
+                      )
+                  })
+              }
+            </table>
+        </Box>
+
+
+      </Box>
     </>
     
   );

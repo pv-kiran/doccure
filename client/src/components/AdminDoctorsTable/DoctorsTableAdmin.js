@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Datatable from '../DataTable/Datatable';
 import { adminGetAllDoctors, approveDoctor, updateDoctors } from '../../app/features/admin/adminSlice';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
-
-
+import Toast from '../Shared/Toast';
 
 
 function AdminDoctorsTable() {
@@ -36,15 +35,22 @@ function AdminDoctorsTable() {
      dispatch(adminGetAllDoctors(status));
   }
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
 
   // approving or rejection of doctors
   const statusToggler = async (doctorId) => {
     try {
       let { data } = await instance.put(`admin/doctor/status/${doctorId}`);
       console.log(data);
-      dispatch(updateDoctors(data.doctor)) 
+      dispatch(updateDoctors(data.doctor))
+      setShowAlert(true);
+      setAlertMessage('Status of the doctor is updated');
     } catch (error) {
-      console.log(error)
+      setShowAlert(true);
+      setAlertMessage('Something went wrong');
+      setSeverity('error')
     }
   }
 
@@ -101,6 +107,13 @@ function AdminDoctorsTable() {
       {
          rows.length > 0 && <Datatable {...adminProps}></Datatable> 
       }
+      <Toast
+          setShowAlert={setShowAlert}
+          showAlert={showAlert}
+          message={alertMessage}
+          severity = {severity}
+      >
+      </Toast>
    </>
   );
 }

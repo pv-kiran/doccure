@@ -18,13 +18,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 
+import SendIcon from '@mui/icons-material/Send';
+import Toast from '../Shared/Toast';
+
 
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSelectedSlot, setSelectedDateId,  } from '../../app/features/appointment/appointmentSlice';
 
 
-import SendIcon from '@mui/icons-material/Send';
+
 
 
 
@@ -93,8 +96,11 @@ function SlotBooking() {
         return state.appointment
     })
 
-    const {selectedDateId ,  selectedSlotId , startTime , endTime , selectedDate } = appointmentState;
-  
+    const { selectedDateId, selectedSlotId, startTime, endTime, selectedDate } = appointmentState;
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [severity, setSeverity] = useState('success');
 
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;
@@ -109,9 +115,10 @@ function SlotBooking() {
             try {
                 let { data } = await instance.get(`appointment/doctor/${id}`);
                 setDoctors(data.doctor);
-                // console.log(doctor);
             } catch (err) {
-                console.log(err);
+                setShowAlert(true);
+                setAlertMessage('Something went wrong')
+                setSeverity('error');
             }
         }
         fetchDoctor(id);
@@ -123,8 +130,12 @@ function SlotBooking() {
         try {
           const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/like`);
           setDoctors([data.doctor]);
+          setShowAlert(true);
+          setAlertMessage('You have liked the doctor')
         } catch (err) {
-          console.log(err);
+          setShowAlert(true);
+          setAlertMessage(err?.response?.data?.errorInfo)
+          setSeverity('error');
         } 
     };
   
@@ -133,8 +144,12 @@ function SlotBooking() {
         try {
           const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/rating` , {rating});
           setDoctors([data.doctor]);
+          setShowAlert(true);
+          setAlertMessage('You have rated the doctor')
         } catch (err) {
-          console.log(err);
+          setShowAlert(true);
+          setAlertMessage(err?.response?.data?.errorInfo)
+          setSeverity('error');
         } 
     };
   
@@ -150,8 +165,12 @@ function SlotBooking() {
         const { data } = await instance.put(`/patient/doctor/${doctor[0]?._id}/comment`, { comment })
         setDoctors([data.doctor])
         setComment('')
+        setShowAlert(true);
+        setAlertMessage('You have reviewed the doctor')
       } catch (err) {
-        console.log(err);
+          setShowAlert(true);
+          setAlertMessage(err?.response?.data?.errorInfo)
+          setSeverity('error');
       }
 
     }
@@ -414,7 +433,13 @@ function SlotBooking() {
                 
 
         </Stack>    
-            
+        <Toast
+          setShowAlert={setShowAlert}
+          showAlert={showAlert}
+          message={alertMessage}
+          severity = {severity}
+        >
+        </Toast>
       </>
     )
 }

@@ -45,6 +45,10 @@ const appointmentSchema = new mongoose.Schema({
       isCancelled: {
         type: Boolean,
         default: false
+      },
+      isRefund: {
+        type: Boolean,
+        default: false
       }
 });
 

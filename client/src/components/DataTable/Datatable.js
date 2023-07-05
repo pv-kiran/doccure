@@ -254,7 +254,7 @@ EnhancedTableToolbar.propTypes = {
 function DataTable(props) {
 
 
-  const { headCells, rows, heading, statusToggler, tableContent , userRole , filterList } = props;
+  const { headCells, rows, heading, statusToggler, tableContent , userRole , filterList, cancelByDoctor , appointmentRefund } = props;
   
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -716,18 +716,31 @@ function DataTable(props) {
                             
                               userRole === 'doctor' ?
                                 row.isCancelled ?
-                                    <DisabledByDefaultIcon sx={{ color: 'red' }}></DisabledByDefaultIcon> :
+                                <DisabledByDefaultIcon sx={{ color: 'red' }}>
+                                    </DisabledByDefaultIcon> :
                                       row.isApprovedByDoctor ?
                                         <VerifiedIcon sx={{ color: '#0AE4B3' }}></VerifiedIcon> :
-                                          <Button
-                                            onClick={() => { statusToggler(row._id) }}
-                                            sx={{
-                                              border: '1px dotted #0AE4B3',
-                                              fontsize: '1rem', height: '1.3rem',
-                                              color: '#0AE4B3'
-                                            }}>
-                                              Approve
-                                          </Button> :
+                                          <>
+                                            <Button
+                                              onClick={() => { statusToggler(row._id) }}
+                                              sx={{
+                                                border: '1px dotted #0AE4B3',
+                                                fontsize: '1rem', height: '1.3rem',
+                                                color: '#0AE4B3'
+                                              }}>
+                                                Approve
+                                             </Button>
+                                             <Button
+                                                onClick={() => { cancelByDoctor(row._id) }}
+                                                sx={{
+                                                  border: '1px dotted red',
+                                                  fontsize: '1rem', height: '1.3rem',
+                                                  color: 'red',
+                                                  marginLeft: '1rem'
+                                                }}>
+                                                  Reject
+                                              </Button>
+                                          </> :
                                              row.isApprovedByDoctor ?
                                           <VerifiedIcon sx={{ color: '#0AE4B3' }}></VerifiedIcon> :
                                             row.isCancelled ? 
@@ -876,6 +889,17 @@ function DataTable(props) {
                               )
                             }
                         </TableCell>
+                        {
+                          row.isCancelled && <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none">
+                            <Button onClick={() => {appointmentRefund(row._id)}}>
+                              Refund
+                            </Button>
+                        </TableCell>
+                        }
                       </TableRow>
                     );
                   })}

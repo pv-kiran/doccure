@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Datatable from '../DataTable/Datatable';
 import { adminGetAllPatients, updatePatients } from '../../app/features/admin/adminSlice';
 import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
+import Toast from '../Shared/Toast';
 
 
 function AdminPatientsTable() {
@@ -12,6 +13,9 @@ function AdminPatientsTable() {
     return state.admin;
   });
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
 
   const dispatch = useDispatch();
 
@@ -36,8 +40,12 @@ function AdminPatientsTable() {
       let {data} = await instance.put(`admin/patient/status/${patientId}`);
       console.log(data.patient);
       dispatch(updatePatients(data.patient))
+      setShowAlert(true);
+      setAlertMessage('Status of the Patient is updated');
     } catch (error) {
-      
+      setShowAlert(true);
+      setAlertMessage('Something went wrong');
+      setSeverity('error')
     }
   }
   
@@ -89,6 +97,13 @@ function AdminPatientsTable() {
       {
          rows.length > 0 && <Datatable {...adminProps}></Datatable> 
       }
+      <Toast
+          setShowAlert={setShowAlert}
+          showAlert={showAlert}
+          message={alertMessage}
+          severity = {severity}
+      >
+      </Toast>
    </>
     
   );

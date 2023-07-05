@@ -4,6 +4,7 @@ import instance from '../../api/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import {  adminGetSpecialities, updateSpeciality} from '../../app/features/admin/adminSlice';
+import Toast from '../Shared/Toast';
 
 
 function AdminSpecialitiesTable() {
@@ -24,6 +25,10 @@ function AdminSpecialitiesTable() {
     }
   }, [])
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
+
 
 
   useEffect(() => {
@@ -37,8 +42,12 @@ function AdminSpecialitiesTable() {
     try {
       let { data } = await instance.put(`admin/speciality/status/${id}`);
       dispatch(updateSpeciality(data.specialities)) 
+      setShowAlert(true);
+      setAlertMessage('Status of the speciality is updated');
     } catch (error) {
-      console.log(error)
+      setShowAlert(true);
+      setAlertMessage('Something went wrong');
+      setSeverity('error')
     }
   }
 
@@ -87,15 +96,19 @@ function AdminSpecialitiesTable() {
     statusToggler
   }
 
-
-
-
   return (
     <>
       
       {
          <DataTable {...adminProps}></DataTable>
       }
+      <Toast
+          setShowAlert={setShowAlert}
+          showAlert={showAlert}
+          message={alertMessage}
+          severity = {severity}
+      >
+      </Toast>
       
     </>
     

@@ -1,8 +1,9 @@
-import React , {useEffect} from 'react';
+import React , {useEffect, useState} from 'react';
 import instance from '../../api/axiosInstance';
 import { getAppointments, updateAppointmentList } from './../../app/features/doctor/doctorSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import DataTable from '../DataTable/Datatable';
+import Toast from '../Shared/Toast';
 
 
 
@@ -68,11 +69,38 @@ function DoctorAppointmentsTable() {
             }
         ];
   
+        const [showAlert, setShowAlert] = useState(false);
+        const [alertMessage, setAlertMessage] = useState('');
+        const [severity, setSeverity] = useState('success');
 
         const statusToggler = async (id) => {
-          const { data }  = await instance.put(`/appointment/${id}/approve`);
-          dispatch(updateAppointmentList(data.appointment));
+          try {
+            const { data }  = await instance.put(`/appointment/${id}/approve`);
+            dispatch(updateAppointmentList(data.appointment));
+            setShowAlert(true);
+            setAlertMessage('Appointment is approved');
+          } catch (err) {
+            setShowAlert(true);
+            setAlertMessage('Something went wrong');
+            setSeverity('error')
+          }
+          
         }
+   
+        const cancelByDoctor = async (id) => {
+          try {
+            const { data }  = await instance.put(`/appointment/${id}/cancel`);
+            dispatch(updateAppointmentList(data.appointment));
+            setShowAlert(true);
+            setAlertMessage('Appointment is Rejected');
+            setSeverity('error');
+          } catch (err) {
+             setShowAlert(true);
+             setAlertMessage('Something went wrong');
+             setSeverity('error');
+          }
+        }
+
 
   
 
@@ -86,7 +114,8 @@ function DoctorAppointmentsTable() {
           heading: 'My Appointments',
           userRole,
           statusToggler,
-          filterList
+          filterList,
+          cancelByDoctor
         }
 
         return (
@@ -94,6 +123,13 @@ function DoctorAppointmentsTable() {
               {
                   rows.length > 0 && <DataTable {...doctorProps}></DataTable>
               }
+                  <Toast
+                      setShowAlert={setShowAlert}
+                      showAlert={showAlert}
+                      message={alertMessage}
+                      severity = {severity}
+                  >
+                  </Toast>
             </>
         );
 }

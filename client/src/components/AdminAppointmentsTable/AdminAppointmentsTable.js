@@ -23,6 +23,10 @@ function AdminAppointmentsTable() {
             }, [])
 
   
+            const appointmentRefund = async (id) => {
+                const {data} = await instance.put(`/appointment/${id}/refund`)
+            }
+  
             useEffect(() => {
                   dispatch(adminGetAppoinments());
             }, [])
@@ -63,7 +67,9 @@ function AdminAppointmentsTable() {
                   disablePadding: true,
                   label: 'Status',
                 } 
-            ];
+              ];
+  
+
   
             const tableContent = 'adminAppointment'
             const userRole = 'admin'     
@@ -76,7 +82,8 @@ function AdminAppointmentsTable() {
                 headCells,
                 heading: 'Appointment details',
                 userRole,
-                filterList
+                filterList,
+                appointmentRefund
             }
 
             return (
