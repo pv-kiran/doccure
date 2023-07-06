@@ -4,9 +4,12 @@ import  Box  from '@mui/material/Box';
 import  Typography  from '@mui/material/Typography';
 import  Stack  from '@mui/material/Stack';
 
+import { useMediaQuery , createTheme} from '@mui/material';
 
 
 function SpecialitySection() {
+    const theme = createTheme(); // Create an empty theme object
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const [specialities, setSpecialities] = useState([]);  
 
@@ -33,17 +36,27 @@ function SpecialitySection() {
           margin: 'auto',
           padding: '6rem 1rem',
       }}>
-          <Typography variant='h4'>Clinic and Specialities</Typography>
+          <Typography
+              variant='h4'
+              sx={{
+                width: {lg: '75%' , md: '75%' , sm:'100%'},
+                textAlign: 'center',
+              }}
+          >
+              Clinic and Specialities
+          </Typography>
           <Typography
               variant='subtitle1'
               color='gray'
-              fontWeight='500'
-              width='75%'
-              textAlign= 'center'
+              fontWeight='500' 
+              sx={{
+                width: {lg: '75%' , md: '75%' , sm:'100%'},
+                  textAlign: 'center',
+              }}
           >
               Unveiling Diverse Specialties: Comprehensive, Expert Medical Care for Your Unique Health Needs
           </Typography>
-          <Stack direction='row' width= '100%' spacing={6} sx={{marginTop: '3rem'}}>
+          <Stack direction='row' width= '100%' spacing={isSmallScreen ? 4 : 8} sx={{marginTop: '3rem'}}>
           {
               specialities.length > 0 && 
                   specialities.map((item, index) => {
@@ -52,8 +65,8 @@ function SpecialitySection() {
                         key={index}      
                             sx={{
                                 border: '1px white solid',
-                                width: '10rem',
-                                height: '10rem',
+                                width: {lg:'10rem' , md: '8rem' , sm:'5rem' , xs:'4rem'},
+                                height: {lg:'10rem' , md: '8rem' , sm:'5rem' , xs: '4rem'},
                                 borderRadius: '100%',
                                 display: 'flex',
                                 justifyContent: 'center',

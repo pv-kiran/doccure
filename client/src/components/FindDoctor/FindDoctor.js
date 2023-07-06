@@ -12,9 +12,12 @@ import doctor from '../../assets/doctor.jpg';
 import pharmacy from '../../assets/pharmacy.jpg';
 import lab from '../../assets/lab.jpg';
 import { useNavigate } from 'react-router-dom';
-
+import { useMediaQuery , createTheme} from '@mui/material';
 
 function FindDoctor() {
+  const theme = createTheme(); // Create an empty theme object
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
 
   const navigate = useNavigate();
 
@@ -29,16 +32,17 @@ function FindDoctor() {
         What are you looking for?
       </Typography>
       <Stack
-        direction="row"
+        direction={isSmallScreen ? 'column' : 'row'} 
+        justifyContent='center' 
+        alignItems= 'center'
         spacing={6}
-        justifyContent="center"
         sx={{
           padding: '3rem'
         }}
       >
         <Box
           sx={{
-            width: '17.5rem',
+            width: {lg: '17.5rem' , md: '17.5rem' , sm: '25rem' , xs : '100%'} ,
             height: '12rem',
             position: 'relative',
             overflow: 'hidden',
@@ -83,7 +87,7 @@ function FindDoctor() {
         </Box>
         <Box
           sx={{
-            width: '17.5rem',
+            width: {lg: '17.5rem' , md: '17.5rem' , sm: '25rem' , xs : '100%'} ,
             height: '12rem',
             position: 'relative',
             overflow: 'hidden',
@@ -125,7 +129,7 @@ function FindDoctor() {
         </Box>
         <Box
           sx={{
-            width: '17.5rem',
+            width: {lg: '17.5rem' , md: '17.5rem' , sm: '25rem' , xs : '100%'} ,
             height: '12rem',
             position: 'relative',
             overflow: 'hidden',

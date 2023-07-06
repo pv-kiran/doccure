@@ -8,7 +8,6 @@ const adminLogin = async (req, res) => {
     try {
 
         const admin = await Admin.findOne({ email: email });
-        console.log(admin);
 
         if (admin) {
 
@@ -33,7 +32,6 @@ const adminLogin = async (req, res) => {
                 admin.password = undefined;
                 admin.token = token;
 
-                console.log(admin);
             
             const options = {
                 expires: new Date(

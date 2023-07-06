@@ -9,17 +9,11 @@ const mongoose = require('mongoose')
 const updateDoctorProfile = async (req, res) => {
 
     const { username, gender, speciality ,phone, houseName, city, state , services , qualification } = req.body;
-    console.log(username);
-    console.log(gender);
-    console.log(req.files);
-    console.log(speciality);
-
-    console.log(services.split(','));
+    
     
     try {
 
         const doctor = await Doctor.findOne({ _id: req.userId });
-        console.log(doctor);
 
         if(req.files) {
     
@@ -49,7 +43,6 @@ const updateDoctorProfile = async (req, res) => {
         })
 
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })
@@ -96,7 +89,6 @@ const getAvailableSlots = async (req, res) => {
 
     return res.json({ availableSlots });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ errorInfo: 'Server error' });
   }
 }
@@ -150,7 +142,6 @@ const addAvailableSlot = async (req, res) => {
     return res.status(201).json({ message: 'Slots added successfully', availableSlots: availableSlots });
       
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: 'Server error' });
   }
 }
@@ -191,7 +182,6 @@ const updateAvailbleSlot = async (req, res) => {
 
     return res.json({ message: 'Slot updated successfully' , availableSlots: availableSlots});
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: 'Server error' });
   }
 }
@@ -235,7 +225,6 @@ const deleteSlot = async (req, res) => {
 
     return res.json({ message: 'Slot deleted successfully' , availableSlots: availableSlots});
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: 'Server error' });
   }
 }
@@ -257,8 +246,6 @@ const deleteDateSlots = async (req, res) => {
     }
 
     //   doctor.availableSlots[mainSlotIndex].slots = [];
-    console.log(mainSlotIndex);
-    console.log(doctor.availableSlots[mainSlotIndex]);
     doctor.availableSlots.splice(mainSlotIndex, 1);
 
     await doctor.save();
@@ -270,7 +257,6 @@ const deleteDateSlots = async (req, res) => {
 
     return res.status(200).json({ message: 'Slots deleted successfully' , availableSlots: availableSlots });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: 'Server error' });
   }
 }
@@ -331,12 +317,10 @@ const getAppointments = async (req, res) => {
                 }
             ]);
 
-            console.log(appointments);
 
             res.status(200).json({ appointments })
 
         } catch (err) {
-            console.log(err)
             res.status(500).json({
             errorInfo: 'Inernal Server Error'
         })

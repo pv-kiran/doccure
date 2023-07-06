@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Doctor = require('../models/doctor');
 const { isDoctor, isLoggedIn, isPatient, isAdmin } = require('../middlewares/authMiddleware');
-const { razorpay } = require('../utils/razorpay');
-const Appointment = require('../models/appointment');
-const mongoose = require('mongoose');
+
 
 
 const { initiateAppointment, completeAppointment, getAppointmentDetails, approveAppointment, cancelAppointment, getDoctorDetails, getDetails } = require('../controllers/appointmentController');

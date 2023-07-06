@@ -12,7 +12,6 @@ const Appointment = require('../models/appointment');
 const adminGetAllDoctors = async (req, res) => {
     
     const { status } = req.query;
-    console.log(req.query);
     const query = {};
     if (status === 'pending') {
         query.isAdminVerified = false;
@@ -21,7 +20,6 @@ const adminGetAllDoctors = async (req, res) => {
         query.isAdminVerified = true;
     }
 
-    console.log(query);
 
     try {
         const doctors = await Doctor.find(query).populate('speciality');
@@ -36,7 +34,6 @@ const adminGetAllDoctors = async (req, res) => {
             })
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal Server Error'
         })
@@ -90,7 +87,6 @@ const adminGetAllPatients = async (req, res) => {
             })
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal Server Error'
         })
@@ -129,7 +125,6 @@ const adminAddSpeciality = async (req, res) => {
     try {
 
         const speciality = await Speciality.findOne({ name: name });
-        console.log(speciality);
         let specialityImg;
         if(req.files) {
             const result = await cloudinary.uploader.upload(req.files.specialityImg.tempFilePath , {folder: 'Patients'});
@@ -148,7 +143,6 @@ const adminAddSpeciality = async (req, res) => {
         })
 
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })
@@ -171,7 +165,6 @@ const adminEditSpeciality = async (req, res) => {
 
         
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })
@@ -301,7 +294,6 @@ const getAllAppointments = async (req, res) => {
        
 
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal Server Error'
         })

@@ -48,7 +48,6 @@ const initiateAppointment = async (req, res) => {
       
         const { doctorId, dateId, slotId, startTime, endTime, fees , selectedDate } = req.body;
       
-      console.log(doctorId);
 
         const appointmentExists = await Appointment.findOne({
             doctorId,
@@ -69,13 +68,13 @@ const initiateAppointment = async (req, res) => {
             receipt: "receipt#1"
         });
 
-        console.log(order);
+        
+      
 
         res.json({ order });
         
     } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while creating the appointment.' });
+        res.status(500).json({ error: 'An error occurred while creating the appointment.' });
   }
 }
 
@@ -85,26 +84,20 @@ const completeAppointment = async (req, res) => {
 
     try {
 
-      console.log(req.body)
       
       const { doctorId, dateId, slotId, startTime, endTime, fees, paymentId, orderId , selectedDate } = req.body;
     
-      console.log(selectedDate);
       
       const doctor = await Doctor.findById(doctorId);
-      console.log(doctor);
 
       const slot = doctor.availableSlots.find((slot) => slot._id.toString() === dateId);
 
-      console.log(dateId);
-      console.log(slot.date);
 
       if (!slot) {
         return res.status(400).json({ message: 'Slot not available' });
       }
 
       const selectedSlot = slot.slots.find((slot) => slot._id.toString() === slotId);
-      console.log(selectedSlot);
 
       if (!selectedSlot || selectedSlot.status === true) {
         return res.status(400).json({ message: 'Slot not available' });
@@ -154,7 +147,6 @@ const completeAppointment = async (req, res) => {
         res.status(200).json({ appointment , newNotification});
         
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'An error occurred while creating the appointment.' });
   }
 }
@@ -166,7 +158,6 @@ const getAppointmentDetails = async (req, res) => {
      try {
        
         const appointment = await Appointment.findById(id).populate('doctorId');
-        console.log(appointment);
 
         const details = {
           doctorName: appointment?.doctorId?.fullName,
@@ -177,7 +168,9 @@ const getAppointmentDetails = async (req, res) => {
         res.status(200).json({ details });
           
      } catch (err) {
-        console.log(err);
+       res.status(500).json({
+          errorInfo: 'Internal Server Error'
+        })
      }
 }
 
@@ -229,7 +222,6 @@ const approveAppointment = async (req, res) => {
     res.status(200).json({success: true , appointment: appointments[0] , newNotification})
 
     } catch (err) {
-      console.log(err);
       res.status(500).json({
         errorInfo : 'Internal Server Error'
       })
@@ -301,7 +293,6 @@ const cancelAppointment = async (req, res) => {
       return res.status(404).json({ error: 'Date slot not found' });
     }
 
-    console.log(dateSlot);
 
     const timeSlot = dateSlot.slots.find(slot => slot._id.toString() === appointments[0].slotId.toString());
 
@@ -311,13 +302,11 @@ const cancelAppointment = async (req, res) => {
     }
 
 
-    console.log(timeSlot);
 
     timeSlot.status = false;
 
     await doctor.save();
 
-    console.log(timeSlot);
 
     appointments[0].isCancelled = true;
     await Appointment.findOneAndUpdate({ _id: id }, { $set: appointments[0] })
@@ -330,15 +319,12 @@ const cancelAppointment = async (req, res) => {
         message: 'Appointment Request has been cancelled' 
     });
 
-    console.log(newNotification);
 
     res.json({ success: true , appointment : appointments[0] , newNotification  });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'An error occurred while canceling the appointment' });
   }
 }
-
 
 const getDetails = async (req, res) => {
     const { id } = req.params;

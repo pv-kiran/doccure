@@ -172,16 +172,17 @@ function Navbar(props) {
 
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} width="100%">
       <AppBar
         position="fixed"
-        open={open}
+        open={open} 
         sx={{
           backgroundColor: bgColor,
           color: color,
           height: "5rem",
-            display: "flex",
-            justifyContent: 'center'
+          display: "flex",
+          justifyContent: 'center' ,
+          width: '100%'
         }}
         elevation={1}
       >

@@ -21,7 +21,7 @@ function Footer() {
                 backgroundColor: '#15558D',
             }}
       >
-        <Grid
+        {/* <Grid
             container
             spacing={8}
             sx={{
@@ -29,7 +29,7 @@ function Footer() {
                 padding: '1rem 2rem',
                 marginTop: '2rem'
             }}>
-            <Grid item xl={4}  sx={{width:'30%'}}>
+            <Grid item xl={4} sx={{width:'30%'}}>
                 <Typography
                     variant='h5' 
                     fontWeight= 'bold'
@@ -144,17 +144,17 @@ function Footer() {
                     <Typography color='white'>doccure@gmail.com</Typography>
                 </Stack>
             </Grid>
-        </Grid>
+        </Grid> */}
         <Divider sx={{ width: '95%' , backgroundColor: 'white' , margin: '1rem auto' }} />    
             <Box sx={{
                 width: '95%',
                 margin: 'auto',
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 paddingBottom: '1rem'
             }}>
              <Typography color='#fff'>© 2022 Doccure. All rights reserved.</Typography>   
-             <Typography color= '#fff'>Terms and Conditions | Policy</Typography>   
+             {/* <Typography color= '#fff'>Terms and Conditions | Policy</Typography>    */}
         </Box>    
       </Box>
   )

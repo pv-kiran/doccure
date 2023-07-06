@@ -29,7 +29,6 @@ const ColorButton = styled(Button)(({ theme }) => ({
   letterSpacing: '2px' ,
   '&:hover': {
       backgroundColor: '#0AE4B3',
-      
   }
 }));
 
@@ -65,11 +64,16 @@ function DoctorCard({ doctor }) {
                       borderRadius: '.3rem' ,
                       padding: '1rem',
                       display: 'flex',
+                      flexDirection: {lg: 'row' , md: 'row' , sm: 'row' , xs: 'column'} ,
                       justifyContent: 'space-between',
                       alignItems: 'flex-start',
-                      marginBottom: '1.5rem'
+                      marginBottom: '1.5rem' ,
                     }}>
-                      <Box sx={{width: '12rem'  , height: '10rem' , marginTop: '.4rem' }}>
+                      <Box sx={{
+                        width: {lg: '12rem' , md: '25rem' , sm: '25rem' , xs: '100%'},
+                        height: '10rem',
+                        marginTop: '.4rem'
+                      }}>
                         <img src={profilePicture?.secure_url}
                           style={{
                             width: '100%',
@@ -79,7 +83,10 @@ function DoctorCard({ doctor }) {
                           }} alt="" />    
                       </Box>
                       
-                      <Stack spacing={1} sx={{width: '55%', padding: '0 .5rem'}}>
+                     <Stack spacing={1} sx={{
+                      width: {lg: '55%' , md:'55%' , sm: '100%' , xs:'100%'},
+                      padding: '0 .5rem'
+                     }}>
                         <Typography variant='h6' color='#2CE1FE'>Dr. { fullName}</Typography>
                             <Typography variant='subtitle2' sx={{color: 'gray' , paddingLeft: '.4rem' }}>
                                 {qualification}
@@ -99,8 +106,13 @@ function DoctorCard({ doctor }) {
                                   name="simple-controlled"
                                   value={(ratings.number || 0)}
                                 />
-                            </Box>
-                            <Box sx={{ margin: '.2rem 0', display: 'flex', alignItems: 'center' }}>
+                          </Box>
+                          <Box sx={{
+                            margin: '.2rem 0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: '100%'
+                          }}>
                             <Box sx={{ marginLeft: '0.5rem' }}>
                                   {services.map((service, index) => (
                                       <span
@@ -108,9 +120,10 @@ function DoctorCard({ doctor }) {
                                       style={{
                                           display: 'inline-block',
                                           padding: '0.2rem 0.4rem',
-                                          marginRight: '0.5rem',
+                                          marginRight: '.4rem',
+                                          marginBottom: '.3rem',
                                           border: '1px solid #a3a3a3',
-                                          borderRadius: '4px',
+                                          borderRadius: '4px'
                                       }}
                                       >
                                       {service}
@@ -120,18 +133,31 @@ function DoctorCard({ doctor }) {
                           </Box>
                       </Stack>
                       <Box sx={{
-                        width: '22%',
+                        width: {lg:'22%' , md:'22%' , sm: '100%' , xs: '100%'},
                         color: '#424240',
                         padding: '.5rem .3rem',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-around'
                       }}>
-                            <Stack direction="row" marginBottom={1} spacing={2}> 
+                          <Stack direction="row"
+                            marginBottom={1}
+                            spacing={2}
+                            sx={{
+                              marginLeft: {lg: '0' , md: '0' , sm: '2rem' , xs: '2rem'}
+                            }}
+                          > 
                                 <ThumbUpOffAltIcon fontSize='small'/>
                                 <Typography variant='subtitle2'>{ (likes.number || 0)}</Typography>
                             </Stack>
-                            <Stack direction="row" marginBottom={1} spacing={2}> 
+                            <Stack
+                              direction="row"
+                              marginBottom={1}
+                              spacing={2}
+                              sx={{
+                                marginLeft: {lg: '0' , md: '0' , sm: '2rem' , xs: '2rem'}
+                              }}
+                            > 
                                 <ChatBubbleOutlineIcon fontSize='small'  />
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
                                     {
@@ -139,27 +165,43 @@ function DoctorCard({ doctor }) {
                                     }
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" marginBottom={1} spacing={2}> 
+                            <Stack
+                              direction="row"
+                              marginBottom={1}
+                              spacing={2}
+                              sx={{
+                                marginLeft: {lg: '0' , md: '0' , sm: '2rem' , xs: '2rem'}
+                              }}
+                            > 
                                 <FmdGoodOutlinedIcon fontSize='small'  />
                                 <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
                                  {address?.city} , {address?.state}
                                 </Typography>
                             </Stack>
-
-                            <Stack direction="row" marginBottom={1} spacing={2}  > 
-                               <CurrencyRupeeIcon fontSize='small'  />
-                                <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
-                                    {speciality?.fees}
-                                </Typography>
-                            </Stack>
-                           <ColorButton
-                              sx={{ marginTop: '.5rem' }}
-                              onClick={() => {
-                                  navigate(`/doctor/${_id}`)
+                            <Stack
+                              direction="row"
+                              marginBottom={1}
+                              spacing={2}
+                              sx={{
+                                marginLeft: {lg: '0' , md: '0' , sm: '2rem' , xs: '2rem'}
                               }}
-                           >
-                               Appoinment
-                           </ColorButton>                    
+                            > 
+                                            <CurrencyRupeeIcon fontSize='small'  />
+                                              <Typography variant='subtitle2' sx={{ fontsize: '.7rem' }} >
+                                                  {speciality?.fees}
+                                              </Typography>
+                            </Stack>
+                            <ColorButton
+                                sx={{
+                                  marginTop: '.5rem',
+                                  width: {lg: '10rem' , md: '10rem' , sm: '16rem' , xs: '18rem'}
+                                }}
+                                onClick={() => {
+                                    navigate(`/doctor/${_id}`)
+                                }}
+                            >
+                                Appoinment
+                            </ColorButton>                    
                       </Box> 
                     </Box>
             )

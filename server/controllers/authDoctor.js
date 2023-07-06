@@ -70,7 +70,6 @@ const registerDoctor = async (req, res) => {
 
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })
@@ -85,7 +84,6 @@ const verifyDoctorEmail = async (req, res) => {
         const doctor = await Doctor.find({ email: email });
 
         if (doctor[0].isVerified) {
-            console.log('hello');
             return res.status(409).json({
               message: 'Email is alredy verified'
             })
@@ -125,7 +123,6 @@ const loginDoctor = async (req, res) => {
         const doctor = await Doctor.findOne({ email: email });
         if (doctor) {
 
-            console.log(doctor);
 
 
             if (!doctor.isVerified) {

@@ -5,7 +5,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {  createTheme, ThemeProvider } from '@mui/material/styles';
 import 'react-datepicker/dist/react-datepicker.css';
 import './VisitDoctors.css';
 import Checkbox from '@mui/material/Checkbox';
@@ -22,6 +22,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useMediaQuery } from '@mui/material';
+
 
 
 
@@ -67,6 +69,8 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 function ViewDoctors() {
 
+  const theme = createTheme(); // Create an empty theme object
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // filtering - based on the specialites
   const [selectedSpecialities, setSelectedSpecialities] = useState([]);
@@ -172,14 +176,19 @@ function ViewDoctors() {
   return (
     <>
       <Navbar {...navBarProps}></Navbar>
-       <Stack sx={{marginTop: '5rem'}} direction="row" spacing={3} padding="2rem">
+      <Stack
+        sx={{ marginTop: '5rem' }}
+        direction=  {isSmallScreen ? 'column' : 'row'}
+        spacing={3}
+        padding="2rem"
+      >
             <Box className="sidebar"
                     sx={{
                         border: '1px gray dotted',
                         borderRadius: '.2rem',
-                        width: '25%',
-                        height: '92vh',
-                        position: 'sticky',
+                        width: {lg: '30%' , md: '25%' , sm: '100%' , xs:'100%'},
+                        height: {xl: '92vh' , lg: '80vh'  , md: 'auto' , sm: 'auto' , xs: 'auto'},
+                        position: {lg:'sticky' , md: 'sticky' , sm: 'relative' , xs: 'relative'},
                         top: '.8rem'
                     }}>
               <List component="nav" aria-label="mailbox folders">
@@ -282,7 +291,7 @@ function ViewDoctors() {
             <Box
               className="doctorsList"
               sx={{
-                  width: '75%',
+                  width: {lg: '70%' , md: '75%' , sx: '100%' , xs: '100%'},
               }}
             >
               {
@@ -292,8 +301,8 @@ function ViewDoctors() {
               }
               <ColorButton
                 sx={{
-                    width: '20%',
-                    marginLeft: '45%'
+                    width: {lg: '20%' , md: '20%' , sm: '100%' , xs: '100%'},
+                    marginLeft: {lg: '45%' , md: '45%' , sm: '0' , xs:'0'}
                 }}
                 onClick={() =>  handleFetchMore()}
               >

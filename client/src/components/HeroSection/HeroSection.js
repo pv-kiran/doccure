@@ -9,22 +9,27 @@ import SearchIcon from "@mui/icons-material/Search";
 // import IconButton from "@mui/material/IconButton";
 import Button  from '@mui/material/Button';
 
-
 import './HeroSection.css';
 import bannerThree from '../../assets/banner@3x.png';
+import { useMediaQuery , createTheme} from '@mui/material';
 
 
 function HeroSection() {
+
+  const theme = createTheme(); // Create an empty theme object
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+ 
+
   return (
     <Box
       sx={{
         marginTop: '5rem',
-        position: 'relative'
+        position: 'relative',
+        width: '100%'
       }}
     >
       <img className='banner-img' src={bannerThree} alt="banner" /> 
       <Stack
-        // spacing={1}
         sx={{
           position: 'absolute',
           top: '15%',
@@ -50,20 +55,21 @@ function HeroSection() {
           Discover the best doctors, clinic & hospital the city nearest to you.
         </Typography>
         <Stack
-            direction="row"
+          direction={isSmallScreen ? 'column' : 'row'} 
             spacing={2}
             alignItems="center"
             justifyContent="center"
             marginTop= "1.5rem"
             sx={{
-              textAlign: 'center'
+              textAlign: 'center',
             }}
          >
             <TextField
               placeholder="Location"
               variant="outlined"
               // size='small'
-                sx={{
+              sx={{
+                  width: {lg: '25%' , md: '25%' , sm: '50%'},
                   "& label": {
                     display: "none"
                   } ,
@@ -87,7 +93,7 @@ function HeroSection() {
                 placeholder="Search doctors , specialites"
                 variant="outlined"
                 sx={{
-                  width: '35%',
+                  width: {lg: '35%' , md: '35%' , sm: '50%'},
                   "& label": {
                     display: "none"
                   }
@@ -111,8 +117,9 @@ function HeroSection() {
                   borderRadius: '.3rem',
                   height: '2.8rem',
                   marginTop : '.05rem' ,
-                  width : '1.8rem' ,
+                  // width : '1.8rem' ,
                   backgroundColor: "#0AE4B3",
+                  width: {lg: '2rem' , md: '2rem' , sm: '25%'},
                   "&:hover": {
                     backgroundColor: "#2CE1FE"
                   }

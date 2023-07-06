@@ -4,6 +4,7 @@ import HeroSection from '../HeroSection/HeroSection';
 import FindDoctor from '../FindDoctor/FindDoctor';
 import SpecialitySection from '../SpecialitySection/SpecialitySection';
 import Footer from '../Footer/Footer';
+import { Box } from '@mui/material';
 
 
 
@@ -14,13 +15,13 @@ function Home() {
     color: 'green'
   }
   return (
-    <>
+    <Box >
       <Navbar {...navBarProps}></Navbar>
       <HeroSection></HeroSection>
       <FindDoctor></FindDoctor>
       <SpecialitySection></SpecialitySection>
       <Footer></Footer>
-    </>
+    </Box>
    
   );
 }

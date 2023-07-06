@@ -69,7 +69,6 @@ const registerPatient = async (req, res) => {
             })
         }
     } catch (err) {
-        console.log(err)
         res.status(500).json({
             errorInfo: `Internal server error`
        })
@@ -84,7 +83,6 @@ const emailVerifcationPatient = async (req, res) => {
         const email = decodeInfo.email;
         const patient = await Patient.find({ email: email });
         if (patient[0].isVerified) {
-            console.log('Hello');
             return res.status(409).json({
                 message: 'Email is alredy verified'
             })
@@ -155,7 +153,6 @@ const loginPatient  = async (req, res) => {
 
                 );
 
-                console.log(token);
 
             
                 patient.password = undefined;
@@ -197,7 +194,6 @@ const loginPatient  = async (req, res) => {
 
 const resetPasswordPatient = async (req, res) => {
     const { email } = req.body;
-    console.log(email);
     try {
         const patient = await Patient.findOne({ email: email });
         if (patient) {
@@ -243,8 +239,6 @@ const resetPasswordPatient = async (req, res) => {
 
 const newPasswordPatient = async (req, res) => {
     const { password, confirmPassword, passwordToken } = req.body;
-    console.log(req.body);
-    console.log(password);
     if (password === confirmPassword) {
         
         try {

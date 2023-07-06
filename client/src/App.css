@@ -1,5 +1,6 @@
 
 * {
+  /* outline: 1px solid red; */
   margin: 0 ;
   padding: 0;
   box-sizing: border-box;
@@ -13,6 +14,10 @@
 
 .css-k1tok0-MuiDrawer-docked {
   width: 0;
+}
+
+.css-qcqlej {
+  width: 0 !important;
 }
 
 
