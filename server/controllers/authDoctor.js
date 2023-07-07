@@ -295,11 +295,23 @@ const logoutDoctor = (req,res) => {
     })
 }
 
+const getDoctorDetails = async (req, res) => {
+    try {
+        const doctor = await Doctor.findOne({ _id: req.userId });
+        res.status(200).json({ doctor });
+    } catch (err) {
+        res.status(400).json({
+            errorInfo: 'Internal Server Error'
+        })
+    }
+}
+
 module.exports = {
     registerDoctor,
     verifyDoctorEmail,
     loginDoctor,
     resetPasswordDoctor,
     newPasswordDoctor,
+    getDoctorDetails,
     logoutDoctor
 } 

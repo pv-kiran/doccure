@@ -249,12 +249,12 @@ const DoctorSchedulings = () => {
 
   return (
     <Box sx={{
-      marginLeft: { lg: '-3rem', md: '-15rem', sm: "-9rem", xs: "1rem" },
+      marginLeft: { lg: '-3rem', md: '-5rem', sm: "-9rem", xs: "1rem" },
       marginTop: '5rem',
       width: '50rem',
       minHeight: '23rem',
       borderRadius: '.5rem',
-      padding: '1.5rem'
+      padding: '1.5rem',
     }}>
       <Typography variant='h6'>Shedule Timings</Typography>
       <Stack direction= 'row'>
@@ -276,7 +276,21 @@ const DoctorSchedulings = () => {
           </ColorButton>
       </Stack>
        
-          <SchedulingCard {...schedulingCardProps}></SchedulingCard>
+      {
+        dateArray.length > 0 ?
+          <SchedulingCard  {...schedulingCardProps} /> :
+            <Box style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
+                  <Typography variant="body1" color="textPrimary">
+                    Dear Doctor,
+                  </Typography>
+                  <Typography variant="body1" marginTop= '1rem' color="textPrimary">
+                    We would like to inform you that patients are eagerly waiting for available slots to book appointments. Unfortunately, no new slots have been added at the moment. We kindly request you to consider adding more slots to accommodate their needs.
+                  </Typography>
+                  <Typography variant="body1" color="textPrimary" style={{ marginTop: '10px' }}>
+                    Your prompt attention to this matter would be highly appreciated. Thank you for your dedication to patient care.
+                  </Typography>
+            </Box>
+      }
 
     
             

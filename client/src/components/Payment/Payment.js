@@ -14,7 +14,8 @@ import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
 import BookingInfo from '../Shared/BookingInfo';
 
-
+import {  createTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -39,6 +40,10 @@ function Payment() {
 
     const navigate = useNavigate();
     
+
+    const theme = createTheme(); // Create an empty theme object
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
   
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;
@@ -197,7 +202,7 @@ function Payment() {
         <>
             <Navbar {...navBarProps}></Navbar>
             <Stack
-                direction='row'
+                direction= {isSmallScreen ? 'column' : 'row'}
                 spacing={5}
                 sx={{
                     marginTop: '5rem',
@@ -205,12 +210,7 @@ function Payment() {
                 }}>
                 <Box
                     sx={{
-                        // border: '2px green solid',
-                        width: '65%',
-                        // display: 'flex',
-                        // flexDirection: 'column',
-                        // justifyContent: 'center',
-                        // alignItems: 'center',
+                        width: {lg: '65%' , md: '65%' , sm: '100%' , xs:'100%'},
                         border: '1px gray dotted',
                         padding: '1rem 0',
                         borderRadius: '.5rem'
@@ -261,7 +261,7 @@ function Payment() {
                     </Stack>
                 </Box>
                 <Box sx={{
-                    width: '30%',
+                    width: {lg:'30%' , md: '30%' , sm: '100%' , xs: '100%'},
                     border: '1px gray dotted',
                     borderRadius: '.3rem'
                 }}>

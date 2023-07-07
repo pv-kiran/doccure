@@ -1,25 +1,43 @@
 import './App.css';
+import instance from './api/axiosInstance';
+import { clearAuth } from './app/features/auth/authSlice';
 
 import AppRoutes from './routes';
 
-
-
-
-import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react';
-
-
+import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
 
-  console.log(process.env.REACT_APP_RZP_KEY)
+  const authState = useSelector((state) => {
+    return state.auth?.authState;
+  })
+  
+  const dispatch = useDispatch();
 
-  const location = useLocation()
+  // getting the details
+  const getDetails = async () => {
+    try {
+      const { data } = await instance.get(`/auth/${authState?.role}/details`);
+      console.log(data);
+    } catch (err) {
+        if (err?.response?.status === 401) {
+          localStorage.removeItem('user');
+          dispatch(clearAuth())
+        }
+    }
+  }
 
-  // todo: remove
+  // handling token expiration
   useEffect(() => {
-    console.log(`${location.pathname} ... testing`);
-  } , [location.pathname])
+    if (authState?.token) {
+       let user = JSON.parse(localStorage.getItem('user')) ;
+        instance.defaults.headers.common = {
+            Authorization : `Bearer ${user.token}`
+        }
+       getDetails()
+    }
+  })
 
   return (
       <AppRoutes/>

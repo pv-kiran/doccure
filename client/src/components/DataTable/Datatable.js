@@ -176,7 +176,12 @@ function EnhancedTableToolbar(props) {
       </Toolbar>
       {
         (tableContent === 'user' || tableContent === 'appointment' || tableContent === 'adminAppointment') &&
-        <Box sx={{marginBottom: '1rem'}}>
+        <Box sx={{
+            marginBottom: '1rem' ,
+            display: 'flex',
+            flexDirection: {lg: 'row' , md: 'row' , sm: 'column' , xs: 'column'},
+            justifyContent: 'space-between',
+        }}>
             <Button
               onClick={() => {
                 clickHandler('pending')}}

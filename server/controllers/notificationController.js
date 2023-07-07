@@ -12,7 +12,9 @@ const adminGetNotification = async (req, res) => {
         res.status(200).json({ notification });
 
     } catch (err) {
-        console.log(err);
+        res.status(200).json({
+            errorInfo:'Internal Server Error'
+        })
     }
 }
 
@@ -28,7 +30,9 @@ const doctorGetNotification = async (req, res) => {
         res.status(200).json({ notification });
 
     } catch (err) {
-        console.log(err);
+        res.status(200).json({
+            errorInfo:'Internal Server Error'
+        })
     }
 }
 
@@ -44,7 +48,9 @@ const patientGetNotifcation = async (req, res) => {
         res.status(200).json({ notification });
 
     } catch (err) {
-        console.log(err);
+        res.status(200).json({
+            errorInfo:'Internal Server Error'
+        })
     }
 }
 

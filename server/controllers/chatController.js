@@ -171,8 +171,6 @@ const createDoctorConversation = async (req, res) => {
   try {
     const { doctorId } = req.params;
 
-      console.log(`doctor id ${doctorId}`)
-      console.log(`pateint id ${req.userId}`)
 
 
     const doctor = await Doctor.findById(doctorId);
@@ -214,7 +212,6 @@ const createDoctorConversation = async (req, res) => {
 
     res.status(201).json(conversation);
   } catch (error) {
-    console.error('Error creating conversation:', error);
     res.status(500).json({ error: 'Failed to create conversation' });
   }
 }
@@ -274,7 +271,6 @@ const createPatientConversation =  async (req, res) => {
 
     res.status(201).json(conversation);
   } catch (error) {
-    console.error('Error creating conversation:', error);
     res.status(500).json({ error: 'Failed to create conversation' });
   }
 }
@@ -284,7 +280,6 @@ const getMyChat = async (req, res) => {
     try {
         
         const loggedInUserId = new mongoose.Types.ObjectId(req.userId);
-        console.log(loggedInUserId)
 
         const conversations = await Conversation.find({
                 participants: {
@@ -312,7 +307,6 @@ const getMyChat = async (req, res) => {
         return res.status(200).json(conversations);
 
   } catch (error) {
-    console.error('Error retrieving conversations:', error);
     return res.status(500).json({ errorInfo: 'Failed to retrieve conversations' });
   }
 }

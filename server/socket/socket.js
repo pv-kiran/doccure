@@ -28,9 +28,9 @@ const socketConnect = (server) => {
                         return;
                         }
                         newMessage.conversation.participants.forEach((participant) => {
-                        if (newMessage.senderModel === 'Doctor') {
+                            if (newMessage.senderModel === 'Doctor') {
                             socket.in(participant.patient._id).emit('message recieved' , newMessage );
-                        } else {
+                            } else {
                             socket.in(participant.doctor._id).emit('message recieved' , newMessage );
                         }
                     })

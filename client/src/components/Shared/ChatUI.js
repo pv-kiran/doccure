@@ -21,7 +21,8 @@ import io from 'socket.io-client';
 import Toast from './Toast';
 
 
-
+import {  createTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 
 
 function ChatUI({ role }) {
@@ -33,7 +34,11 @@ function ChatUI({ role }) {
 
     const [socket, setSocket] = useState(null);
     const selectedChatComparer = useRef(null);
+  
+    const theme = createTheme(); // Create an empty theme object
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+  
 
     const authState = useSelector((state) => {
       return state.auth?.authState
@@ -206,21 +211,22 @@ function ChatUI({ role }) {
     
     return (
       <Stack
-        direction='row'
+        direction={isSmallScreen ? 'column' : 'row'}
         sx={{
           marginTop: '5rem' ,
-          marginLeft: '-30rem',
+          marginLeft: {lg: '-25rem' , md: '-25rem' , sm: '-7rem' , xs: '1rem'},
         }}
       >
           {/* Conversation list */}
           <Stack direction='column'
             sx={{
-              width: '28%',
+              width: {lg: '28%' , md:'100%' , sm: '95%' , xs: '95%' },
               border: '1px #496b78 solid',
               padding: '1rem' ,
               marginRight: '2rem',
               height: '30rem',
-              borderRadius: '.4rem'
+              borderRadius: '.4rem',
+              marginBottom: '1rem'
             }}
           >
             <Box sx={{
@@ -393,12 +399,12 @@ function ChatUI({ role }) {
           {/* Sending messages  */}
           <Box
             sx={{
-              width: '63%',
+              width: {lg: '62%' , md: '98%' , sm: '95%' , xs:'95%'},
               height: '30rem',
               border: '1px #496b78 dotted',
               borderRadius: '.2rem',
               padding: '1rem',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box' 
             }}>
 
               <Box>

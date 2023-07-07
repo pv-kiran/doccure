@@ -27,6 +27,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveSelectedSlot, setSelectedDateId,  } from '../../app/features/appointment/appointmentSlice';
 
 
+import {  createTheme, ThemeProvider } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 
 
 
@@ -88,7 +90,10 @@ function a11yProps(index) {
 function SlotBooking() {
     
     const { id } = useParams();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const myTheme = createTheme(); // Create an empty theme object
+  const isSmallScreen = useMediaQuery(myTheme.breakpoints.down('md'));
+  
  
     const [doctor, setDoctors] = useState([]);
 
@@ -265,12 +270,14 @@ function SlotBooking() {
     return (
       <>
         <Navbar {...navBarProps}></Navbar>  
-        <Stack direction= 'row'>
+        <Stack
+          direction={isSmallScreen ? 'column' : 'row'}
+        >
             <Box sx={{
                     marginTop: '4rem',
-                    height: '50vh',
+                    height: 'auto',
                     padding: '2rem 1rem',
-                    width: '30%'
+                    width: {lg: '30%' , md: '30%' , sm: '100%' , xs: '100%'}
             }}>
                 {
                         doctor.length > 0  && doctor.map((doctor) => 
@@ -285,7 +292,7 @@ function SlotBooking() {
             </Box>
             <Box sx={{
                     width: '65%',
-                    height: '81vh' ,
+                    height: { lg: '81vh' , md:'81vh'  , sm: 'auto' , xs: 'auto' },
                     margin: 'auto',
                     marginTop: '6rem',
                     border: '1px #d4d3d2 dotted',
@@ -321,7 +328,14 @@ function SlotBooking() {
                     >
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             {
-                              dateArray.length > 0 && <SchedulingCard  {...schedulingCardProps} />
+                              dateArray.length > 0 ? <SchedulingCard  {...schedulingCardProps} /> : <>
+                                <Typography variant="h6" color="primary">
+                                  Attention, wonderful patients!
+                                </Typography>
+                                <Typography variant="body1" color="textPrimary">
+                                  We regret to inform you that the doctor hasn't added any new slots at the moment. We understand just how crucial it is for you to secure your appointments, and we sincerely apologize for any inconvenience this may cause.
+                                </Typography>
+                             </>
                             }            
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>

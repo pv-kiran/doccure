@@ -297,11 +297,23 @@ const logoutPatient = (req, res) => {
     })
 }
 
+const getPatientDetails = async (req, res) => {
+    try {
+        const patient = await Patient.findOne({ _id: req.userId });
+        res.status(200).json({ patient });
+    } catch (err) {
+        res.status(400).json({
+            errorInfo: 'Internal Server Error'
+        })
+    }
+} 
+
 module.exports = {
     registerPatient,
     emailVerifcationPatient,
     loginPatient,
     resetPasswordPatient,
     newPasswordPatient,
-    logoutPatient
+    logoutPatient,
+    getPatientDetails
 }

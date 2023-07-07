@@ -85,7 +85,6 @@ export const getAppointments = createAsyncThunk('doctor/getAppointments', async 
 })
 
 
-
 const doctorSlice = createSlice({
   name: 'doctor',
   initialState,

@@ -44,7 +44,9 @@ const sentMessage = async (req, res) => {
         
 
     } catch (err) {
-        console.log(err);
+        res.status(500).json({
+            errorInfo: 'Internal Server Error'
+        })
     }
 }
 
@@ -52,7 +54,6 @@ const recieveMessage = async (req, res) => {
     try {
 
         const { chatId } = req.params;
-        console.log(chatId);
  
         const messages = await Message.find({ conversation: chatId })
                 .sort({updatedAt: 1})
@@ -87,7 +88,9 @@ const recieveMessage = async (req, res) => {
         return res.status(200).json(messages);
 
     } catch (err) {
-        console.log(err);
+        res.status(500).json({
+            errorInfo: 'Internal Server Error'
+        })
     }
 }
 

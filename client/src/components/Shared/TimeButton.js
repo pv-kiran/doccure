@@ -22,7 +22,7 @@ function TimeButton({ startTime, endTime, status ,editSlot, deleteSlot, _id, rol
     <Button
         key={_id}
         sx={{
-            margin: '.5rem 1.1rem',
+            margin: {lg: '.5rem 1.1rem' , md: '.5rem 1.1rem' , sm:'1rem 1.1rem' , xs: '1rem 1.1rem'},
             backgroundColor: status ? '#889dbf' : selectedSlotId === _id ? '#2CE1FE' : '#F3F9FF' ,
             color: status ? '#fff' : selectedSlotId === _id ? '#fff' : '#878180' ,
             padding: role === 'patient' ? '.5rem 1.3rem' : '.2rem .8rem',

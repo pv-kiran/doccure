@@ -8,7 +8,7 @@ const isLoggedIn = (req,res , next) => {
     const authToken =  req.cookies.token || req.headers['authorization']?.replace('Bearer ' , '') ;
     // console.log(authToken);
     if(!authToken) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'Token is missing'
         })
     }
@@ -19,7 +19,7 @@ const isLoggedIn = (req,res , next) => {
         next()
 
     } catch(e) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'Invalid Token'
         })
     }
@@ -32,12 +32,12 @@ const isDoctor = async (req , res , next) => {
         if (user) {
             next();
         } else {
-            return res.status(400).json({
+            return res.status(401).json({
                 errorInfo: 'You are not authorized to access this resource'
             })
         }
     } catch(e) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'Internal Server error'
         })
     }
@@ -50,7 +50,7 @@ const isPatient = async (req , res , next) => {
         if (user) {
             next();
         } else {
-            return res.status(400).json({
+            return res.status(401).json({
             message: 'You are not authorized to access this resource'
         })
         }
