@@ -40,7 +40,6 @@ const socketConnect = (server) => {
                     socket.in(callLink.patientId).emit('doctor call' , callLink.personalLink);
                 }); 
 
-            
                 socket.on('disconnect', () => {
                      console.log('Hello');
                      console.log('A user disconnected');
