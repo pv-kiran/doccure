@@ -40,13 +40,12 @@ function App() {
         }
        getDetails()
     }
+    // setloading(false)
   } , [])
 
   return (
     <>
-      {
-         loading ? <h1>Loading</h1> :   <AppRoutes/> 
-      }
+      <AppRoutes /> 
     </>  
   );
 }
