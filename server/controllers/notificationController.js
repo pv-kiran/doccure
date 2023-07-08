@@ -63,7 +63,7 @@ const readNotification = async (req, res) => {
     await Notification.updateMany({ recipient: req.userId , read: false }, { read: true });
 
     // Fetch the updated notifications
-      const notification = await Notification.find({ _id: { $in: notificationsToUpdate.map(n => n._id) } }).populate('sender')
+      const notification = await Notification.find({ _id: req.userId  }).populate('sender')
           ;
 
     res.status(200).json({ message: 'Notifications marked as read.', notification });

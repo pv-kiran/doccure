@@ -55,6 +55,7 @@ function VideoCall() {
       
       const fetchAppointmetDetails = async () => {
         const { data } = await instance.get(`/appointment/${id}`)
+        console.log(data , 'Hello....................!!!!!');
         setPatientId(data?.appointment?.patientId)
       }
 
@@ -76,7 +77,7 @@ function VideoCall() {
 
 
   useEffect(() => {
-        const socket = io('http://localhost:4000');
+        const socket = io('https://furnstore.shop/');
         setSocket(socket);
         // Cleanup on component unmount
         return () => {
@@ -104,12 +105,13 @@ function VideoCall() {
 
   useEffect(() => {
     if (socket && personalLink && patientId) {
+      console.log(personalLink , 'Personla link 2')
       socket.emit('new call', {
         personalLink,
         patientId  
       })
     }
-  },[personalLink])
+  },[personalLink , patientId])
 
   useEffect(() => {
     if (callEnd) {
@@ -153,7 +155,7 @@ function VideoCall() {
       window.location.pathname +
       '?roomID=' +
       roomID;
-     console.log(link , 'jsdkjksjdskjd');
+     console.log(link , 'My LINK ...........!!!');
      setPersonalLink(link);
     // socket.emit('new call' , link);
 

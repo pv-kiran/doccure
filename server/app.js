@@ -70,9 +70,7 @@ const connect = async () => {
 }
 
 connect().then((server) => {
-  console.log('Hello')
   socketConnect(server);
-  
 })
 .catch(err => console.log(err));
 

@@ -31,7 +31,7 @@ export const loginPatient = createAsyncThunk('patient/loginPatient', async (pati
   try {
       // const response = await instance.post("/auth/patient/login", patient);
       //   return response.data;
-    const response = await axios.post('http://localhost:4000/api/auth/patient/login', patient );
+    const response = await instance.post('/auth/patient/login', patient );
 
     return response.data;
         

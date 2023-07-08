@@ -24,14 +24,13 @@ function PatientDashboard() {
   const [socket, setSocket] = useState(null);
   const [call, setCall] = useState('');
 
-  const authState = useSelector((state) => {
+    const authState = useSelector((state) => {
       return state.auth?.authState
     })
-  useEffect(() => {
-    
-            const socket = io('http://localhost:4000');
+  
+    useEffect(() => {
+            const socket = io('https://furnstore.shop/');
             setSocket(socket);
-
             // Cleanup on component unmount
             return () => {
                 socket.disconnect();
@@ -56,6 +55,7 @@ function PatientDashboard() {
      useEffect(() => {
         if (socket) {
           socket.on('doctor call', (link) => {
+            console.log('doctor is calling ......!!!')
             console.log(link)
             setCall(link);
           })

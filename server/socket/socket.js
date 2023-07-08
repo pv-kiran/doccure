@@ -15,8 +15,7 @@ const socketConnect = (server) => {
     io.on('connection', (socket) => {
     
                 socket.on('setup', (userId) => {
-            
-                socket.join(userId);
+                    socket.join(userId);
                 })
             
                 socket.on('join chat', (room) => {
@@ -37,11 +36,13 @@ const socketConnect = (server) => {
                 })
         
                 socket.on('new call', (callLink) => {
+                    console.log(callLink);
                     socket.in(callLink.patientId).emit('doctor call' , callLink.personalLink);
                 }); 
 
             
                 socket.on('disconnect', () => {
+                     console.log('Hello');
                      console.log('A user disconnected');
                 });
             

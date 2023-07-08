@@ -4,10 +4,12 @@ import { clearAuth } from './app/features/auth/authSlice';
 
 import AppRoutes from './routes';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
+
+  const [loading, setloading] = useState(true);
 
   const authState = useSelector((state) => {
     return state.auth?.authState;
@@ -19,9 +21,10 @@ function App() {
   const getDetails = async () => {
     try {
       const { data } = await instance.get(`/auth/${authState?.role}/details`);
-      console.log(data);
+      setloading(false)
     } catch (err) {
-        if (err?.response?.status === 401) {
+      if (err?.response?.status === 401) {
+          console.log('Helloo')
           localStorage.removeItem('user');
           dispatch(clearAuth())
         }
@@ -37,10 +40,14 @@ function App() {
         }
        getDetails()
     }
-  })
+  } , [])
 
   return (
-      <AppRoutes/>
+    <>
+      {
+         loading ? <h1>Loading</h1> :   <AppRoutes/> 
+      }
+    </>  
   );
 }
 

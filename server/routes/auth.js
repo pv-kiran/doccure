@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 // auth controllers for doctor
-const { registerDoctor, verifyDoctorEmail, loginDoctor, resetPasswordDoctor, newPasswordDoctor, logoutDoctor } = require('../controllers/authDoctor');
+const { registerDoctor, verifyDoctorEmail, loginDoctor, resetPasswordDoctor, newPasswordDoctor, logoutDoctor , getDoctorDetails} = require('../controllers/authDoctor');
 
 //auth controller for patients
 const { registerPatient, emailVerifcationPatient, loginPatient, resetPasswordPatient, newPasswordPatient, logoutPatient, getPatientDetails } = require('../controllers/authPatient');
@@ -12,7 +12,7 @@ const { registerPatient, emailVerifcationPatient, loginPatient, resetPasswordPat
 // auth controllers for admin
 const { adminLogin, adminLogout } = require('../controllers/authAdmin');
 const { isLoggedIn, isDoctor, isPatient } = require('../middlewares/authMiddleware');
-const { getDoctorDetails } = require('../controllers/appointmentController');
+
 
 // doctor authentication related routes
 router.post('/doctor/register', registerDoctor);
