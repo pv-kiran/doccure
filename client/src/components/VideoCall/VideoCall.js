@@ -33,7 +33,6 @@ export function getUrlParams(url = window.location.href) {
 function VideoCall() {
 
   const { id } = useParams();
-  console.log(id , 'my id ............!!!!!!!');
 
   const roomID = getUrlParams().get('roomID') || randomID(5);
   const containerRef = useRef(null);
@@ -55,7 +54,6 @@ function VideoCall() {
       
       const fetchAppointmetDetails = async () => {
         const { data } = await instance.get(`/appointment/${id}`)
-        console.log(data , 'Hello....................!!!!!');
         setPatientId(data?.appointment?.patientId)
       }
 
@@ -105,7 +103,6 @@ function VideoCall() {
 
   useEffect(() => {
     if (socket && personalLink && patientId) {
-      console.log(personalLink , 'Personla link 2')
       socket.emit('new call', {
         personalLink,
         patientId  
@@ -126,7 +123,6 @@ function VideoCall() {
   let myMeeting = async (element) => {
     // Check if a call is already in progress
     if (callInProgress) {
-      console.log('Call already in progress');
       return;
     }
 
@@ -155,7 +151,6 @@ function VideoCall() {
       window.location.pathname +
       '?roomID=' +
       roomID;
-     console.log(link , 'My LINK ...........!!!');
      setPersonalLink(link);
     // socket.emit('new call' , link);
 
@@ -173,12 +168,10 @@ function VideoCall() {
         mode: ZegoUIKitPrebuilt.VideoConference,
       },
       onLeaveRoom: () => {
-        console.log('User left room , heloooooooooooooo');
         setCallEnd(true);
         window.close();
       },
       Complete: () => {
-        console.log('Call started successfully');
         setCallInProgress(true);
       },
     });

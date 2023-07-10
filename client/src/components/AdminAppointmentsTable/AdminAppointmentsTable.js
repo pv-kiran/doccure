@@ -35,7 +35,6 @@ function AdminAppointmentsTable() {
                 dispatch(adminGetAppoinments(status))
             }
 
-            console.log(adminState?.appointments);
               const headCells = [
                 {
                   id: 'doctor',

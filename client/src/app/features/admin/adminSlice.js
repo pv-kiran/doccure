@@ -13,12 +13,10 @@ const initialState = {
 // todo : move the api call to the respective component
 export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin, { rejectWithValue }) => {
   
-    console.log(admin);
+    
     try {
       const response = await instance.post("/auth/admin/login", admin);
-      console.log(response);
-        return response.data;
-        
+        return response.data; 
     } catch (error) {
       return rejectWithValue(error.response.data);
     }   
@@ -28,7 +26,6 @@ export const loginAdmin = createAsyncThunk('admin/loginAdmin', async (admin, { r
 export const logoutAdmin = createAsyncThunk('admin/logoutAdmin', async (admin , {rejectWithValue}) => {
   try {
     let response = await instance.get('/auth/admin/logout');
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -37,10 +34,8 @@ export const logoutAdmin = createAsyncThunk('admin/logoutAdmin', async (admin , 
 
 
 export const adminGetAllDoctors = createAsyncThunk('admin/getAllDoctors', async (status , {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get(`/admin/get/doctors?status=${status}`);
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -48,10 +43,8 @@ export const adminGetAllDoctors = createAsyncThunk('admin/getAllDoctors', async 
 })
 
 export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', async (status , {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get(`/admin/get/patients?status=${status}`);
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -62,7 +55,6 @@ export const adminGetAllPatients = createAsyncThunk('admin/getAllPatients', asyn
 export const adminGetSpecialities = createAsyncThunk('admin/getSpecialities', async ( speciality, {rejectWithValue}) => {
   try {
     let response = await instance.get(`admin/get/specialities`);
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -78,7 +70,6 @@ export const adminGetAppoinments = createAsyncThunk('admin/getAppointments', asy
 
   try {
     let response = await instance.get(url);
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -98,11 +89,9 @@ const adminSlice = createSlice({
          state.error = '';
     }  ,
     addSpecialaity: (state, action) => {
-      console.log(action.payload);
        state.user.specialities = [...state.user.specialities, action.payload];
     }, 
     updateSpeciality: (state, action) => {
-      console.log(state);
         state.user.specialities = state.user.specialities.map((obj) => {
            if (obj._id === action.payload._id) {
                 return action.payload; 
@@ -141,7 +130,6 @@ const adminSlice = createSlice({
         })
       
         builder.addCase(loginAdmin.rejected, (state, action) => {
-          console.log(action.payload)
             state.loading = false
             state.error = action.payload.errorInfo;
         })
@@ -170,7 +158,6 @@ const adminSlice = createSlice({
             state.actionSuccess = true;
             state.user = action.payload
             state.error = '';
-            console.log(action.payload);
         })
       
         builder.addCase(adminGetAllDoctors.rejected, (state, action) => {

@@ -43,7 +43,7 @@ const registerPatient = async (req, res) => {
                 from: 'admin@gmail.com',
                 to: `${email}`,
                 subject: 'Email Verification',
-                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email http://localhost:3000/patient/verify/${token}
+                text: `Hi! There, You have recently visited our website and entered your email.Please follow the given link to verify your email https://doccure-rouge.vercel.app/patient/verify/${token}
                 Link will expire in 5 minutes`
             };
 

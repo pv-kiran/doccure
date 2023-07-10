@@ -91,7 +91,6 @@ function ChatUI({ role }) {
     useEffect(() => {
       const fetchConversations = async () => {
         const { data } = await instance.get('/chat/mychat');
-        console.log(data);
         setmyConversation(data)
       }
       fetchConversations();
@@ -105,7 +104,6 @@ function ChatUI({ role }) {
     const fetchUsers = async () => {
      try {
          const { data } = await instance.get(`${searchUrl}?search=${searchValue}`);
-         console.log(data);
          role === 'doctor' ?  setMyAppointments(data?.myPatients) : setMyAppointments(data?.myDoctors)
          setSearchValue('')
 
@@ -126,7 +124,6 @@ function ChatUI({ role }) {
   
     // creating a chat
     const createChat = async (patientId) => {
-      console.log(patientId);
       const { data } = await instance.post(`${createChatUrl}/${patientId}`)
       setmyConversation((prev) => {
         return [...prev, data];
@@ -143,7 +140,6 @@ function ChatUI({ role }) {
     const fetchMessages = async (conversationId) => {
       try {
         const { data } = await instance.get(`/message/${conversationId}`)
-        console.log(data);
         setMessages(data)
         socket.emit('join chat' , conversationId)
       } catch (err) {
@@ -171,7 +167,6 @@ function ChatUI({ role }) {
           if (conversationId && message) {
             setMessage('');
             const { data } = await instance.post(`/message/${conversationId}`, messageDetails)
-            console.log(data);
             socket.emit('new message', data);  
               setMessages((prev) => {
                   if (prev) {
@@ -189,12 +184,9 @@ function ChatUI({ role }) {
     
     useEffect(() => {
         if (socket) {
-            console.log('hello');
             socket.on('message recieved', (newMessage) => {
-                console.log(selectedChatComparer.current);
-                console.log(newMessage?.conversation._id)
                 if (!selectedChatComparer.current || selectedChatComparer.current !== newMessage?.conversation._id) {
-                    console.log(newMessage)
+                    // console.log(newMessage)
                 } else {
                     socket.off('message recieved')
                     setMessages((prev) => {
@@ -470,10 +462,8 @@ function ChatUI({ role }) {
                           value={ message }
                           onChange={(e) => setMessage(e.target.value)}
                           onKeyDown={(e) => {
-                            console.log(e)
                             if (e.key === 'Enter') {
                               // e.preventDefault();
-                              console.log(e);
                               handleMessageSent(e);
                             }
                           }}

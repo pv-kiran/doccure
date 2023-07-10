@@ -38,7 +38,6 @@ function AdminPatientsTable() {
   const statusToggler = async (patientId) => {
     try {
       let {data} = await instance.put(`admin/patient/status/${patientId}`);
-      console.log(data.patient);
       dispatch(updatePatients(data.patient))
       setShowAlert(true);
       setAlertMessage('Status of the Patient is updated');
@@ -77,7 +76,6 @@ function AdminPatientsTable() {
   },
   ];
 
-  console.log(rows);
 
   const tableContent = 'user'
   const userRole =  'patient'

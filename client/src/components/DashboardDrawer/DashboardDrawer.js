@@ -74,7 +74,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function DashboardDrawer(props) {
 
   const [notification, setNotification] = useState([])
-  console.log(notification);
 
   const auth = useSelector((state) => {
     return state?.auth?.authState

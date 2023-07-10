@@ -15,7 +15,6 @@ function AppointmentModal(props) {
 
     const [loading, setLoading] = useState(false);
   
-    // console.log(editTimings);
 
     
     const [selectedTimes, setSelectedTimes] = useState({ startTime: null, endTime: null });
@@ -41,7 +40,6 @@ function AppointmentModal(props) {
     };
     handleEditSubmit(timeValues) 
     handleEditModalClose();
-    console.log('Hello');
   };
 
   

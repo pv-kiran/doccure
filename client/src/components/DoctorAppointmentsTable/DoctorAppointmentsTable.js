@@ -34,7 +34,6 @@ function DoctorAppointmentsTable() {
 
         const rows = doctorState?.user ? doctorState?.user : [];
 
-        // console.log(rows);
   
         const headCells = [
             {

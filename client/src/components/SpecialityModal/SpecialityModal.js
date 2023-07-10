@@ -23,10 +23,6 @@ function SpecialityModal(props) {
         return state.admin?.user?.specialities;
     })
   
-    // console.log(adminState)
-  
-    // let specialities  = adminState?.user?.specialities
-    // console.log(specialities);
 
     const { specialityModelOpen, setspecialityModelOpen, id, setEditId } = props;
   

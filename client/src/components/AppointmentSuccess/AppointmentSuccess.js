@@ -39,7 +39,6 @@ function AppointmentSuccess() {
          return  state.appointment
       })  
 
-    console.log(appointmentState);
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -53,7 +52,6 @@ function AppointmentSuccess() {
 
       useEffect(() => {
           async function fetchDetails(slotDetials) {
-              console.log(slotDetials);
               let {data} = await instance.get(`/appointment/${id}/details`);
               setDetails(data.details);
           }

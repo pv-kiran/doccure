@@ -185,7 +185,6 @@ function SlotBooking() {
     
 
     let dateArray = [];
-    console.log(doctor[0]?.availableSlots);
 
     if (doctor[0]?.availableSlots) {
       const today = new Date();
@@ -215,8 +214,6 @@ function SlotBooking() {
     }, [dateArray.length]);
 
     const onClickDate = (_id, date) => {
-        //  console.log('Hello')
-        console.log(_id);
         setSelectedId(_id);
         dispatch(setSelectedDateId({_id:_id , date: date}));
     };
@@ -266,7 +263,6 @@ function SlotBooking() {
  
 
 
-    // console.log(id);
     return (
       <>
         <Navbar {...navBarProps}></Navbar>  
@@ -426,7 +422,6 @@ function SlotBooking() {
                     {
                        selectedSlotId && <ColorButton
                            onClick={() => {
-                              console.log(appointmentDetails);
                               localStorage.setItem('bookedSlot', JSON.stringify(appointmentDetails))
                               dispatch(saveSelectedSlot());
                               navigate(`/doctor/${id}/checkout`)

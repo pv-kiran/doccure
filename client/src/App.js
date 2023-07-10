@@ -24,10 +24,10 @@ function App() {
       setloading(false)
     } catch (err) {
       if (err?.response?.status === 401) {
-          console.log('Helloo')
           localStorage.removeItem('user');
           dispatch(clearAuth())
-        }
+          setloading(false)  
+      }
     }
   }
 

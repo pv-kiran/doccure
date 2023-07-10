@@ -121,7 +121,6 @@ function ViewDoctors() {
     const fetchSpecialities = async () => {
       try {
         const {data} = await instance.get('doctor/specialities') 
-        console.log(data);
         setSpecialities(data.specialities);
       } catch (error) {
         console.error('Error fetching specialities:', error);
@@ -155,11 +154,9 @@ function ViewDoctors() {
 
     const url = `patient/doctors/all?skip=${skip}&limit=${limit}${selectedSpecialities ? `&specialities=${selectedSpecialities}` : ''}${gender ? `&gender=${gender}` : ''}${date ? `&dates=${date}` : ''}`;
 
-    console.log(url);
     try {
       const { data } = await instance.get(url);
       setDoctors(data.doctors);
-      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -279,7 +276,6 @@ function ViewDoctors() {
                 <ListItem>
               <ColorButton
                 onClick={() => {
-                  console.log(selectedSpecialities);
                   fetchDoctorsByFilteration(0, 2);
                 }}>
                 Search

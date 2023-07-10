@@ -53,7 +53,6 @@ export const updatePatient = createAsyncThunk('patient/updatePatient', async (fo
                 // withCredentials: true
     })
     
-    // console.log(response.data);
     return response.data;
         
     } catch (error) {
@@ -65,7 +64,6 @@ export const updatePatient = createAsyncThunk('patient/updatePatient', async (fo
 
 // todo: move to respective component
 export const logoutPatient = createAsyncThunk('patient/logoutPatient', async (patient , {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get('/auth/patient/logout');
     return response.data;
@@ -85,7 +83,6 @@ export const getPatientAppointments = createAsyncThunk('patient/getAppointments'
   
   try {
     let response = await instance.get(url)
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -115,7 +112,6 @@ const patientSlice = createSlice({
          state.error = '';
     } ,
     updatePatientAppointmentList: (state, action) => {
-      console.log(state);
         state.user = state.user.map((obj) => {
            if (obj._id === action.payload._id) {
                 return action.payload; 
@@ -135,9 +131,6 @@ const patientSlice = createSlice({
             state.loading = false;
             state.success = true ;
             state.error = '';
-            console.log(state);
-            console.log(action);
-
         })
       
         builder.addCase(registerPatient.rejected, (state, action) => {

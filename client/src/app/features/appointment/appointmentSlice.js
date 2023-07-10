@@ -3,10 +3,8 @@ import instance from '../../../api/axiosInstance';
 
 
 export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slots , {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get('doctor/slots');
-    console.log(response.data);
     return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -16,7 +14,6 @@ export const doctorGetSlots = createAsyncThunk('doctor/getAllSlots', async (slot
 export const doctorAddSlots = createAsyncThunk('doctor/addSlots', async (slots , { rejectWithValue }) => {
     try {
         const response = await instance.post('doctor/slots', slots);
-        console.log(response.data); 
         return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -28,7 +25,6 @@ export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({
   
     try {
         const response = await instance.put(`doctor/${mainSlotId}/slots`, details);
-        console.log(response.data); 
         return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -38,7 +34,6 @@ export const doctorUpdateSlots = createAsyncThunk('doctor/updateSlots', async ({
 export const doctorDeleteSlots = createAsyncThunk('doctor/deleteSlots', async ({mainSlotId , slotId}, { rejectWithValue }) => {
     try {
         const response = await instance.delete(`doctor/${mainSlotId}/slots/${slotId}`);
-        console.log(response.data); 
         return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -70,15 +65,11 @@ const appointmentSlice = createSlice({
             state.error = '';
         },
         setSelectedDateId: (state, action) => {
-          console.log(action.payload);
           const { _id, date } = action.payload;
           state.selectedDateId = _id;
           state.selectedDate = date;
         } ,
         setSelectedSlot: (state, action) => {
-          // state.selectedSlotId = action.payload.id;
-          // state.startTime = action.payload.startTime;
-          // state.endTime = action.payload.endTime
           const { id, startTime, endTime } = action.payload;
           state.selectedSlotId = id;
           state.startTime = startTime;

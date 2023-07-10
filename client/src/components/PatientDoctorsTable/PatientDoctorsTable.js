@@ -7,7 +7,6 @@ function PatientDoctorsTable() {
   const authState = useSelector((state) => {
     return state.auth.authState;
   })
-  console.log(authState);
 
   return (
     <Box sx={{

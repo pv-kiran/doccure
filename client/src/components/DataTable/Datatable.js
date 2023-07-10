@@ -269,7 +269,6 @@ function DataTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
     
   const handleChange = (event) => {  
-     console.log(event);
             // setState({ ...state, [event.target.name]: event.target.checked });
   };
 
@@ -364,7 +363,6 @@ function DataTable(props) {
 
   const handleConfirm = (checked) => {
     // do something with the checked value
-    // console.log(checked);
     if (checked) {
       statusToggler(id);
       setOpen(false); // close the modal

@@ -221,7 +221,6 @@ function UserOnboarding({ role }) {
             if (role === 'patient') {
                 dispatch(updatePatient(form));
             } else {
-                // console.log(form);
                 dispatch(updateDoctor(form));
             }
 

@@ -8,13 +8,11 @@ import Toast from '../Shared/Toast';
 
 function AdminDoctorsTable() {
 
-  // console.log(getAllDoctors);
 
   const adminState = useSelector((state) => {
     return state.admin;
   });
 
-  console.log(adminState);
 
   const dispatch = useDispatch();
 
@@ -26,7 +24,6 @@ function AdminDoctorsTable() {
   }, [])
 
   useEffect(() => {
-    console.log('Hello from admin doctor table')
       dispatch(adminGetAllDoctors());
   }, [])
 
@@ -43,7 +40,6 @@ function AdminDoctorsTable() {
   const statusToggler = async (doctorId) => {
     try {
       let { data } = await instance.put(`admin/doctor/status/${doctorId}`);
-      console.log(data);
       dispatch(updateDoctors(data.doctor))
       setShowAlert(true);
       setAlertMessage('Status of the doctor is updated');

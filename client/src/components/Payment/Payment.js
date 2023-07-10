@@ -58,7 +58,6 @@ function Payment() {
             try {
                 let { data } = await instance.get(`appointment/doctor/${id}`);
                 setDoctors(data.doctor);
-                // console.log(doctor);
             } catch (err) {
                 console.log(err);
             }
@@ -77,7 +76,6 @@ function Payment() {
 
     const {selectedDateId ,  selectedSlotId , startTime , endTime , bookedSlot } = appointmentState;
 
-    console.log(appointmentState);
 
     const userInfo = {
         userName: authState.name,
@@ -125,7 +123,6 @@ function Payment() {
         const bookedSlot = JSON.parse(localStorage.getItem('bookedSlot'))
         const fees = Number.parseInt(doctor[0]?.speciality?.fees)  + 50
 
-        console.log(bookedSlot);
 
         try {
 
@@ -153,7 +150,6 @@ function Payment() {
                 order_id: data.data.order.id,
                 handler: async function (response) {
 
-                    console.log(response);
                     const appointmentDetails = {
                         ...bookedSlot,
                         fees,
@@ -162,7 +158,6 @@ function Payment() {
                     }
 
                     const {data} = await instance.post('/appointment/create', appointmentDetails);
-                    console.log(data);
 
                     navigate(`/appointment/${data?.appointment?._id}/success`)
 

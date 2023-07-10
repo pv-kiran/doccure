@@ -45,7 +45,6 @@ export const updateDoctor = createAsyncThunk('doctor/updateDoctor', async (form,
                 // withCredentials: true
     })
     
-    // console.log(response.data);
     return response.data;
         
     } catch (error) {
@@ -56,7 +55,6 @@ export const updateDoctor = createAsyncThunk('doctor/updateDoctor', async (form,
 
 // todo : move the api call to the respective component
 export const logoutDoctor = createAsyncThunk('doctor/logoutDoctor', async (patient , {rejectWithValue}) => {
-  // console.log(user);
   try {
     let response = await instance.get('/auth/doctor/logout');
     return response.data;
@@ -76,7 +74,6 @@ export const getAppointments = createAsyncThunk('doctor/getAppointments', async 
 
     try {
         let response = await instance.get(url)
-        console.log(response.data);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
@@ -105,7 +102,6 @@ const doctorSlice = createSlice({
          state.error = '';
     },
     updateAppointmentList: (state, action) => {
-      console.log(state);
         state.user = state.user.map((obj) => {
            if (obj._id === action.payload._id) {
                 return action.payload; 

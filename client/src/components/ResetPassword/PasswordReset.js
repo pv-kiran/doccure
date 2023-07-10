@@ -40,8 +40,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
 function PasswordReset() {
 
     const { userType, token } = useParams();
-    console.log(userType);
-    console.log(token);
+   
 
 
     const [user, setUser] = useState({ password: '' , confirmPassword: '' });

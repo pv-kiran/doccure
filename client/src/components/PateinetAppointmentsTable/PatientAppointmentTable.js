@@ -14,7 +14,6 @@ function PatientAppointmentTable() {
           return state.patient;
         })
 
-        console.log(patientState?.user);
 
         const dispatch = useDispatch();
 
@@ -50,7 +49,6 @@ function PatientAppointmentTable() {
 
        const rows = patientState?.user ? patientState?.user : [];
   
-       console.log(rows);
 
         const headCells = [
             {

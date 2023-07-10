@@ -62,7 +62,6 @@ const DoctorSchedulings = () => {
     return state.appointment
   })
 
-  console.log(appointmentState.availableSlots);
 
   let dateArray = [];
 
@@ -80,7 +79,6 @@ const DoctorSchedulings = () => {
       return dateA - dateB;
     });
 
-    console.log(dateArray);
   }
 
   
@@ -107,8 +105,7 @@ const DoctorSchedulings = () => {
 
   // todo - move to date button component
   const onClickDate = (_id) => {
-     console.log('hello');
-     console.log(_id);
+    
     //  dispatch(setSelectedDate(_id));
      setSelectedId(_id);
   };
@@ -116,7 +113,6 @@ const DoctorSchedulings = () => {
 
   const dateSlotes = appointmentState.availableSlots.filter(data => data._id === selectedId) || [];
 
-  // console.log(dateSlots);
 
   const dispatch = useDispatch();
 

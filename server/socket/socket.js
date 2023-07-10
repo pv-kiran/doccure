@@ -1,9 +1,6 @@
 const socketIO = require('socket.io');
-
-
-
   
-const socketConnect = (server) => {
+    const socketConnect = (server) => {
     
     const io = socketIO(server, {
         cors: {

@@ -15,7 +15,6 @@ import Rating from '@mui/material/Rating';
 
 function DoctorVerticalCard({ doctor , handleLike , handleRatings }) {
 
-  console.log(doctor);
   
     const {
         fullName, 

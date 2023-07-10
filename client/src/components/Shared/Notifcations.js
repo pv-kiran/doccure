@@ -9,7 +9,6 @@ function Notifications() {
 
   const [notification, setNotification] = useState([])  
     
-  console.log(notification);
 
   useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;

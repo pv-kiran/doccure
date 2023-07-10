@@ -48,10 +48,8 @@ function AdminCharts() {
     const fetchDashboardDetails = async () => {
         try {
             const { data }  = await instance.get('/admin/get/dashboard');
-            console.log(data.count)
             setDetaisCount(data.count);
         } catch (err) {
-          console.log(err);
         }
     }
     const fetchChartDetails = async () => {
@@ -64,7 +62,6 @@ function AdminCharts() {
          setRevenueYearly(data.yearlyRevenue)
 
        } catch (err) {
-         console.log(err);
        }
     }
 
@@ -92,8 +89,6 @@ function AdminCharts() {
   if (revenueMonthly.length > 0) {
     revenueMonthlyLabel = revenueMonthly.map(item => item.month);
     revenueMonthlyData = revenueMonthly.map(item => item.fees);
-    console.log(revenueMonthlyData);
-    console.log(revenueMonthlyLabel);
   }
   if (specialityAppointment.length > 0) {
     revenueYearlyLabel = revenueYearly.map(item => item._id);
