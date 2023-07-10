@@ -4,7 +4,7 @@ const socketIO = require('socket.io');
     
     const io = socketIO(server, {
         cors: {
-            origin: 'https://doccure-rouge.vercel.app/',
+            origin: 'https://doccure-rouge.vercel.app',
             methods: ['GET', 'POST']
         }
     });

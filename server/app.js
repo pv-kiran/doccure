@@ -13,7 +13,7 @@ let { connectDB } = require('./db/connection');
 
 // cors
 const cors = require('cors');
-app.use(cors({ credentials: true, origin: 'https://doccure-rouge.vercel.app/' }));
+app.use(cors({ credentials: true, origin: 'https://doccure-rouge.vercel.app' }));
 
 // parsing the cookies
 const cookieParser = require('cookie-parser');
