@@ -349,7 +349,7 @@ function ViewDoctors() {
                       setValue()
                     }}
                 >
-                  View more
+                  View All
                 </ColorButton> 
                 </Box>
               }

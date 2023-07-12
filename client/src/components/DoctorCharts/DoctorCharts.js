@@ -1,8 +1,9 @@
 import React from 'react'
+import Welcome from './../Shared/Welcome';
 
 function DoctorCharts() {
   return (
-    <div>DoctorCharts</div>
+    <Welcome></Welcome>
   )
 }
 
