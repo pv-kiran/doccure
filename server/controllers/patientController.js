@@ -3,7 +3,6 @@ const Patient = require('../models/patient');
 const Appointment = require('../models/appointment');
 const Notification = require('../models/notification');
 
-
 const { cloudinary } = require('../utils/cloudinaryHelper');
 const mongoose = require('mongoose');
 
@@ -44,7 +43,7 @@ const updatePatientProfile = async (req, res) => {
 const getAllDoctors = async (req, res) => {
     // let { limit, skip, specialities } = req.query;
 
-    let { limit, skip, specialities, gender, dates } = req.query;
+    let { limit, skip, specialities, gender, dates , doctorName } = req.query;
 
 
     let query = { isAdminVerified: true };
@@ -57,6 +56,10 @@ const getAllDoctors = async (req, res) => {
     if (specialities) {
         specialities = specialities.split(',');
         query.speciality = { $in: specialities }
+    }
+
+    if (doctorName) {
+        query.fullName = { '$regex': doctorName, '$options': 'i' }
     }
    
 

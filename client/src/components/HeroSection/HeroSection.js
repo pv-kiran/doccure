@@ -1,24 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import  Typography  from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SearchIcon from "@mui/icons-material/Search";
-// import IconButton from "@mui/material/IconButton";
 import Button  from '@mui/material/Button';
 
 import './HeroSection.css';
 import bannerThree from '../../assets/banner@3x.png';
-import { useMediaQuery , createTheme} from '@mui/material';
+import { useMediaQuery , createTheme, FormControl, InputLabel, Select, MenuItem} from '@mui/material';
+import instance from '../../api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 
 function HeroSection() {
 
   const theme = createTheme(); // Create an empty theme object
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+
+  const [specialities, setSpecialites] = useState([])
+
+  const fetchSpecialities = async () => {
+        const { data } = await instance.get('doctor/specialities')
+        setSpecialites(data.specialities);
+  }
+
+  const [selectedSpeciality, setSelectedSpeciality] = useState('');
+
+  const handleInputChange = (e) => {
+    setSelectedSpeciality(e.target.value);
+  }
+
+  const [searchText, setSearchText] = useState('');
+
+  const handleChange = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const navigate = useNavigate();
  
+  const handleNavigate = (e) => {
+    e.preventDefault();
+    const queryParams = new URLSearchParams();
+    if (selectedSpeciality) {
+      queryParams.append('speciality', selectedSpeciality);
+    }
+    if (searchText) {
+      queryParams.append('doctorName', searchText);
+    }
+    navigate(`doctors/all?${queryParams.toString()}`);
+  }
+ 
+  useEffect(() => {
+    fetchSpecialities()
+  }, []);
 
   return (
     <Box
@@ -63,32 +100,37 @@ function HeroSection() {
             sx={{
               textAlign: 'center',
             }}
+            onSubmit={handleNavigate}
+            component= 'form'
          >
-            <TextField
-              placeholder="Location"
-              variant="outlined"
-              // size='small'
+          <FormControl
               sx={{
-                  width: {lg: '25%' , md: '25%' , sm: '50%'},
-                  "& label": {
-                    display: "none"
-                  } ,
+                width: {lg: '25%' , md: '25%' , sm: '50%'}
               }}
-              inputProps={{
-                  style: {
-                    height: 12
-                  }
-              }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start" sx={{
-                      marginLeft: '-.5rem'
-                    }}>
-                      <LocationOnIcon />
-                    </InputAdornment>
-                  )
-                }}
-            />
+          >
+              <InputLabel sx={{marginTop:'-.3rem'}} id="speciality-label">Speciality</InputLabel>
+                            <Select
+                                labelId="speciality-label"
+                                id="speciality"
+                                label="Speciality"
+                                variant="outlined" 
+                                name="speciality"
+                                value={selectedSpeciality}
+                                onChange={handleInputChange}
+                                sx={{height: '2.8rem'}}
+                            >
+                                {/* <MenuItem value="">
+                                <em>None</em>
+                                </MenuItem> */}
+                                {
+                                   specialities.length >  0 && specialities.map((speciality) => (
+                                        <MenuItem key={speciality._id} value={speciality._id}>
+                                            {speciality.name}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
             <TextField
                 placeholder="Search doctors , specialites"
                 variant="outlined"
@@ -109,7 +151,9 @@ function HeroSection() {
                       <SearchIcon />
                     </InputAdornment>
                   )
-                }}
+            }}
+                value={searchText}
+                onChange={handleChange}
             />
             <Button
                 sx={{
@@ -124,6 +168,7 @@ function HeroSection() {
                     backgroundColor: "#2CE1FE"
                   }
                 }}
+                type='submit'
             >
                 <SearchIcon />
             </Button>

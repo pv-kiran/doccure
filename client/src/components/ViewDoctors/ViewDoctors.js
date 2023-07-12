@@ -22,10 +22,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useMediaQuery } from '@mui/material';
+import { Typography, useMediaQuery } from '@mui/material';
 
+import { useLocation } from 'react-router-dom';
 
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 const theme = createTheme({
   overrides: {
@@ -85,6 +86,9 @@ function ViewDoctors() {
       });
   };
   const [date, setValue] = useState();
+  const [loading, setLoading] = useState(false);
+  
+  const [view, setView] = useState(false);
     
   const [gender, setGender] = useState(''); 
 
@@ -95,20 +99,33 @@ function ViewDoctors() {
  
   const [doctors, setDoctors] = useState([]);
 
+  const location = useLocation();
   
+
+   const queryParams = new URLSearchParams(location.search);
+   let speciality = queryParams.get('speciality');
+   let doctorName = queryParams.get('doctorName'); 
+
+   const fetchDoctors = async (skip, limit) => {
+      
+      try {
+          
+          setLoading(true);
+          const { data } = await instance.get(`patient/doctors/all?skip=${skip}&limit=${limit}${speciality ? `&specialities=${[speciality]}` : ''}${doctorName ? `&doctorName=${doctorName}` : ''}`);
+
+          setDoctors(data.doctors);
+          setView(true)
+          setLoading(false);
+        
+      } catch (error) {
+        setView(false);
+        setLoading(false);
+      }
+    };
 
 
   useEffect(() => {
-
-    const fetchDoctors = async (skip , limit) => {
-        try {
-          const { data } = await instance.get(`patient/doctors/all?skip=${skip}&limit=${limit}`);
-          setDoctors(data.doctors);
-          // setDoctors(data.doctors);
-        } catch (error) {
-          console.error('Error fetching Doctors:', error);
-        }
-    };
+    
     fetchDoctors(0, 2);
     
   }, []);
@@ -136,9 +153,11 @@ function ViewDoctors() {
 
     try {
       const { data } = await instance.get(url);
-      setDoctors(prevDocotors => [...prevDocotors , ...data.doctors]);
+      setDoctors(prevDocotors => [...prevDocotors, ...data.doctors]);
+      setView(true);
     } catch (error) {
-          console.error('Error fetching Doctors:', error);
+      setView(false);
+      setLoading(false);
     }
     
   };
@@ -151,14 +170,20 @@ function ViewDoctors() {
 
 
   const fetchDoctorsByFilteration = async (skip, limit) => {
-
+    
     const url = `patient/doctors/all?skip=${skip}&limit=${limit}${selectedSpecialities ? `&specialities=${selectedSpecialities}` : ''}${gender ? `&gender=${gender}` : ''}${date ? `&dates=${date}` : ''}`;
-
+     
     try {
+      setLoading(true);
+      setView(false);
       const { data } = await instance.get(url);
       setDoctors(data.doctors);
+      setView(true);
+      setLoading(false);
     } catch (err) {
-      console.log(err);
+      setView(false);
+      setLoading(false);
+      setDoctors([]);
     }
   }
 
@@ -179,12 +204,12 @@ function ViewDoctors() {
         spacing={3}
         padding="2rem"
       >
-            <Box className="sidebar"
+          <Box className="sidebar"
                     sx={{
                         border: '1px gray dotted',
                         borderRadius: '.2rem',
                         width: {lg: '30%' , md: '25%' , sm: '100%' , xs:'100%'},
-                        height: {xl: '92vh' , lg: '80vh'  , md: 'auto' , sm: 'auto' , xs: 'auto'},
+                        height: {xl: '92vh' , lg: '90vh'  , md: 'auto' , sm: 'auto' , xs: 'auto'},
                         position: {lg:'sticky' , md: 'sticky' , sm: 'relative' , xs: 'relative'},
                         top: '.8rem'
                     }}>
@@ -193,12 +218,13 @@ function ViewDoctors() {
                   <ListItemText primary="Filter Doctors" />
                 </ListItem> 
                 <Divider /> 
-                <ListItem sx={{ marginTop: '2rem' }}>
+                <ListItem sx={{ marginTop: '2rem'}}>
                   <ThemeProvider theme={theme}>
                     
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DemoContainer components={['DatePicker']} sx={{overflow: 'hidden'}}>
+                        <DemoContainer  components={['DatePicker']} sx={{overflow: 'hidden' , width: '100%'}}>
                             <DatePicker
+                              sx={{width:'100%'}}
                               date={date}
                               onChange={(newValue) => {
                                 setValue(newValue);
@@ -283,28 +309,62 @@ function ViewDoctors() {
                 </ListItem>                  
                       
               </List>
-            </Box>
-            <Box
+          </Box>
+          <Box
               className="doctorsList"
               sx={{
                   width: {lg: '70%' , md: '75%' , sx: '100%' , xs: '100%'},
               }}
             >
-              {
-                doctors.length > 0 && doctors.map((doctor) => 
+          {
+            loading ? <Box sx={{
+                width: '100%',
+                height: '80vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                  <CircularProgress></CircularProgress>
+              </Box> :
+                doctors.length > 0 ? doctors.map((doctor) => 
                     <DoctorCard key={doctor._id} doctor={doctor}></DoctorCard>
-                )
+              ) : <Box sx={{
+                    width: '100%',
+                    height: '80vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+              }}>
+                  <Typography variant='h4'>Doctors Currently unavailable</Typography>
+                  <ColorButton
+                    sx={{
+                        width: {lg: '20%' , md: '20%' , sm: '100%' , xs: '100%'},
+                        // marginLeft: {lg: '45%' , md: '45%' , sm: '0' , xs:'0'}
+                    }}
+                    onClick={() => {
+                      fetchDoctors(0, 3 , speciality= '' , doctorName = '');
+                      setSelectedSpecialities([]);
+                      setGender('')
+                      setValue()
+                    }}
+                >
+                  View more
+                </ColorButton> 
+                </Box>
               }
-              <ColorButton
-                sx={{
-                    width: {lg: '20%' , md: '20%' , sm: '100%' , xs: '100%'},
-                    marginLeft: {lg: '45%' , md: '45%' , sm: '0' , xs:'0'}
-                }}
-                onClick={() =>  handleFetchMore()}
-              >
-                 Load more
-              </ColorButton> 
-           </Box>
+              {
+                view && <ColorButton
+                    sx={{
+                        width: {lg: '20%' , md: '20%' , sm: '100%' , xs: '100%'},
+                        marginLeft: {lg: '45%' , md: '45%' , sm: '0' , xs:'0'}
+                    }}
+                    onClick={() =>  handleFetchMore()}
+                >
+                  Load more
+                </ColorButton> 
+              }
+          </Box>
        </Stack> 
      </>
   );
