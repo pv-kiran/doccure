@@ -10,13 +10,13 @@ import { useState } from 'react';
 import DashboardDrawer from '../DashboardDrawer/DashboardDrawer';
 import DashboardContent from './../DashboardContent/DashboardContent';
 
-import GridViewIcon from '@mui/icons-material/GridView';
-import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
+
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import MessageIcon from '@mui/icons-material/Message';
 
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 function DoctorDashboard() {
   const theme = useTheme();
@@ -34,17 +34,6 @@ function DoctorDashboard() {
     
 
   const navigationLinks = [
-    // {
-    //   navItem: 'Dashboard',
-    //   navLink: '/doctor/dashboard',
-    //   icon: <GridViewIcon sx={{color: '#579ab5'}}/>
-    // } ,
-    // {
-    //   navItem: 'Patients',
-    //   navLink: '/doctor/mypatients',
-    //   icon: <EscalatorWarningIcon sx={{color: '#579ab5'}}/>
-
-    // },
     {
       navItem: 'Appointments',
       navLink: '/doctor/appointments' ,
@@ -65,6 +54,11 @@ function DoctorDashboard() {
       navItem: 'Messages',
       navLink: '/doctor/messagges' ,
       icon: <MessageIcon sx={{color: '#579ab5'}}/>
+    },
+    {
+      navItem: 'Profile',
+      navLink: '/doctor/profile' ,
+      icon: <AccountBoxIcon sx={{color: '#579ab5'}}/>
     }
   ]
 

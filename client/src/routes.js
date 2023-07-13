@@ -58,6 +58,9 @@ import BookingSuccess from './pages/BookingSuccess';
 import AdminNotifications from './components/AdminNotifications/AdminNotifications';
 import VideoCall from './components/VideoCall/VideoCall';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
+import DoctorProfileSettings from './components/DoctorProfileSettings/DoctorProfileSettings';
+
+
 
 function AppRoutes() {
   return (
@@ -104,7 +107,8 @@ function AppRoutes() {
             <Route path='appointments' element={<DoctorAppointmentsTable/>}></Route>
             <Route path='notifications' element={<DoctorNotifications/>}></Route>
             <Route path='messagges' element={<DoctorMessages />}></Route>
-            <Route path='schedulings' element={<DoctorSchedulings/>}></Route>
+            <Route path='schedulings' element={<DoctorSchedulings />}></Route>
+            <Route path='profile' element={<DoctorProfileSettings/>}></Route>
         </Route>
           {/* <Route path="/doctor/dashboard" element={ <DashboardDoctor />} /> */}
         </Route>

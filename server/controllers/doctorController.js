@@ -5,11 +5,25 @@ const Speciality = require('../models/speciality');
 const Appointment = require('../models/appointment');
 const mongoose = require('mongoose')
 
+const getProfile = async (req, res) => {
+    try {
+        const doctor = await Doctor.find({ _id: req.userId });
+        if (doctor) {
+            return res.status(200).json({ doctor });
+        }
+    } catch (err) {
+        return res.status(404).json({
+            errorInfo: 'Internal Server Error'
+        })
+    }
+}
+
 
 const updateDoctorProfile = async (req, res) => {
 
     const { username, gender, speciality ,phone, houseName, city, state , services , qualification } = req.body;
     
+    console.log(username);
     
     try {
 
@@ -336,5 +350,6 @@ module.exports = {
     updateAvailbleSlot,
     deleteSlot,
     deleteDateSlots,
-    getAppointments
+    getAppointments,
+    getProfile
 }
