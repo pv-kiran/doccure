@@ -18,13 +18,10 @@ const getProfile = async (req, res) => {
     }
 }
 
-
 const updateDoctorProfile = async (req, res) => {
 
     const { username, gender, speciality ,phone, houseName, city, state , services , qualification } = req.body;
-    
-    console.log(username);
-    
+        
     try {
 
         const doctor = await Doctor.findOne({ _id: req.userId });
@@ -44,7 +41,7 @@ const updateDoctorProfile = async (req, res) => {
         doctor.fullName = username;
         doctor.gender = gender;
         doctor.phone = phone;
-        doctor.services = services.split(',');
+        doctor.services = Array.isArray(services) ? services : services.split(',');
         doctor.address = { houseName, city, state };
         doctor.speciality = speciality;
         doctor.qualification = qualification;
@@ -57,6 +54,7 @@ const updateDoctorProfile = async (req, res) => {
         })
 
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             errorInfo: 'Internal server error'
         })

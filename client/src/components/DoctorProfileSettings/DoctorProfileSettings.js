@@ -23,9 +23,8 @@ import  FormHelperText  from '@mui/material/FormHelperText';
 // import instance from '../../api/axiosInstance';
 import './DoctorProfileSettings';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { updatePatient } from '../../app/features/patient/patientSlice';
-import { updateDoctor } from './../../app/features/doctor/doctorSlice';
+import {  useSelector } from 'react-redux';
+
 
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -61,15 +60,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 
 
-
-
 function DoctorProfileSettings({ role }) {
-
-    const authState = useSelector((state) => {
-      return state.auth.authState;
-    })
-  
-    console.log(authState);
 
     useEffect(() => {
         let user = JSON.parse(localStorage.getItem('user')) ;
@@ -98,19 +89,7 @@ function DoctorProfileSettings({ role }) {
     const fetchDetails = async () => {
         try {
           const { data } = await instance.get(`/doctor/profile`);
-          console.log(data.doctor[0]);
-          setFormData({
-            username: data.doctor[0].fullName,
-            gender: data.doctor[0].gender,
-            qualification: data.doctor[0].qualification,
-            phone: data.doctor[0].phone,
-            houseName: data.doctor[0].address.houseName ,
-            speciality: data.doctor[0].speciality ,
-            city: data.doctor[0].address.city ,
-            state: data.doctor[0].address.state ,
-            services: data.doctor[0].services
-          })
-
+          setFields(data.doctor[0])
           setFile(data.doctor[0].profilePicture.secure_url)
           setCertififcateLink(data.doctor[0].certificate.secure_url)
           
@@ -123,6 +102,8 @@ function DoctorProfileSettings({ role }) {
     useEffect(() => {
       fetchDetails();
     }, [])
+  
+  
 
 
     const [formData, setFormData] = useState({
@@ -232,7 +213,8 @@ function DoctorProfileSettings({ role }) {
             
             try {
               const { data } = await instance.put('/doctor/profile/update', formData);
-              console.log(data);
+              console.log(data.user);
+              setFields(data.user);
             } catch (err) {
               console.log(err);
             }
@@ -241,6 +223,21 @@ function DoctorProfileSettings({ role }) {
           setFormErrors(errors);
         }
 
+    }
+  
+
+    const setFields = (user) => {
+      setFormData({
+            username: user.fullName,
+            gender: user.gender,
+            qualification: user.qualification,
+            phone: user.phone,
+            houseName: user.address.houseName ,
+            speciality: user.speciality ,
+            city: user.address.city ,
+            state: user.address.state ,
+            services: user.services
+      })
     }
     
 
@@ -569,7 +566,7 @@ function DoctorProfileSettings({ role }) {
                     </Box>
                     
                     <ColorButton type='submit'>
-                        Continue
+                        Save Changes
                         {/* {
                            ( doctorUpdateState.loading || patientUpdateState.loading ) && <CircularProgress
                                 size={28}

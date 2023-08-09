@@ -34,6 +34,7 @@ const updatePatientProfile = async (req, res) => {
         })
 
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             errorInfo: 'Internal server error'
         })
