@@ -15,6 +15,7 @@ let { connectDB } = require("./db/connection");
 const cors = require("cors");
 app.use(
   cors({ credentials: true, origin: "https://doccure-rouge.vercel.app" })
+  // cors({ credentials: true, origin: "http://localhost:3000" })
 );
 
 // parsing the cookies
